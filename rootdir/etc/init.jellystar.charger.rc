@@ -1,0 +1,15 @@
+# Power-off charging. The bootloader starts Android in charger mode when a cable is plugged into a
+# powered-off phone. The stock health HAL binary has charger mode built in and the stock vendor
+# policy allows the charger_vendor transition, but Unihertz's vendor rc omits this service, so
+# nothing drew the screen or handled the power key and the phone was stuck until unplugged.
+# Same definition as AOSP's android.hardware.health-service.example.rc.
+service vendor.charger /vendor/bin/hw/android.hardware.health-service.example --charger
+    class charger
+    seclabel u:r:charger_vendor:s0
+    user system
+    group system wakelock input
+    capabilities SYS_BOOT
+    file /dev/kmsg w
+    file /sys/fs/pstore/console-ramoops-0 r
+    file /sys/fs/pstore/console-ramoops r
+    file /proc/last_kmsg r

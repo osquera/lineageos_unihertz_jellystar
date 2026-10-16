@@ -1,0 +1,6 @@
+allow init sysfs_jellystar_ledbelt:file { relabelto w_file_perms };
+
+# Charge limit: init pauses/resumes charging through MediaTek's current_cmd (see
+# ledbelt/init.jellystar.ledbelt.rc). proc_battery_cmd comes from device/mediatek/sepolicy_vndr.
+allow init proc_battery_cmd:dir search;
+allow init proc_battery_cmd:file w_file_perms;

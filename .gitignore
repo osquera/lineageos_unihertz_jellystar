@@ -1,0 +1,21 @@
+# Build artifacts / extracted proprietary blobs — not sources.
+# Unihertz and MediaTek blobs are NOT INCLUDED in publication: they are vendor property.
+# The list of needed files is in proprietary-files.txt, extracted from the device by
+# extract-files.py — everyone pulls their own copies from hardware they own.
+kernel/Image
+kernel/Image.lz4
+kernel/dtbo.img
+kernel/dtb/
+kernel/modules/
+*.ko
+*.img
+*.so
+*.apk
+*.jar
+*.bin
+__pycache__/
+*.pyc
+*.bak
+*.bak-*
+*.orig
+*.rej

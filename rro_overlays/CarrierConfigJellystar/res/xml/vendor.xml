@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!-- Stock enables VoLTE for every SIM through MediaTek's own framework, while AOSP's carrier
+     configs enable it for only a few carriers (almost none in Europe, where 2G/3G are being
+     switched off). Offer VoLTE everywhere: if the network does not allow it, IMS simply does not
+     register and calls use 2G/3G, as before. No AOSP carrier config sets this to false.
+     The modem sets up the IMS connection itself, so no ims APN is needed. -->
+<carrier_config_list>
+    <carrier_config>
+        <boolean name="carrier_volte_available_bool" value="true" />
+    </carrier_config>
+</carrier_config_list>

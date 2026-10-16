@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/connectivity/bluetooth/service/aidl/android.hardware.bluetooth-service-mediatek.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>android.hardware.bluetooth</name>
+        <fqname>IBluetoothHci/default</fqname>
+    </hal>
+</manifest>

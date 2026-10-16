@@ -1,0 +1,33 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/mtk-hidl-service/mtk_lbs_service.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>vendor.mediatek.hardware.lbs</name>
+        <fqname>ILbs/AgpsDebugInterface</fqname>
+        <fqname>ILbs/AgpsInterface</fqname>
+        <fqname>ILbs/mtk_agps2framework</fqname>
+        <fqname>ILbs/mtk_agps2gnssAidl</fqname>
+        <fqname>ILbs/mtk_agpsd2debugService</fqname>
+        <fqname>ILbs/mtk_debugService2agpsd</fqname>
+        <fqname>ILbs/mtk_debugService2mnld</fqname>
+        <fqname>ILbs/mtk_framework2agps</fqname>
+        <fqname>ILbs/mtk_gnssAidl2agps</fqname>
+        <fqname>ILbs/mtk_jam2mnl</fqname>
+        <fqname>ILbs/mtk_lbs_log_v2s</fqname>
+        <fqname>ILbs/mtk_lppe_socket_agps</fqname>
+        <fqname>ILbs/mtk_lppe_socket_bt</fqname>
+        <fqname>ILbs/mtk_lppe_socket_ipaddr</fqname>
+        <fqname>ILbs/mtk_lppe_socket_lbs</fqname>
+        <fqname>ILbs/mtk_lppe_socket_network</fqname>
+        <fqname>ILbs/mtk_lppe_socket_sensor</fqname>
+        <fqname>ILbs/mtk_lppe_socket_wlan</fqname>
+        <fqname>ILbs/mtk_meta2mnld</fqname>
+        <fqname>ILbs/mtk_mnl2jam</fqname>
+        <fqname>ILbs/mtk_mnld2debugService</fqname>
+        <fqname>ILbs/mtk_mnld2mtklogger</fqname>
+        <fqname>ILbs/mtk_mnld2nlputils</fqname>
+        <fqname>ILbs/mtk_mtklogger2mnld</fqname>
+    </hal>
+</manifest>

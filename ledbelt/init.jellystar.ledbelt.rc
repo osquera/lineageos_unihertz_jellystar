@@ -1,0 +1,62 @@
+# Back LED ("lamp belt") on the Jelly Star.
+#
+# Stock drives it through Unihertz's patched framework (agui-services.jar), which we don't ship.
+# The kernel driver also exposes root-only sysfs knobs: lampbelt_leds_duty takes a 0-255
+# brightness for the single-colour LED. init can write it once it carries our own SELinux label
+# (sepolicy/private), and system apps can set persist.sys.* properties, so the JellyStarLedBelt
+# tile only has to set this property.
+
+# Before load_persist_props, so the restored value finds the node already relabelled.
+on post-fs-data
+    restorecon /sys/bus/platform/drivers/lampbelt_leds/lampbelt_leds_duty
+
+# Effect frames from the app (notification pulse, charging breath, call flash). Not persisted.
+on property:sys.jellystar.ledbelt.fx=*
+    write /sys/bus/platform/drivers/lampbelt_leds/lampbelt_leds_duty ${sys.jellystar.ledbelt.fx}
+
+on property:persist.sys.jellystar.ledbelt=*
+    write /sys/bus/platform/drivers/lampbelt_leds/lampbelt_leds_duty ${persist.sys.jellystar.ledbelt}
+
+# Front RGB LED (AW2033). The vendor lights HAL only ever lights one channel, so the app drives
+# the LED itself; apps may not write LED nodes (coredomain neverallow), so init does it. The chip
+# blinks in hardware (no CPU wakeups). Order matters: writing brightness cancels blink, and
+# channels only blink in step if led_time is rewritten after blink is enabled.
+on boot
+    write /sys/class/leds/red/trigger none
+    write /sys/class/leds/green/trigger none
+    write /sys/class/leds/blue/trigger none
+
+on property:sys.jellystar.fled.r=*
+    write /sys/class/leds/red/brightness ${sys.jellystar.fled.r}
+
+on property:sys.jellystar.fled.g=*
+    write /sys/class/leds/green/brightness ${sys.jellystar.fled.g}
+
+on property:sys.jellystar.fled.b=*
+    write /sys/class/leds/blue/brightness ${sys.jellystar.fled.b}
+
+# Value is a counter, so every request triggers. The app sets sys.jellystar.fled.time
+# ("rise hold fall off") first.
+on property:sys.jellystar.fled.blink=*
+    write /sys/class/leds/red/blink 1
+    write /sys/class/leds/green/blink 1
+    write /sys/class/leds/blue/blink 1
+    write /sys/class/leds/red/led_time ${sys.jellystar.fled.time}
+    write /sys/class/leds/green/led_time ${sys.jellystar.fled.time}
+    write /sys/class/leds/blue/led_time ${sys.jellystar.fled.time}
+
+on property:sys.jellystar.fled.solid=*
+    write /sys/class/leds/red/blink 0
+    write /sys/class/leds/green/blink 0
+    write /sys/class/leds/blue/blink 0
+    write /sys/class/leds/red/brightness ${sys.jellystar.fled.r:-0}
+    write /sys/class/leds/green/brightness ${sys.jellystar.fled.g:-0}
+    write /sys/class/leds/blue/brightness ${sys.jellystar.fled.b:-0}
+
+# Charge limit (ChargeLimit in the app): "0 1" pauses charging, "0 0" resumes. While paused the
+# phone runs from the charger and the battery is left alone.
+on property:sys.jellystar.charge.pause=1
+    write /proc/mtk_battery_cmd/current_cmd "0 1"
+
+on property:sys.jellystar.charge.pause=0
+    write /proc/mtk_battery_cmd/current_cmd "0 0"

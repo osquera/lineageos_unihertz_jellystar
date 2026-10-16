@@ -1,0 +1,28 @@
+//
+// SPDX-FileCopyrightText: 2026 The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Quick Settings tile for the back LED. Platform-signed with the system uid so it runs as
+// system_app, which may set persist.sys.* properties; init.jellystar.ledbelt.rc turns the
+// property into a driver write.
+android_app {
+    name: "JellyStarLedBelt",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    certificate: "platform",
+    platform_apis: true,
+    privileged: true,
+    system_ext_specific: true,
+    required: ["init.jellystar.ledbelt.rc"],
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
+}
+
+prebuilt_etc {
+    name: "init.jellystar.ledbelt.rc",
+    src: "init.jellystar.ledbelt.rc",
+    sub_dir: "init",
+    system_ext_specific: true,
+}

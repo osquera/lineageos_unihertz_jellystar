@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Back light</string>
+    <string name="tile_label">Back light</string>
+    <string name="off">Off</string>
+    <string name="brightness_percent"><xliff:g id="percent" example="50">%1$d</xliff:g>%%</string>
+    <string name="fx_notification">Pulse for notifications</string>
+    <string name="fx_charging">Breathe while charging</string>
+    <string name="fx_call">Flash for incoming calls</string>
+    <string name="lights_title">Lights</string>
+    <string name="lights_summary">Back light, notification and battery colours</string>
+    <string name="back_light_title">Back light</string>
+    <string name="front_light_title">Front light</string>
+    <string name="front_notifications">Notification light</string>
+    <string name="front_default_color">Default notification colour</string>
+    <string name="front_blink">Blink</string>
+    <string name="front_blink_slow">Slow</string>
+    <string name="front_blink_fast">Fast</string>
+    <string name="front_blink_steady">Steady</string>
+    <string name="front_app_colors">Notification colour per app</string>
+    <string name="front_app_colors_help">Choose the colour the front light blinks when an app sends a notification. Apps on Default use the default colour.</string>
+    <string name="front_app_default">Default</string>
+    <string name="front_battery">Battery light</string>
+    <string name="front_charging_color">Charging</string>
+    <string name="front_full_color">Charged (90%+)</string>
+    <string name="front_low_color">Low battery (blinks)</string>
+    <string name="redkey_title">Red button</string>
+    <string name="redkey_summary">Choose what the red shortcut button does</string>
+    <string name="redkey_apps">Let apps decide (e.g. Key Mapper)</string>
+    <string name="redkey_torch">Toggle flashlight</string>
+    <string name="redkey_backlight">Toggle back light</string>
+    <string name="redkey_camera">Open camera</string>
+    <string name="redkey_help">Flashlight and back light also work with the screen off.</string>
+    <string name="charge_limit_title">Charge limit</string>
+    <string name="charge_limit_summary">Stop charging at a set level to slow battery wear</string>
+    <string name="charge_limit_enable">Limit charging</string>
+    <string name="charge_limit_value">Stop charging at <xliff:g id="percent" example="80">%1$d</xliff:g>%%</string>
+    <string name="charge_limit_help">Charging resumes when the battery drops 5% below the limit. While paused, the phone runs from the charger. The status bar may still show "Charging".</string>
+</resources>

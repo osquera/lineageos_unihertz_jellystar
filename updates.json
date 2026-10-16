@@ -1,0 +1,18 @@
+[
+  {
+    "datetime": 1791800991,
+    "type": "UNOFFICIAL",
+    "version": "23.2",
+    "files": [
+      {
+        "filename": "lineage-23.2-20261012-UNOFFICIAL-jellystar-signed.zip",
+        "url": "https://github.com/osquera/lineageos_unihertz_jellystar/releases/download/20261012/lineage-23.2-20261012-UNOFFICIAL-jellystar-signed.zip",
+        "sha256": "696d56514ac0e6f110993ee92ff2651f09edd4e58a30372834987ff3838e8cad",
+        "size": 1413454359,
+        "os_patch_level": "2026-09-01",
+        "os_sdk_level": 36,
+        "ota_property_files": "payload_metadata.bin:3735:86443,payload.bin:3735:1413447458,payload_properties.txt:1413451251:155,apex_info.pb:1938:1279,care_map.pb:3264:424,metadata:69:689,metadata.pb:826:1064"
+      }
+    ]
+  }
+]

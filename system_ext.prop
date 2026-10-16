@@ -1,0 +1,7 @@
+#
+# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# 🔴 OPEN: intentionally empty. Referenced by BoardConfig.mk's TARGET_SYSTEM_EXT_PROP but no
+# system_ext-partition-specific overrides have been identified as needed yet. Revisit if a
+# real need surfaces.

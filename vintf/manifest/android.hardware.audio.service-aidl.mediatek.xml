@@ -1,0 +1,26 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/audio/common/service/service_aidl/android.hardware.audio.service-aidl.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>android.hardware.audio.core</name>
+        <version>3</version>
+        <fqname>IModule/default</fqname>
+    </hal>
+    <hal format="aidl">
+        <name>android.hardware.audio.core</name>
+        <version>3</version>
+        <fqname>IModule/r_submix</fqname>
+    </hal>
+    <hal format="aidl">
+        <name>android.hardware.audio.core</name>
+        <version>3</version>
+        <fqname>IModule/bluetooth</fqname>
+    </hal>
+    <hal format="aidl">
+        <name>android.hardware.audio.core</name>
+        <version>3</version>
+        <fqname>IConfig/default</fqname>
+    </hal>
+</manifest>

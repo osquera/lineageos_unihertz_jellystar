@@ -1,0 +1,11 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/power_applist/service/aidl/default/mtkpower_applist-mtk-default.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>vendor.mediatek.hardware.mtkpower_applist</name>
+        <version>3</version>
+        <fqname>IMtkpower_applist/default</fqname>
+    </hal>
+</manifest>

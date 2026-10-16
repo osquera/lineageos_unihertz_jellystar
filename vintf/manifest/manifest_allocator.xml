@@ -1,0 +1,11 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/gpu_mali/mali_avalon/a16w_jm/product/wsialloc/android/service/aidl/2.x/manifest_allocator.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>android.hardware.graphics.allocator</name>
+        <version>2</version>
+        <fqname>IAllocator/default</fqname>
+    </hal>
+</manifest>

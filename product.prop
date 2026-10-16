@@ -1,0 +1,8 @@
+#
+# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# 🔴 OPEN: intentionally empty. Referenced by BoardConfig.mk's TARGET_PRODUCT_PROP but no
+# product-partition-specific overrides have been identified as needed yet (unlike vendor.prop,
+# nothing here was found relevant to the NFC/BT A2DP target bugs during extraction). Revisit
+# if a real need surfaces.

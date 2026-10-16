@@ -1,0 +1,35 @@
+#
+# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Confirmed real properties from Jelly Star's own stock /vendor/build.prop (extracted from
+# the stock vendor_a.img, not guessed/copied from another device), 2026-09-29.
+#
+# persist.bluetooth.a2dp_offload.cap=sbc-aac is a significant, previously-missed lead for the
+# BT A2DP bug this port exists to fix: it's the platform's own advertised A2DP codec offload
+# capability list, and it does NOT include aptX — potentially related to (or the same root
+# cause underlying) the Frida-confirmed DeviceDescriptor=NULL failure specifically for
+# AUDIO_FORMAT_APTX. persist.bluetooth.a2dp_offload.disabled=true means offload itself is off
+# (matches the earlier-confirmed A2dpOffloadEnabled: false / software encoding path finding),
+# so this property may not be the direct gate, but it's real device data worth having in
+# place rather than leaving unset — an earlier live-device getprop check on the GSI found NO
+# such property set at all, meaning the GSI wasn't picking this up correctly; a real device
+# tree carrying it forward may itself be part of the fix, or at least stops masking behavior.
+ro.bluetooth.a2dp_offload.supported=true
+persist.bluetooth.a2dp_offload.cap=sbc-aac
+persist.bluetooth.a2dp_offload.disabled=true
+bluetooth.profile.sap.server.enabled=true
+vendor.bluetooth.ldac.abr=true
+
+aaudio.mmap_policy=2
+aaudio.mmap_exclusive_policy=2
+ro.vendor.mtk_audio_tuning_tool_ver=V1
+
+# NFC — confirmed real property; setting { set } for this exact property from vendor_init
+# was the concrete SELinux denial found during the original GSI diagnostics
+# (avc: denied { set } for property=persist.vendor.tms.nfc.log ...
+# tcontext=u:object_r:vendor_tms_nfc_prop:s0), attributed to the GSI's platform sepolicy
+# missing a device-specific TMS NFC sepolicy rule. Carrying this property forward here is
+# correct regardless; the actual fix is the sepolicy rule allowing vendor_init to set it
+# (see 🔴 TODO: confirm device-specific sepolicy for vendor_tms_nfc_prop exists in this tree).
+persist.vendor.tms.nfc.log=55

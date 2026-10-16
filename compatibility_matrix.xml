@@ -1,0 +1,34 @@
+<!--
+    SPDX-FileCopyrightText: The LineageOS Project
+    SPDX-License-Identifier: Apache-2.0
+
+    Device-specific framework compatibility matrix additions. `checkvintf --check-compat`
+    (run at build time as part of the PACKAGING stage) rejects any HAL instance present in
+    the device manifest but not declared as expected by SOME framework compatibility matrix.
+    These two are genuinely device/vendor-specific and not covered by hardware/mediatek's own
+    shared mediatek_framework_compatibility_matrix.xml:
+      - vendor.mediatek.hardware.agolddaemon.IAgoldDaemon/default@2 — from the base MTK
+        radio/daemon manifest (device/unihertz/jellystar/manifest.xml), pulled verbatim from
+        the real stock vendor partition.
+      - vendor.tms.tmsnfc_aidl.ITmsNfc/default@1 — TMS's own proprietary NFC AIDL interface
+        (genuinely vendor-custom, confirmed not present in AOSP or hardware/mediatek source
+        during the proprietary-files.txt collision cleanup earlier this project).
+-->
+<compatibility-matrix version="9.0" type="framework">
+    <hal format="aidl" optional="true">
+        <name>vendor.mediatek.hardware.agolddaemon</name>
+        <version>2</version>
+        <interface>
+            <name>IAgoldDaemon</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.tms.tmsnfc_aidl</name>
+        <version>1</version>
+        <interface>
+            <name>ITmsNfc</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+</compatibility-matrix>

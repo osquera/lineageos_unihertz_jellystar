@@ -1,0 +1,11 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/audio/common/service/service_aidl/android.hardware.audio.effect.service-aidl.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>android.hardware.audio.effect</name>
+        <version>3</version>
+        <fqname>IFactory/default</fqname>
+    </hal>
+</manifest>

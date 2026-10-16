@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!-- Values taken from the stock framework-res product overlay. -->
+<resources>
+    <!-- The headset jack reports through an ALSA input device ("mt6789-mt6366 Headset Jack"),
+         not the legacy h2w switch. -->
+    <bool name="config_useDevInputEventForAudioJack">true</bool>
+
+    <bool name="config_unplugTurnsOnScreen">true</bool>
+
+    <!-- The capacitive keys below the screen do navigation, so no on-screen navigation by default;
+         it can be switched on under Settings > System > Buttons. (Stock's MediaTek overlay sets
+         this to true.) -->
+    <bool name="config_showNavigationBar">false</bool>
+
+    <!-- No framework notification light: the vendor lights HAL can only light one colour
+         channel, so the JellyStarLedBelt app drives the front LED itself. -->
+    <bool name="config_intrusiveNotificationLed">false</bool>
+
+    <!-- Back LED app: notification access for the notification pulse. -->
+    <string name="config_defaultListenerAccessPackages" translatable="false">org.lineageos.jellystar.ledbelt</string>
+
+    <!-- IMS: the device supports VoLTE; video calling and Wi-Fi calling are off on stock. -->
+    <bool name="config_device_volte_available">true</bool>
+    <bool name="config_allow_ussd_over_ims">true</bool>
+</resources>

@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2026 The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Side keys on the MediaTek keypad. The red shortcut key sends scan code 249, which stock maps
+# to a Unihertz-only FUNC1 code; here it is a free standard key that apps like Key Mapper can
+# assign.
+
+key 114   VOLUME_DOWN
+key 115   VOLUME_UP
+key 249   PROG_RED

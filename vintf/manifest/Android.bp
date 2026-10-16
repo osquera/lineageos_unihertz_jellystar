@@ -1,0 +1,39 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+// VINTF manifest fragments pulled verbatim from the real stock vendor partition (see
+// device/unihertz/jellystar/device.mk for which HAL instances each one declares and why).
+// Modern AOSP forbids installing VINTF XML via raw PRODUCT_COPY_FILES (build/make/core/
+// Makefile.mk explicitly checks for and rejects this) — must be a `vintf_fragment` Soong
+// module instead, following the pattern used throughout hardware/mediatek's own Android.bp
+// files (e.g. hardware/mediatek/aidl/boot/Android.bp).
+//
+// Only 2 of the original 5 fragments belong here: `nfc-service-tms.xml`,
+// `android.hardware.audio.effect.service-aidl.xml`, and `bluetooth_audio.xml` were ALREADY
+// extracted as ordinary proprietary-files.txt blobs way back in this session's original
+// 123-blob extraction pass (vendor/etc/vintf/manifest/*.xml) — extract-utils auto-detects
+// XML under that path and generates its own `prebuilt_etc_xml` Soong modules for them in
+// vendor/unihertz/jellystar/Android.bp, so declaring them again here collided
+// ("found in multiple namespaces"). Removed the 3 duplicates; kept only the 2 that have no
+// proprietary-files.txt equivalent.
+//
+// The real stock filename for the audio-core fragment (android.hardware.audio.
+// service-aidl.xml) collides with hardware/interfaces/audio/aidl/default's OWN generic
+// reference-implementation fragment of the exact same name (`vintf_fragment` has no
+// filename-override property — the installed name is always the `src` basename, so a
+// same-named file always collides regardless of Soong module `name`). Renamed the physical
+// file to android.hardware.audio.service-aidl.mediatek.xml (matching the real MediaTek
+// service binary's own name) — content unchanged, VINTF doesn't care about the filename,
+// only that some file under etc/vintf/manifest/ declares the HAL instance.
+vintf_fragment {
+    name: "android.hardware.audio.service-aidl.mediatek.xml",
+    src: "android.hardware.audio.service-aidl.mediatek.xml",
+    vendor: true,
+}
+
+vintf_fragment {
+    name: "android.hardware.bluetooth-service-mediatek.xml",
+    src: "android.hardware.bluetooth-service-mediatek.xml",
+    vendor: true,
+}

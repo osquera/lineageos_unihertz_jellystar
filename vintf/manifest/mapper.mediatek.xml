@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/gpu_mali/mali_avalon/a16w_jm/product/wsialloc/android/src/stablec/mapper/mapper.mediatek.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="native">
+        <name>mapper</name>
+        <fqname>@5.0/mediatek</fqname>
+    </hal>
+</manifest>

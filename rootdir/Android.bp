@@ -1,0 +1,96 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+// etc/init.*.rc are the stock vendor's platform init files (vendor/etc/init/hw/* of Jelly
+// Star's own stock firmware dump, extracted 2026-09-29 via lpunpack+fsck.erofs from the
+// local stock super.img), shipped verbatim. etc/fstab.mt6789 was pulled directly from the
+// live device earlier this session. etc/init.recovery.mt6789.rc came from the recovery
+// ramdisk (vendor_ramdisk01 inside vendor_boot.img), not the vendor partition.
+// ro.hardware=mt6789 makes init pick init.mt6789.rc, which imports the rest.
+// Three entries iKKO's equivalent device carries (fstab.mt6789.vendor_ramdisk,
+// ueventd.mt6789.rc, init.connsys_drv.rc) were checked against all three real sources
+// (vendor partition, boot ramdisk, recovery ramdisk) and are NOT present anywhere on Jelly
+// Star's actual firmware — dropped rather than guessed/invented, see device.mk.
+
+prebuilt_etc {
+    name: "fstab.mt6789",
+    src: "etc/fstab.mt6789",
+    vendor: true,
+    vendor_ramdisk_available: true,
+}
+
+// The first_stage_ramdisk/fstab.mt6789 copy that first-stage init actually reads before
+// /vendor is mounted is installed via a plain PRODUCT_COPY_FILES rule in device.mk instead
+// of a Soong module — see the comment there for why.
+
+prebuilt_etc {
+    name: "init.aee.rc",
+    src: "etc/init.aee.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.cgroup.rc",
+    src: "etc/init.cgroup.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.connectivity.rc",
+    src: "etc/init.connectivity.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.connectivity.common.rc",
+    src: "etc/init.connectivity.common.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init_connectivity.rc",
+    src: "etc/init_connectivity.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.modem.rc",
+    src: "etc/init.modem.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mt6789.rc",
+    src: "etc/init.mt6789.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.mtkgki.rc",
+    src: "etc/init.mtkgki.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.project.rc",
+    src: "etc/init.project.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.sensor_2_0.rc",
+    src: "etc/init.sensor_2_0.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+

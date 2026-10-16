@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Red shortcut key handler, see JellyStarLedBelt's KeyHandler. -->
+    <string-array name="config_deviceKeyHandlerLibs" translatable="false">
+        <item>/system_ext/priv-app/JellyStarLedBelt/JellyStarLedBelt.apk</item>
+    </string-array>
+    <string-array name="config_deviceKeyHandlerClasses" translatable="false">
+        <item>org.lineageos.jellystar.ledbelt.KeyHandler</item>
+    </string-array>
+
+    <!-- Capacitive Back, Home and Recents below the screen, plus the volume rocker:
+         Home (1) + Back (2) + App switch (16) + Volume rocker (64). Enables Settings > System >
+         Buttons (long-press / double-tap actions, on-screen navigation toggle). -->
+    <integer name="config_deviceHardwareKeys">83</integer>
+</resources>

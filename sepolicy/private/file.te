@@ -1,0 +1,3 @@
+# Back LED driver knobs. The stock vendor policy leaves them as plain sysfs, which init may not
+# write. See ledbelt/init.jellystar.ledbelt.rc.
+type sysfs_jellystar_ledbelt, fs_type, sysfs_type;

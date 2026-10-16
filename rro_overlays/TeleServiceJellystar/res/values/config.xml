@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- MediaTek's ImsService (stock, see proprietary-files.txt). hardware/mediatek's
+         MssiTelephonyOverlay sets the same, but it is a vendor overlay and the vendor partition
+         here is the stock prebuilt. -->
+    <string name="config_ims_mmtel_package" translatable="false">com.mediatek.ims</string>
+    <string name="config_ims_rcs_package" translatable="false">com.mediatek.ims</string>
+</resources>

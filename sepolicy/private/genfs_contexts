@@ -1,0 +1,14 @@
+# Front RGB LED (AW-style chip on i2c-7 at 0x45). Stock labels these in its system_ext policy, which
+# we replace. led_time is ours: JellyStarLedBelt (via init) rewrites it to keep channels in step.
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/red/brightness u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/red/blink u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/red/trigger u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/green/brightness u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/green/blink u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/green/trigger u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/blue/brightness u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/blue/blink u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/blue/trigger u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/red/led_time u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/green/led_time u:object_r:sysfs_leds:s0
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds/blue/led_time u:object_r:sysfs_leds:s0

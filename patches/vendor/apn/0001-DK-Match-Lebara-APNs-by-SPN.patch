@@ -1,0 +1,40 @@
+From b11a68dd8862f8f904dd8c37234c9b561f0358af Mon Sep 17 00:00:00 2001
+From: osquera <github@alias.osquera.com>
+Date: Mon, 12 Oct 2026 10:52:55 +0200
+Subject: [PATCH] DK: Match Lebara APNs by SPN
+
+Lebara, BiBoB, CBB, DLG, Onfone and Tele2 share Telenor's 238 02, and
+without MVNO matching a Lebara SIM gets the first entry (BiBoB) as its
+data and initial attach APN: Telenor rejects it, so the SIM stays on 2G
+without data. Lebara SIMs report the SPN "Lebara".
+
+Change-Id: Ib30c20841216ad229032ccae567442dcb8ab9f5a
+---
+ DK.xml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/DK.xml b/DK.xml
+index f20ca66..3c2d2f3 100644
+--- a/DK.xml
++++ b/DK.xml
+@@ -305,6 +305,8 @@
+         carrier="Lebara Internet"
+         apn="internet.lebara.dk"
+         mmsc=""
++        mvno_match_data="Lebara"
++        mvno_type="spn"
+         password=""
+         port=""
+         proxy=""
+@@ -319,6 +321,8 @@
+         mmsc="http://mms.sonofon.dk"
+         mmsport="8080"
+         mmsproxy="212.88.64.8"
++        mvno_match_data="Lebara"
++        mvno_type="spn"
+         password=""
+         port=""
+         proxy=""
+-- 
+2.55.0
+

@@ -1,0 +1,11 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/em_hidl_server/aidl/em_hal_service.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>vendor.mediatek.hardware.engineermode</name>
+        <version>3</version>
+        <fqname>IEmds/default</fqname>
+    </hal>
+</manifest>

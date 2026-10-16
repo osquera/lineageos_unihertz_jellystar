@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/lbs/mtk_gnss_service/batching/mtkgnss-batching.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>vendor.mediatek.hardware.gnss.batching</name>
+        <fqname>IMtkGnssBatching/default</fqname>
+    </hal>
+</manifest>

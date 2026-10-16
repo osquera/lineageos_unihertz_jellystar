@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!--
+     The stock vendor declares android.hardware.biometrics.face and registers AOSP's placeholder
+     face HAL (face-service.default), which cannot enroll anything. Stock face unlock lives in
+     Unihertz's modified framework. Without this, Settings offers face unlock that never works.
+-->
+<permissions>
+    <unavailable-feature name="android.hardware.biometrics.face" />
+</permissions>

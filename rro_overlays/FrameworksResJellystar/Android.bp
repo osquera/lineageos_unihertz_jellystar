@@ -1,0 +1,11 @@
+//
+// SPDX-FileCopyrightText: 2026 The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// An explicit product RRO rather than DEVICE_PACKAGE_OVERLAYS: those are turned into a vendor
+// RRO, and the vendor partition on this device is the stock prebuilt, so it never ships.
+runtime_resource_overlay {
+    name: "FrameworksResJellystar",
+    product_specific: true,
+}

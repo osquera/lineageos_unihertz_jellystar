@@ -1,0 +1,14 @@
+<!--
+    Input:
+        vendor/tms_v1/vnd/opensource/halimpl/nfc/aidl/nfc-service-tms.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>android.hardware.nfc</name>
+        <fqname>INfc/default</fqname>
+    </hal>
+    <hal format="aidl">
+        <name>vendor.tms.tmsnfc_aidl</name>
+        <fqname>ITmsNfc/default</fqname>
+    </hal>
+</manifest>

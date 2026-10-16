@@ -1,0 +1,11 @@
+# Only reaches the recovery ramdisk: Android itself runs the stock vendor policy (prebuilt vendor
+# image), but recovery is built with this tree's vendor policy. Without these labels misc is a
+# plain block_device there, the boot control HAL can't open it and crash-loops, and
+# update_engine_sideload hangs mid-install waiting for IBootControl. Same paths and AOSP types as
+# the stock vendor_file_contexts.
+/dev/block/by-name/misc                 u:object_r:misc_block_device:s0
+/dev/block/by-name/super                u:object_r:super_block_device:s0
+/dev/block/by-name/metadata             u:object_r:metadata_block_device:s0
+/dev/block/by-name/userdata             u:object_r:userdata_block_device:s0
+/dev/block/by-name/boot(_[ab])?         u:object_r:boot_block_device:s0
+/dev/block/by-name/vendor_boot(_[ab])?  u:object_r:boot_block_device:s0

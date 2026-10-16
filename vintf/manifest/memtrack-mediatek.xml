@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/mediatek/proprietary/hardware/memtrack/aidl/default/memtrack-mediatek.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>android.hardware.memtrack</name>
+        <fqname>IMemtrack/default</fqname>
+    </hal>
+</manifest>

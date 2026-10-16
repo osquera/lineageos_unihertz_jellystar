@@ -1,0 +1,5 @@
+# Loaded by name into system_server (config_deviceKeyHandlerClasses), so R8 can't see it's used.
+-keep class org.lineageos.jellystar.ledbelt.KeyHandler {
+    public <init>(android.content.Context);
+    public android.view.KeyEvent handleKeyEvent(android.view.KeyEvent);
+}

@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Capacitive navigation keys below the screen. VIRTUAL makes the framework treat them as
+# virtual keys, which gives them haptic feedback like on-screen navigation buttons.
+
+key 158   BACK          VIRTUAL
+key 172   HOME          VIRTUAL
+key 580   APP_SWITCH    VIRTUAL

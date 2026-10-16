@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/agold/apps/AguiLedBelt/service/vendor.mediatek.hardware.aguiledbelt-service.xml
+-->
+<manifest version="9.0" type="device">
+    <hal format="aidl">
+        <name>vendor.mediatek.hardware.aguiledbelt</name>
+        <fqname>IAguiLedBeltLight/default</fqname>
+    </hal>
+</manifest>
