@@ -8,8 +8,8 @@ A daily-driver phone without Google's or Unihertz's preinstalled apps.
 [![Latest release](https://img.shields.io/github/v/release/osquera/lineageos_unihertz_jellystar?label=release&color=167c80)](https://github.com/osquera/lineageos_unihertz_jellystar/releases/latest)
 ![LineageOS 23.2](https://img.shields.io/badge/LineageOS-23.2-167c80)
 ![Android 16](https://img.shields.io/badge/Android-16-3ddc84)
-[![License](https://img.shields.io/github/license/osquera/lineageos_unihertz_jellystar?color=blue)](LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/osquera/lineageos_unihertz_jellystar/total?color=orange)](https://github.com/osquera/lineageos_unihertz_jellystar/releases)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/osquera/lineageos_unihertz_jellystar/total?color=orange&cacheSeconds=21600)](https://github.com/osquera/lineageos_unihertz_jellystar/releases)
 
 **[⬇ Download](https://github.com/osquera/lineageos_unihertz_jellystar/releases/latest)** ·
 [Install guide](#installing) ·
@@ -33,7 +33,6 @@ A daily-driver phone without Google's or Unihertz's preinstalled apps.
 | Fingerprint, both cameras, IR blaster, all sensors | Face unlock |
 | Front RGB LED and back LED effects, red button actions, charge limit | |
 | Encryption, SELinux enforcing, OTA updates via the Updater app | |
-| | |
 
 The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 
