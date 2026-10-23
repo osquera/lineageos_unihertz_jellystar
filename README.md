@@ -40,6 +40,9 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 
 > [!WARNING]
 > - **Installing wipes the phone.** Back up everything first.
+> - **Your phone must be running stock Android 16 firmware first** (see *What you need*). The
+>   install does not update the phone's first boot stage (the preloader), so installing on top
+>   of Android 13 firmware, or a GSI running on it, can leave the phone unable to boot.
 > - **The bootloader must stay unlocked**, so Play Integrity fails (not even Basic): apps
 >   that require it, like some banking and payment apps and Google Wallet tap-to-pay, will not
 >   work. This build does not spoof attestation.
@@ -51,8 +54,12 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 
 ### What you need
 
-- A Unihertz Jelly Star on stock firmware **V01.00.04** (Android 16). Update through the stock
-  system updater first if you're on an older version.
+- A Unihertz Jelly Star on **stock Android 16 firmware, V01.00.04 or later**. EEA and non-EEA
+  phones both work: the firmware is the same software for both regions (the build was tested on
+  an EEA phone). Check *Settings > About phone > Build number*, which should read like
+  `Jelly Star_EEA_V01.00.04`. If you're on an older stock version, update with the stock system
+  updater. If you're on a GSI, Android 13, or aren't sure, flash stock Android 16 with SP Flash
+  Tool first ([see below](#going-back-to-stock--unbricking)), boot it once, then start here.
 - A computer with [Android platform-tools](https://developer.android.com/tools/releases/platform-tools)
   (`adb` and `fastboot`) and a USB-C data cable.
 - From the [latest release](https://github.com/osquera/lineageos_unihertz_jellystar/releases/latest):
@@ -61,8 +68,8 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
   ```sh
   sha256sum -c SHA256SUMS
   ```
-- Optional but recommended: the stock firmware for your variant, for going back
-  ([see below](#going-back-to-stock--unbricking)).
+- Recommended: Unihertz's stock Android 16 firmware for your region, for going back
+  ([EEA](https://drive.google.com/drive/folders/1Tqz0NYr2a9XLjOBRl-tcZYJKMoDMSjuE) or [non-EEA](https://drive.google.com/drive/folders/1lbFlSkkFQlNyOaGL8HdICZ0pH1tgte79)).
 
 ### Steps
 
@@ -175,8 +182,9 @@ longer boots (tested 2026-10-16). If it fails with a USB timeout while writing, 
 reconnect in download mode and run it again; it can take a few attempts. Use **Download Only**, never *Format All + Download*. Power the phone off, hold
 Volume Up + Volume Down and plug in USB.
 
-- **Back to stock:** the stock firmware with blank `misc` and `metadata` images (otherwise
-  the phone may keep booting into recovery).
+- **Back to stock:** Unihertz's stock Android 16 firmware for your region
+  ([EEA](https://drive.google.com/drive/folders/1Tqz0NYr2a9XLjOBRl-tcZYJKMoDMSjuE) or [non-EEA](https://drive.google.com/drive/folders/1lbFlSkkFQlNyOaGL8HdICZ0pH1tgte79)), with blank `misc` and `metadata` images (otherwise the
+  phone may keep booting into recovery). Use the **Android 16** firmware, never Android 13.
 - **Back to LineageOS without Android booting:** a `super` image made with `lpmake` from the
   signed target files, plus `boot`, `vendor_boot`, `dtbo`, `vbmeta` and blank `misc`,
   `metadata` and `userdata`.
