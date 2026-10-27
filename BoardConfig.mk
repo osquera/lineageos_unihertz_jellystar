@@ -158,6 +158,12 @@ BOARD_MEDIATEK_DYNAMIC_PARTITIONS_PARTITION_LIST := odm_dlkm product system syst
 BOARD_MEDIATEK_DYNAMIC_PARTITIONS_SIZE := 9661579264
 
 BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
+# Room for GApps (MindTheGapps) sideloaded after installing: product is otherwise built to fit
+# its contents. Every update writes product with the same headroom, and MindTheGapps' addon.d
+# script restores it. Inode count -1 keeps mke2fs' default inode density instead of shrinking it
+# to the files present, which would leave no inodes for the added files. super has room to spare.
+BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE := 1073741824
+BOARD_PRODUCTIMAGE_EXTFS_INODE_COUNT := -1
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 
