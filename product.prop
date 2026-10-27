@@ -2,7 +2,23 @@
 # SPDX-FileCopyrightText: The LineageOS Project
 # SPDX-License-Identifier: Apache-2.0
 #
-# 🔴 OPEN: intentionally empty. Referenced by BoardConfig.mk's TARGET_PRODUCT_PROP but no
-# product-partition-specific overrides have been identified as needed yet (unlike vendor.prop,
-# nothing here was found relevant to the NFC/BT A2DP target bugs during extraction). Revisit
-# if a real need surfaces.
+
+# FM radio (MT6631). LineageOS's FMRadio reads its tuning from ro.fm.* and rejects every
+# frequency without them. Values from Unihertz's 0x6631 config in stock libaguifmjni
+# (CUST_update_cfg), converted from 10 kHz to the app's 100 kHz units; the lower band edge is
+# the app's own 87.5 MHz (stock allows 76.0).
+ro.fm.chip=0x6631
+ro.fm.band=1
+ro.fm.low_band=875
+ro.fm.high_band=1080
+ro.fm.seek_space=1
+ro.fm.max_scan_num=40
+ro.fm.seek_lev=4
+ro.fm.scan_sort=0
+ro.fm.short_ana_sup=1
+ro.fm.rssi_th_l2=-102
+ro.fm.fake_chans=4
+ro.fm.fake_chan_0=921 -205
+ro.fm.fake_chan_1=960 -152
+ro.fm.fake_chan_2=1040 -152
+ro.fm.fake_chan_3=1075 -205

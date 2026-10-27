@@ -14,6 +14,8 @@ something is tested or fixed.
 | Buttons | Capacitive back / home / recents | Haptic feedback via `cap_touch.kl`; declared as hardware keys, so no on-screen navigation by default and LineageOS's Settings > System > Buttons (long-press/double-tap actions, navbar toggle) is available |
 | Buttons | Red shortcut key | Settings > System > Red button: flashlight, back light, camera, or pass to apps (e.g. Key Mapper). Flashlight and back light also work with the screen off |
 | Audio | Speaker, microphone | |
+| Audio | Headphone jack (wired headset) | Detected and used for audio. On the test unit it was not detected for a while (on stock too), later it worked with an AUX headset: most likely the plug or headset |
+| Audio | FM radio | Tuning works with a wired headset as antenna (tested 2026-10-27). |
 | Audio | Bluetooth media audio (A2DP), aptX | Tested with EPOS ADAPT 660 |
 | Audio | Bluetooth headset microphone (HFP) | Works in calls/VoIP; voice recorder apps use the phone mic (normal Android behaviour) |
 | Connectivity | Wi-Fi 2.4 and 5 GHz | 802.11ac |
@@ -47,13 +49,6 @@ something is tested or fixed.
 | Apps | microG | LineageOS's built-in signature spoofing for the official microG apps: install microG Services and Companion as normal apps, Self-Check passes. No special build needed |
 | Apps | Public transport and gym check-in | Rejsekort's Rejsebillet app (Danish public transport) and an NFC gym check-in app work. Tested with microG installed and Magisk's DenyList hiding root from them |
 | Apps | Root (Magisk) | Patch this build's `boot.img` in the Magisk app and flash it to the active slot (`fastboot flash boot`); after each update use "Install to inactive slot" before rebooting |
-
-## Works with caveats
-
-| Feature | Caveat |
-|---|---|
-| Headphone jack | Not detected on this test unit, and stock V01.00.04 behaves identically (plug-detect interrupt fires, the accdet measurement never completes). Hardware or plug issue, not the ROM; the Android side (input-event jack detection, MediaTek's `sysfs_headset` label) is in place. |
-| FM radio | LineageOS's FMRadio opens the FM chip (runs as `platform_app`), but needs a detected wired headset as antenna, so it can't be tested on this unit (see headphone jack). |
 
 ## Not working / not supported
 
