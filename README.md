@@ -103,8 +103,9 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
    The progress on the computer stops at about 47% and then prints `Total xfer: 1.00x`;
    that means it's done.
 6. Recovery then asks **"To install additional packages, you need to reboot recovery first.
-   Do you want to reboot to recovery now?"** Choose **No** (it's only for add-ons), then
-   **Reboot system now**. The first boot takes a few minutes and ends on the setup screen.
+   Do you want to reboot to recovery now?"** Choose **No** (it's only for add-ons such as
+   [Google apps](#google-apps-optional)), then **Reboot system now**. The first boot takes a
+   few minutes and ends on the setup screen.
 
 > [!NOTE]
 > Tested from stock V01.00.04 to the setup screen on 2026-10-16, on a phone whose bootloader
@@ -116,7 +117,8 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 - **Mobile data on some prepaid SIMs** (e.g. Lycamobile) needs *Roaming* turned on for the
   SIM, because the network reports them as roaming.
 - **microG** (optional): LineageOS allows the official microG apps to spoof Google's
-  signature, so no special build is needed. Install *microG Services* and *microG Companion*
+  signature, so no special build is needed. Use microG *or* [Google apps](#google-apps-optional),
+  not both. Install *microG Services* and *microG Companion*
   from [microG's releases](https://github.com/microg/GmsCore/releases), open microG Settings
   and run the Self-Check.
 - **Apps known to work** (with microG): Rejsekort's Rejsebillet app (Danish public transport)
@@ -124,6 +126,41 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 - **Root** (optional): patch this release's `boot.img` in the Magisk app, then flash the
   patched image with `fastboot flash boot magisk_patched-*.img`. Updates replace `boot`, so
   after each update use Magisk's *Install to inactive slot* before rebooting.
+
+### Google apps (optional)
+
+LineageOS comes without Google's apps. If you need the Play Store (paid apps, apps Aurora
+Store can't download, Google backup), you can add **MindTheGapps** during the install.
+
+> [!IMPORTANT]
+> - Only works on releases **after 20261012**. On 20261012 the `product` partition has no free
+>   space and MindTheGapps aborts with *"Install completed with status 1"*.
+> - Install it **right after LineageOS, before the first boot**. Adding Google apps to a phone
+>   that has already been set up usually causes crashes.
+> - Use Google apps **or** microG, not both. Switching between them needs a clean install
+>   (*Format data*), because both use the package name `com.google.android.gms`.
+> - Play Integrity still fails, so apps that require it won't work with Google apps either.
+
+1. Download the latest **MindTheGapps 16.0.0 arm64** zip from
+   [MindTheGapps' releases](https://github.com/MindTheGapps/16.0.0-arm64/releases/latest).
+2. Follow the install steps above up to step 5 (sideloading LineageOS).
+3. At step 6, when recovery asks *"To install additional packages, you need to reboot recovery
+   first"*, choose **Yes**. Recovery restarts.
+4. *Apply update > Apply from ADB*, then on the computer:
+   ```sh
+   adb sideload MindTheGapps-16.0.0-arm64-*.zip
+   ```
+   If recovery warns that the package's signature can't be verified, choose **Yes** to
+   continue (MindTheGapps isn't signed with this build's keys).
+5. Choose **No** when asked about more packages, then **Reboot system now**.
+
+Updates through the Updater app keep Google apps: MindTheGapps installs an `addon.d` script
+that LineageOS runs after each update.
+
+The Play Store may refuse to sign in on an uncertified device. If so, register the phone at
+[google.com/android/uncertified](https://www.google.com/android/uncertified) with its Google
+Services Framework ID (shown by apps such as *Device ID*), wait a few minutes, then clear the
+Play Store's data and try again.
 
 ## Jelly Star settings
 
