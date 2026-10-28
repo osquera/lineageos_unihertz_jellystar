@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: osquera <github@alias.osquera.com>
+Date: Wed, 28 Oct 2026 21:30:00 +0100
+Subject: [PATCH] ARA: Stop reading access rules when GET DATA (next) is empty
+
+Some SIMs (seen with a 9eSIM card) answer GET DATA (next) with 9000 and
+no data. The loop then never reaches the announced length and sends the
+command forever, so every caller of the service waits forever. NFC asks
+isNfcEventAllowed() while holding its service lock, so NFC, Settings'
+connected devices page and the Quick Settings tiles hang with it.
+
+Treat an empty answer as an error, like any other failed read: the ARA
+is then unusable on that SIM and calls fail fast instead of hanging.
+
+---
+  src/com/android/se/security/ara/AccessRuleApplet.java | 5 +++++
+  1 file changed, 5 insertions(+)
+
+diff --git a/src/com/android/se/security/ara/AccessRuleApplet.java b/src/com/android/se/security/ara/AccessRuleApplet.java
+index d23c68d..d13d911 100644
+--- a/src/com/android/se/security/ara/AccessRuleApplet.java
++++ b/src/com/android/se/security/ara/AccessRuleApplet.java
+@@ -108,6 +108,11 @@ public class AccessRuleApplet {
+                 response = send(apdu);
+                 // OK
+                 if (response.isStatus(0x9000)) {
++                    // Some SIMs answer GET DATA (next) with 9000 but no data; without this check
++                    // the loop never ends and every caller, NFC included, waits forever.
++                    if (response.getData().length == 0) {
++                        throw new AccessControlException("GET DATA (next) returned no data.");
++                    }
+                     try {
+                         stream.write(response.getData());
+                     } catch (IOException e) {
+-- 
+2.51.0
+
