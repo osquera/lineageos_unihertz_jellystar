@@ -77,15 +77,55 @@ done
 PREBUILT_PARTITIONS="vendor vendor_dlkm odm_dlkm system_dlkm"
 unsigned=$(ls "$OUT"/obj/PACKAGING/target_files_intermediates/*-target_files*.zip)
 
+#
+# The same pass also puts the generic ramdisk (/init, first stage) into vendor_boot. Unihertz's
+# bootloader builds the kernel's ramdisk from vendor_boot's first platform fragment, then its
+# recovery fragment, then the generic ramdisk of init_boot when that partition holds an image, else
+# of boot. Phones updated from Android 13 by Unihertz's OTA keep an init_boot whose ramdisk is
+# empty, so without this our /init never reaches the kernel and the phone bootloops (stock carries
+# everything in its first fragment). So BOOT/RAMDISK is copied into VENDOR_BOOT/RAMDISK with its
+# fs_config lines, and the recovery fragment loses the paths it would overwrite them with (its /init
+# symlink and toolbox links). Where boot's ramdisk is used, it is still loaded last, as before.
 python3 - "$unsigned" unsigned-target_files.zip $PREBUILT_PARTITIONS vbmeta_vendor <<'EOF'
-import shutil, sys, tempfile, zipfile
+import copy, shutil, sys, zipfile
 src, dst, parts = sys.argv[1], sys.argv[2], sys.argv[3:]
-shutil.copyfile(src, dst)
-with tempfile.TemporaryDirectory() as tmp, zipfile.ZipFile(src) as zin, \
-        zipfile.ZipFile(dst, "a", allowZip64=True) as zout:
+generic, vendor = "BOOT/RAMDISK/", "VENDOR_BOOT/RAMDISK/"
+recovery = "VENDOR_BOOT/RAMDISK_FRAGMENTS/recovery/RAMDISK/"
+fs_config = "META/vendor_boot_filesystem_config.txt"
+
+def copy_entry(zin, zout, info, name, data=None):
+    # Keep each entry's metadata: permissions and directory entries live in external_attr.
+    out = copy.copy(info)
+    out.filename = name
+    if info.is_dir():
+        zout.writestr(out, b"")
+    elif data is not None:
+        zout.writestr(out, data)
+    else:
+        with zin.open(info) as f, zout.open(out, "w", force_zip64=True) as o:
+            shutil.copyfileobj(f, o)
+
+with zipfile.ZipFile(src) as zin, zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zout:
+    names = set(zin.namelist())
+    generic_entries = [i for i in zin.infolist() if i.filename.startswith(generic)]
+    shadowed = {recovery + i.filename[len(generic):] for i in generic_entries if not i.is_dir()}
+    for info in zin.infolist():
+        if info.filename in shadowed:
+            continue
+        data = None
+        if info.filename == fs_config:
+            lines = zin.read(fs_config).decode().splitlines()
+            have = {l.split(" ")[0] for l in lines}
+            lines += [l for l in zin.read("META/boot_filesystem_config.txt").decode().splitlines()
+                      if l.split(" ")[0] not in have]
+            data = "\n".join(lines) + "\n"
+        copy_entry(zin, zout, info, info.filename, data)
+    for info in generic_entries:
+        name = vendor + info.filename[len(generic):]
+        if name not in names:
+            copy_entry(zin, zout, info, name)
     for p in parts:
-        img = zin.extract(f"IMAGES/{p}.img", tmp)
-        zout.write(img, f"RADIO/{p}.img")
+        copy_entry(zin, zout, zin.getinfo(f"IMAGES/{p}.img"), f"RADIO/{p}.img")
 EOF
 
 sign_target_files_apks "${args[@]}" unsigned-target_files.zip signed-target_files.zip
