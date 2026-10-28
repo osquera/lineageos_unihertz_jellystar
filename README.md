@@ -40,9 +40,10 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 
 > [!WARNING]
 > - **Installing wipes the phone.** Back up everything first.
-> - **Your phone must be running stock Android 16 firmware first** (see *What you need*). The
->   install does not update the phone's first boot stage (the preloader), so installing on top
->   of Android 13 firmware, or a GSI running on it, can leave the phone unable to boot.
+> - **Your phone must be running stock Android 16 firmware, flashed with SP Flash Tool's
+>   *Firmware Upgrade*** (see *What you need*). A phone updated from Android 13 with Unihertz's
+>   own updater keeps the Android 13 partition layout, and LineageOS bootloops on it. Installing
+>   on top of Android 13 firmware, or a GSI running on it, can also leave the phone unable to boot.
 > - **The bootloader must stay unlocked**, so Play Integrity fails (not even Basic): apps
 >   that require it, like some banking and payment apps and Google Wallet tap-to-pay, will not
 >   work. This build does not spoof attestation.
@@ -57,9 +58,14 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 - A Unihertz Jelly Star on **stock Android 16 firmware, V01.00.04 or later**. EEA and non-EEA
   phones both work: the firmware is the same software for both regions (the build was tested on
   an EEA phone). Check *Settings > About phone > Build number*, which should read like
-  `Jelly Star_EEA_V01.00.04`. If you're on an older stock version, update with the stock system
-  updater. If you're on a GSI, Android 13, or aren't sure, flash stock Android 16 with SP Flash
-  Tool first ([see below](#going-back-to-stock--unbricking)), boot it once, then start here.
+  `Jelly Star_EEA_V01.00.04`.
+- **Every Jelly Star shipped with Android 13**, so unless you already did it, flash stock
+  Android 16 with SP Flash Tool's **Firmware Upgrade** first
+  ([see below](#going-back-to-stock--unbricking)), boot it once, then start here. This also
+  applies if the phone already shows Android 16 because Unihertz's updater installed it: that
+  update keeps the Android 13 partition layout (with extra `init_boot` partitions), and
+  LineageOS bootloops on it. Firmware Upgrade writes the Android 16 layout and keeps the
+  phone's IMEI and calibration data.
 - A computer with [Android platform-tools](https://developer.android.com/tools/releases/platform-tools)
   (`adb` and `fastboot`) and a USB-C data cable.
 - From the [latest release](https://github.com/osquera/lineageos_unihertz_jellystar/releases/latest):
@@ -216,8 +222,10 @@ wear. Charging resumes 5 % below the limit.
 
 MediaTek's **SP Flash Tool v6** with Unihertz's stock firmware works even when the phone no
 longer boots (tested 2026-10-16). If it fails with a USB timeout while writing, unplug,
-reconnect in download mode and run it again; it can take a few attempts. Use **Download Only**, never *Format All + Download*. Power the phone off, hold
-Volume Up + Volume Down and plug in USB.
+reconnect in download mode and run it again; it can take a few attempts. Use **Firmware
+Upgrade** (needed to switch from the Android 13 partition layout) or **Download Only**, never
+*Format All + Download*: it erases the IMEI and calibration data, which the phone cannot work
+without. Power the phone off, hold Volume Up + Volume Down and plug in USB.
 
 - **Back to stock:** Unihertz's stock Android 16 firmware for your region
   ([EEA](https://drive.google.com/drive/folders/1Tqz0NYr2a9XLjOBRl-tcZYJKMoDMSjuE) or [non-EEA](https://drive.google.com/drive/folders/1lbFlSkkFQlNyOaGL8HdICZ0pH1tgte79)), with blank `misc` and `metadata` images (otherwise the
