@@ -24,6 +24,7 @@ something is tested or fixed.
 | Connectivity | NFC | Reads bank cards (Metrodroid) and works as a card (an NFC gym check-in app); TMS chip, AOSP NFC stack |
 | Connectivity | USB file transfer (MTP) | |
 | Connectivity | GPS | |
+| Storage | microSD card | Tested by a user with a 1 TB card in the SIM tray |
 | Camera | Rear (12 MP) and front (8 MP) photo | |
 | Camera | 1080p video recording | Hardware H.264 encoder, audio recorded |
 | Media | 1080p video playback | Hardware decoder (`c2.mtk.avc.decoder`), smooth; HEVC and VP9 hardware decoders also present |
@@ -42,6 +43,7 @@ something is tested or fixed.
 | Telephony | Calls, SMS, 4G mobile data | Tested with Lycamobile on Telia's network (238-20). This network does not allow VoLTE for the SIM (it reports no IMS voice support), so calls use 2G. The modem reports this MVNO as roaming, so data needs "Roaming" enabled for the SIM |
 | Telephony | VoLTE (HD voice over 4G) | Tested with 3 Denmark (238-06): IMS registers over LTE and calls stay on 4G with HD audio. Uses MediaTek's stock `ImsService`. Offered for every SIM (CarrierConfig overlay); it registers wherever the network allows VoLTE for the SIM (not Lycamobile on Telia). Some carriers only allow VoLTE on phones they have approved |
 | Telephony | Speakerphone | |
+| Telephony | MMS | Reported working by a user with RedPocket (AT&T network, USA) on a removable eSIM card.|
 | Telephony | Foreign SIMs | Tested with a Faroese Telecom SIM (288-01) roaming on TDC: calls and SMS work. VoLTE does not register while roaming (TDC reports VoLTE support, the modem does not attempt IMS), most likely no VoLTE roaming between the two carriers. Data uses LineageOS's worldwide APN list |
 | Install | First install from stock, following the README | Tested 2026-10-16 with the public release files: stock V01.00.04 → flash `boot`, `vendor_boot`, `dtbo`, `vbmeta` with fastboot → Lineage Recovery → format data → `adb sideload` → setup screen. The phone's bootloader was already unlocked, so the unlock confirmation itself was not re-tested |
 | Install | A/B OTA updates, `adb sideload` updates | Release-key signed builds via `sign-build.sh` |
@@ -65,10 +67,8 @@ something is tested or fixed.
 
 | Feature | Needs |
 |---|---|
-| MMS | Lycamobile DK has no MMS settings in LineageOS's or stock's APN list, and Lyca's generic MMS settings entered by hand did not work either; to be tested with 3 Denmark, whose MMS settings are included. Carriers limit MMS size (300 KB by default), so larger videos are refused |
 | Wi-Fi calling | In progress. MediaTek's Wi-Fi offload service (inside `ImsService`) runs and reports Wi-Fi to the vendor ePDG daemon (`epdg_wod`); stock disables Wi-Fi calling at device level (`config_device_wfc_ims_available`). Being tested with that enabled on 3 Denmark |
 | Video calling (ViLTE) | Libraries are shipped; on 3 Denmark no video button appears, most likely because 3 does not offer it. Needs a carrier with ViLTE |
 | Emergency calls | Not to be tested by calling; number list verified |
-| microSD card | A card in the SIM tray |
 | USB OTG (host mode) | USB-C adapter with a stick or keyboard |
 
