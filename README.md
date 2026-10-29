@@ -127,9 +127,14 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
   and run the Self-Check.
 - **Apps known to work** (with microG): Rejsekort's Rejsebillet app (Danish public transport)
   and an NFC gym check-in app. Phone-as-a-card NFC works.
-- **Root** (optional): patch this release's `boot.img` in the Magisk app, then flash the
-  patched image with `fastboot flash boot magisk_patched-*.img`. Updates replace `boot`, so
-  after each update use Magisk's *Install to inactive slot* before rebooting.
+- **Root** (optional): releases include `boot-magisk-v*.img`, this release's `boot.img`
+  already patched with [Magisk](https://github.com/topjohnwu/Magisk) (the version is in the
+  file name). After installing, flash it with `adb reboot bootloader`, then
+  `fastboot flash boot boot-magisk-v*.img` and `fastboot reboot`. Install the Magisk app of the
+  same version from Magisk's releases, open it and accept *Requires Additional Setup*; the phone
+  reboots once, then root works. You can also patch `boot.img` in the Magisk app yourself and
+  flash `magisk_patched-*.img` the same way. Updates replace `boot`, so after each update use
+  Magisk's *Install to inactive slot* before rebooting.
 
 ### Google apps (optional)
 
@@ -228,6 +233,9 @@ cannot work without. Power the phone off, hold Volume Up + Volume Down and plug 
 - **Back to stock:** Unihertz's stock Android 16 firmware for your region
   ([EEA](https://drive.google.com/drive/folders/1Tqz0NYr2a9XLjOBRl-tcZYJKMoDMSjuE) or [non-EEA](https://drive.google.com/drive/folders/1lbFlSkkFQlNyOaGL8HdICZ0pH1tgte79)), with blank `misc` and `metadata` images (otherwise the
   phone may keep booting into recovery). Use the **Android 16** firmware, never Android 13.
+  Firmware Upgrade can **relock the bootloader** (tested 2026-10-29): to install LineageOS
+  again, boot stock, turn on *OEM unlocking* and unlock as in step 2. If `fastboot flashing
+  unlock` returns without asking on the phone, run it again.
 - **Back to LineageOS without Android booting:** a `super` image made with `lpmake` from the
   signed target files, plus `boot`, `vendor_boot`, `dtbo`, `vbmeta` and blank `misc`,
   `metadata` and `userdata`.
@@ -336,3 +344,6 @@ or update_engine refuses with `kOverlayfsenabledError`.
 Build with `sign-build.sh`, run `make-updater-json.sh <zip> <tag>` to write `updates.json`,
 attach the zip, the four boot images and `SHA256SUMS` to a GitHub release with that tag, then
 push `updates.json`: the Updater app reads it from this repository's default branch.
+`make-magisk-boot.sh` makes the rooted `boot-magisk-v*.img` from the same signed target files
+(Magisk version pinned in the script); attach it too, include it in `SHA256SUMS`, and name the
+Magisk version with a link to its source in the release notes, as Magisk is GPLv3.
