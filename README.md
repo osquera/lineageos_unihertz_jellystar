@@ -134,7 +134,9 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
   same version from Magisk's releases, open it and accept *Requires Additional Setup*; the phone
   reboots once, then root works. You can also patch `boot.img` in the Magisk app yourself and
   flash `magisk_patched-*.img` the same way. Updates replace `boot`, so after each update use
-  Magisk's *Install to inactive slot* before rebooting.
+  Magisk's *Install to inactive slot* before rebooting, but only once the Updater has finished
+  *installing* and offers to reboot: Magisk also switches to the other slot, and if the update
+  isn't installed there yet, the phone bootloops.
 
 ### Google apps (optional)
 
