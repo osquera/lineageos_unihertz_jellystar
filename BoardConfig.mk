@@ -89,6 +89,11 @@ BOARD_MKBOOTIMG_ARGS += --board ""
 # 🔴 OPEN: no display spec confirmed yet (need TARGET_SCREEN_DENSITY from the actual panel).
 TARGET_SCREEN_DENSITY := 380
 
+# Recovery: the panel is 480x854 at ~220 dpi. TARGET_SCREEN_DENSITY would make recovery use the
+# xhdpi set (18x32 font, 512 px logo), which overflows this screen: the title runs into the
+# battery text, only one menu button fits, long items run off the edge. hdpi uses a 12x22 font.
+TARGET_RECOVERY_DENSITY := hdpi
+
 # DTBO
 BOARD_KERNEL_SEPARATED_DTBO := true
 
