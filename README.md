@@ -120,23 +120,46 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
 
 - **Mobile data on some prepaid SIMs** (e.g. Lycamobile) needs *Roaming* turned on for the
   SIM, because the network reports them as roaming.
-- **microG** (optional): LineageOS allows the official microG apps to spoof Google's
-  signature, so no special build is needed. Use microG *or* [Google apps](#google-apps-optional),
-  not both. Install *microG Services* and *microG Companion*
-  from [microG's releases](https://github.com/microg/GmsCore/releases), open microG Settings
-  and run the Self-Check.
 - **Apps known to work** (with microG): Rejsekort's Rejsebillet app (Danish public transport)
   and an NFC gym check-in app. Phone-as-a-card NFC works.
-- **Root** (optional): releases include `boot-magisk-v*.img`, this release's `boot.img`
-  already patched with [Magisk](https://github.com/topjohnwu/Magisk) (the version is in the
-  file name). After installing, flash it with `adb reboot bootloader`, then
-  `fastboot flash boot boot-magisk-v*.img` and `fastboot reboot`. Install the Magisk app of the
-  same version from Magisk's releases, open it and accept *Requires Additional Setup*; the phone
-  reboots once, then root works. You can also patch `boot.img` in the Magisk app yourself and
-  flash `magisk_patched-*.img` the same way. Updates replace `boot`, so after each update use
-  Magisk's *Install to inactive slot* before rebooting, but only once the Updater has finished
-  *installing* and offers to reboot: Magisk also switches to the other slot, and if the update
-  isn't installed there yet, the phone bootloops.
+
+### Apps without Google: F-Droid, microG and root (optional)
+
+LineageOS comes without an app store. A common setup without Google's apps:
+
+1. **F-Droid** (app store for open-source apps): download the APK from
+   [f-droid.org](https://f-droid.org) on the phone and open it; allow the browser to install
+   apps when asked.
+2. **microG** (lets apps that need Google services work: push notifications, Google sign-in,
+   maps): LineageOS allows the official microG apps to spoof Google's signature, so no
+   special build is needed. Use microG *or* [Google apps](#google-apps-optional), not both.
+   - In F-Droid: *Settings > Repositories > +*, add `https://microg.org/fdroid/repo`, then
+     install **microG Services** and **microG Companion**. (Or download both from
+     [microG's releases](https://github.com/microg/GmsCore/releases); not the `-hw` files,
+     which are for Huawei phones.)
+   - Open **microG Settings > Self-Check** and tap every unticked item to grant what it asks
+     for. Turn on *Cloud Messaging* for push notifications, and add a Google account under
+     *Accounts* if you need one. Reboot once.
+3. **Apps from Google Play**: install **Aurora Store** from F-Droid. It downloads apps from
+   Google Play, anonymously or with your account.
+4. **Root** (Magisk): releases include `boot-magisk-v*.img`, this release's `boot.img`
+   already patched with [Magisk](https://github.com/topjohnwu/Magisk) (the version is in the
+   file name).
+   - Flash it: `adb reboot bootloader`, `fastboot flash boot boot-magisk-v*.img`,
+     `fastboot reboot`.
+   - Install the Magisk app of the **same version** from
+     [Magisk's releases](https://github.com/topjohnwu/Magisk/releases), open it and accept
+     *Requires Additional Setup*; the phone reboots once, then root works. Grant root to apps
+     in Magisk's *Superuser* tab.
+   - You can also patch `boot.img` in the Magisk app yourself and flash `magisk_patched-*.img`
+     the same way.
+   - **After each update:** updates replace `boot`, so use Magisk's *Install to inactive slot*
+     before rebooting, but only once the Updater has finished *installing* and offers to
+     reboot. Magisk also switches to the other slot, and if the update isn't installed there
+     yet, the phone bootloops.
+   - Apps that refuse to run on rooted phones: enable *Zygisk* and the *DenyList* in Magisk's
+     settings and add those apps to it. Apps that require Play Integrity still won't work
+     (see [STATUS.md](STATUS.md)).
 
 ### Google apps (optional)
 
@@ -340,12 +363,3 @@ From Android with root adb: push `payload.bin` and `payload_properties.txt` from
 `update_engine_client --payload=file:///data/ota_package/payload.bin --headers="$(cat /data/ota_package/payload_properties.txt)" --update`.
 Remove an `adb remount` overlay first (`/data/gsi/remount`, `/metadata/gsi/remount`, reboot),
 or update_engine refuses with `kOverlayfsenabledError`.
-
-### Publishing a release
-
-Build with `sign-build.sh`, run `make-updater-json.sh <zip> <tag>` to write `updates.json`,
-attach the zip, the four boot images and `SHA256SUMS` to a GitHub release with that tag, then
-push `updates.json`: the Updater app reads it from this repository's default branch.
-`make-magisk-boot.sh` makes the rooted `boot-magisk-v*.img` from the same signed target files
-(Magisk version pinned in the script); attach it too, include it in `SHA256SUMS`, and name the
-Magisk version with a link to its source in the release notes, as Magisk is GPLv3.
