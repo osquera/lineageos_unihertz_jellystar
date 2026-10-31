@@ -465,10 +465,11 @@ PRODUCT_VENDOR_PROPERTIES += \
 # lineage_jellystar.mk caused a "found duplicate sysprop assignments" build failure and was
 # removed (2026-09-30); see that file for the full story. Not needed for either target bug.
 
-# Framework config overlay, as a product RRO (see rro_overlays/FrameworksResJellystar/Android.bp).
+# Framework, Lineage SDK and SystemUI overlays, as product RROs (see rro_overlays/*/Android.bp).
 PRODUCT_PACKAGES += \
     FrameworksResJellystar \
-    LineageSdkJellystar
+    LineageSdkJellystar \
+    SystemUIJellystar
 
 # ours, PROVEN: `adb shell wm size` / `dumpsys display` on the live device, 2026-09-29 ->
 # 480x854 physical, density 220. Boot animation is generated sized to the screen by
