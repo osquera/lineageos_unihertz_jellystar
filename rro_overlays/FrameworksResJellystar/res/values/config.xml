@@ -11,6 +11,10 @@
 
     <bool name="config_unplugTurnsOnScreen">true</bool>
 
+    <!-- SIM cards can be swapped while the phone is on, as on stock (true in stock A16's product
+         overlay): without it, AOSP asks for a restart after every SIM change. -->
+    <bool name="config_hotswapCapable">true</bool>
+
     <!-- The capacitive keys below the screen do navigation, so no on-screen navigation by default;
          it can be switched on under Settings > System > Buttons. (Stock's MediaTek overlay sets
          this to true.) -->
