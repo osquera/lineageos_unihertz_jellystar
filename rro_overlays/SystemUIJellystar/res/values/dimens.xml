@@ -4,12 +4,9 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-    <!-- Bigger PIN keys on the lock screen. On the 480x854 screen the PIN pad is limited by height:
-         each key is 82 px (60 dp) while the width would fit about 149 px (view tree from
-         `dumpsys activity service com.android.systemui/.SystemUIService`, release 20261029).
-         The keys get the height AOSP keeps under the emergency button (60 dp; the bouncer's bottom
-         padding is the larger of this and the navigation bar inset, so a navigation bar is still
-         cleared) and part of the gaps between rows (12 dp). -->
-    <dimen name="keyguard_security_view_bottom_margin">16dp</dimen>
-    <dimen name="num_pad_entry_row_margin_bottom">6dp</dimen>
+    <!-- Lock screen PIN pad as on stock Android 16 (V01.00.04): its MtkSystemUI sets the space between
+         keys to 36 dp (AOSP: 12 dp below sw360dp; this screen is sw349dp), which spreads the pad across
+         the screen. Read with `aapt2 dump resources` from /system_ext/priv-app/MtkSystemUI; the other
+         keypad dimensions (key width, row spacing, bottom margin) are the same as AOSP's. -->
+    <dimen name="num_pad_key_margin_end">36dp</dimen>
 </resources>
