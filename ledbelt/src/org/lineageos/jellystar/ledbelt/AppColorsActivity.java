@@ -71,6 +71,8 @@ public class AppColorsActivity extends Activity {
         TextView chip = new TextView(this);
         if (color == null) {
             chip.setText(R.string.front_app_default);
+        } else if (color == FrontLed.APP_COLOR_OFF) {
+            chip.setText(R.string.front_app_off);
         } else {
             GradientDrawable d = new GradientDrawable();
             d.setShape(GradientDrawable.OVAL);
@@ -94,11 +96,14 @@ public class AppColorsActivity extends Activity {
                     if (chosen[0] >= 0) FrontLed.setAppColor(this, pkg, chosen[0]);
                     populate();
                 })
-                .setNeutralButton(R.string.front_app_default, (d, w) -> {
+                .setNeutralButton(R.string.front_app_off, (d, w) -> {
+                    FrontLed.setAppColor(this, pkg, FrontLed.APP_COLOR_OFF);
+                    populate();
+                })
+                .setNegativeButton(R.string.front_app_default, (d, w) -> {
                     FrontLed.setAppColor(this, pkg, null);
                     populate();
                 })
-                .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 
