@@ -80,6 +80,12 @@ final class FrontLed {
         return prefs(context).getInt(key, def);
     }
 
+    /**
+     * Stored per-app value meaning "no light for this app". Colours are 0xRRGGBB, so 0 is never
+     * a real choice and can stand for "off" without a second preference key.
+     */
+    static final int APP_COLOR_OFF = 0;
+
     /** Per-app colour, or null for the default notification colour. */
     static Integer getAppColor(Context context, String pkg) {
         SharedPreferences p = prefs(context);
@@ -113,12 +119,22 @@ final class FrontLed {
         if (!mScreenOff) return;
         Integer color = getAppColor(mContext, pkg);
         mUnread.remove(key);
-        mUnread.put(key, color != null ? color : getColor(mContext, KEY_NOTIF_COLOR));
+        if (color != null && color == APP_COLOR_OFF) {
+            // Notifications from this app never light the LED, but it still counts as unread so
+            // that a later removal does not leave another app's colour stranded.
+            mUnread.put(key, null);
+        } else {
+            mUnread.put(key, color != null ? color : getColor(mContext, KEY_NOTIF_COLOR));
+        }
         update();
     }
 
     void notificationRemoved(String key) {
-        if (mUnread.remove(key) != null) update();
+        // containsKey, not a null check: an app set to Off stores a null colour.
+        if (mUnread.containsKey(key)) {
+            mUnread.remove(key);
+            update();
+        }
     }
 
     /** Shows a colour for a moment, e.g. while choosing it in settings. */
@@ -138,12 +154,19 @@ final class FrontLed {
         SharedPreferences p = prefs(mContext);
         int color = 0;
         String blink = BLINK_STEADY;
+        // Like the battery state, an app set to Off falls through to the next source, so the
+        // front light keeps showing whatever it showed before that notification arrived.
+        Integer notifColor = null;
+        if (!mUnread.isEmpty() && p.getBoolean(KEY_NOTIF_ENABLED, true)) {
+            // The most recent colour that is not switched off.
+            for (Integer c : mUnread.values()) {
+                if (c != null) notifColor = c;
+            }
+        }
         if (mPreviewColor != null) {
             color = mPreviewColor;
-        } else if (!mUnread.isEmpty() && p.getBoolean(KEY_NOTIF_ENABLED, true)) {
-            Integer last = null;
-            for (Integer c : mUnread.values()) last = c;
-            color = last;
+        } else if (notifColor != null) {
+            color = notifColor;
             blink = p.getString(KEY_NOTIF_BLINK, BLINK_SLOW);
         } else if (p.getBoolean(KEY_BATTERY_ENABLED, true)) {
             if (mFull || (mCharging && mLevel >= FULL_LEVEL)) {

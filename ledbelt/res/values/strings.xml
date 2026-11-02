@@ -22,8 +22,9 @@
     <string name="front_blink_fast">Fast</string>
     <string name="front_blink_steady">Steady</string>
     <string name="front_app_colors">Notification colour per app</string>
-    <string name="front_app_colors_help">Choose the colour the front light blinks when an app sends a notification. Apps on Default use the default colour.</string>
+    <string name="front_app_colors_help">Choose the colour the front light blinks when an app sends a notification. Apps on Default use the default colour; Off means no light.</string>
     <string name="front_app_default">Default</string>
+    <string name="front_app_off">Off</string>
     <string name="front_battery">Battery light</string>
     <string name="front_charging_color">Charging</string>
     <string name="front_full_color">Charged (90%+)</string>
