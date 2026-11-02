@@ -6,7 +6,7 @@
     "files": [
       {
         "filename": "lineage-23.2-20261101-UNOFFICIAL-jellystar-signed.zip",
-        "url": "https://github.com/osquera/lineageos_unihertz_jellystar/releases/download/tasktest/lineage-23.2-20261101-UNOFFICIAL-jellystar-signed.zip",
+        "url": "https://github.com/osquera/lineageos_unihertz_jellystar/releases/download/20261101/lineage-23.2-20261101-UNOFFICIAL-jellystar-signed.zip",
         "sha256": "d52de3a489839a6d017286758e7b93faba9026c97382f71e56e6c4e81992c615",
         "size": 1427223213,
         "os_patch_level": "2026-09-01",
