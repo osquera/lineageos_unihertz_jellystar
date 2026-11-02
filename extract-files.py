@@ -3,25 +3,7 @@
 # SPDX-FileCopyrightText: The LineageOS Project
 # SPDX-License-Identifier: Apache-2.0
 #
-# Adapted from iasnezhkov/android_device_ikko_mindone (same MT6789/Helio G99 platform,
-# same LineageOS 23/Android 16 target). The blob_fixups below that reference generic
-# MediaTek BSP files (audio.primary.mt6789.so, GNSS/power/sensors AIDL soname mismatches,
-# the KeyMint "trustkernel" TEE renaming block) are KEPT — they fix version mismatches
-# between a shared MTK BSP generation and this AOSP tree, not anything iKKO-device-specific,
-# and several of the exact filenames (audio.primary.mt6789.so in particular) are CONFIRMED
-# present byte-for-byte on Jelly Star too via live device inspection this session.
-#
-# 🔴 REMOVED, not adapted: iKKO's own custom fixup functions (audio_param_tuning.py,
-# camera_metastore_fixup.py, camerahalserver_instance_fixup.py, halsensor_poweron_fixup.py)
-# — these patch specific bugs in THEIR camera sensor (IMX766) and THEIR speech tuning
-# tables. We do not have Jelly Star's camera sensor identity yet, and blindly carrying
-# these over would silently patch the wrong assumptions into our blobs. Revisit once our
-# own blobs are extracted and we know whether equivalent bugs exist here.
-#
-# 🔴 NOT YET RUN — this script has not been executed against real device blobs. Every
-# blob_fixup entry below needs re-validation once real Jelly Star blobs are extracted: keep
-# what still applies, drop what doesn't, add what's newly needed. Treat this as a
-# well-informed starting point, not a verified result.
+# Based on iasnezhkov/android_device_ikko_mindone (also MT6789).
 
 from extract_utils.fixups_blob import (
     blob_fixup,

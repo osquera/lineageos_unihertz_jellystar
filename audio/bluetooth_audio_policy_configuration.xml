@@ -1,22 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Bluetooth Audio HAL Audio Policy Configuration file
 
-     Device-tree override of the stock vendor file (device/unihertz/jellystar/audio/
-     bluetooth_audio_policy_configuration.xml, replacing vendor/etc/bluetooth_audio_policy_
-     configuration.xml). The only change from stock: the "a2dp output" mixPort previously had
-     ZERO <profile> elements (pure dynamic negotiation). Confirmed via live Frida
-     instrumentation (2026-09-29/30, see project memory) that AudioPolicyManager::
-     setDeviceConnectionStateInt() fails to construct a DeviceDescriptor, and the whole A2DP
-     connection attempt fails with ENOSYS (error -38), specifically when the negotiated codec
-     is AUDIO_FORMAT_APTX, because nothing in the static mixPort profile list matches that
-     format.
-     SBC (and format=0 disconnect calls) succeed because SBC has framework-level fallback
-     resolution; APTX does not. Adding explicit <profile> entries for the full standard set of
-     A2DP codecs (matching stock AOSP's reference a2dp_audio_policy_configuration.xml pattern)
-     gives AudioPolicyManager something to resolve against for every codec Bluetooth might
-     negotiate, not just SBC. Sample rates/channel masks match the device ports' own existing
-     PCM declarations below (44100/48000/88200/96000, stereo) plus each codec's real
-     capabilities.
+     Stock file, except that the "a2dp output" mixPort lists profiles for the A2DP codecs.
+     Stock has none, so AudioPolicyManager finds no device descriptor when APTX is negotiated
+     and the A2DP connection fails (ENOSYS). Rates and channel masks follow the device ports
+     below and each codec's capabilities.
 -->
 <module name="bluetooth" halVersion="2.0">
     <mixPorts>
