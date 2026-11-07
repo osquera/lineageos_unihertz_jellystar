@@ -6,6 +6,10 @@
 # delivers all its network callbacks: ImsService never hears that the IMS network was lost, stays
 # in DisconnectingState, and the modem never asks for the IMS connection again. VoLTE is then down
 # until a restart, after the first airplane mode toggle or network-side drop.
-on boot
+# Both are persist. properties, so the 0 is saved in /data. Deleting this file won't bring back 1:
+# a change that enables ViLTE later (by shipping vtservice) has to set 1 itself.
+on property:persist.vendor.vilte_support=1
     setprop persist.vendor.vilte_support 0
+
+on property:persist.vendor.viwifi_support=1
     setprop persist.vendor.viwifi_support 0
