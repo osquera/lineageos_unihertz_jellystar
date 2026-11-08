@@ -1,0 +1,15 @@
+# Video calling off, so VoLTE survives a dropped IMS connection.
+# With persist.vendor.vilte_support or persist.vendor.viwifi_support at 1 (the stock vendor's
+# values), MediaTek's ImsService passes each new IMS network to its video telephony library, which
+# waits for the media.VTS service. Stock's /system_ext/bin/vtservice provides it; this tree doesn't
+# ship it, so the call never returns. It blocks ImsService's ConnectivityThread, the thread that
+# delivers all its network callbacks: ImsService never hears that the IMS network was lost, stays
+# in DisconnectingState, and the modem never asks for the IMS connection again. VoLTE is then down
+# until a restart, after the first airplane mode toggle or network-side drop.
+# Both are persist. properties, so the 0 is saved in /data. Deleting this file won't bring back 1:
+# a change that enables ViLTE later (by shipping vtservice) has to set 1 itself.
+on property:persist.vendor.vilte_support=1
+    setprop persist.vendor.vilte_support 0
+
+on property:persist.vendor.viwifi_support=1
+    setprop persist.vendor.viwifi_support 0

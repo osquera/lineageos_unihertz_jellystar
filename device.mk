@@ -118,6 +118,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/appcompat/compat_framework_overrides.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/appcompat/compat_framework_overrides.xml
 
+# Video calling off: otherwise ImsService hangs waiting for media.VTS and VoLTE stays down after
+# the IMS connection drops (see the rc).
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init.jellystar.ims.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.jellystar.ims.rc
+
 # VoLTE offered for every SIM (AOSP's carrier configs leave it off for most carriers), see the overlay.
 PRODUCT_PACKAGES += \
     CarrierConfigJellystar

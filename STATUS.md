@@ -62,13 +62,13 @@ something is tested or fixed.
 | 5G | Not supported by the hardware: the Helio G99 has a 4G modem. |
 | Factory sensor test (`*#*#3377#*#*`) | Stock-only app. |
 | Stock Unihertz extras | Agui apps, LED belt widget, power management tweaks: replaced by this tree's own Lights app or dropped. |
+| Video calling (ViLTE) | Turned off (`rootdir/etc/init.jellystar.ims.rc`): it needs stock's `vtservice` (`media.VTS`), which this tree doesn't ship, and with it on, `ImsService` hangs waiting for that service and VoLTE stays down after the first IMS connection drop. |
 
 ## Not tested yet
 
 | Feature | Needs |
 |---|---|
 | Wi-Fi calling | In progress. MediaTek's Wi-Fi offload service (inside `ImsService`) runs and reports Wi-Fi to the vendor ePDG daemon (`epdg_wod`); stock disables Wi-Fi calling at device level (`config_device_wfc_ims_available`). Being tested with that enabled on 3 Denmark |
-| Video calling (ViLTE) | Libraries are shipped; on 3 Denmark no video button appears, most likely because 3 does not offer it. Needs a carrier with ViLTE |
 | Emergency calls | Not to be tested by calling; number list verified |
 | USB OTG (host mode) | USB-C adapter with a stick or keyboard |
 
