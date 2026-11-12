@@ -87,8 +87,8 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
    adb reboot bootloader
    fastboot flashing unlock
    ```
-   Confirm on the phone with the volume keys. The confirmation prompt may not be visible on
-   this device's screen; follow Unihertz's unlock instructions if nothing appears.
+   Confirm on the phone with **Volume Up**. The prompt only stays up for a few seconds; if you
+   miss it, run `fastboot flashing unlock` again.
 3. **Flash the boot images** from the release. `vendor_boot` contains Lineage Recovery; the
    four images belong together, so flash all of them:
    ```sh
