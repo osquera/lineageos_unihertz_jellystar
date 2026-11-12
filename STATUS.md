@@ -58,7 +58,7 @@ something is tested or fixed.
 | Feature | Reason |
 |---|---|
 | Play Integrity | No integrity verdict at all (NO_INTEGRITY, even Basic fails), measured with microG and with root hidden from microG by Magisk's DenyList; Device and Strong integrity are not possible. The bootloader has to stay unlocked, and this MediaTek bootloader cannot be relocked with custom signing keys. Apps that require Play Integrity (some banking and payment apps, Google Wallet tap-to-pay) will not work; apps that don't use it are unaffected. This build does not and will not spoof attestation. |
-| Face unlock | Stock face unlock is SenseTime's, in the stock vendor partition, and only works with Unihertz's modified framework. Hidden in Settings. |
+| Face unlock | Not included: stock face unlock is SenseTime's and only works with Unihertz's modified framework. |
 | 5G | Not supported by the hardware: the Helio G99 has a 4G modem. |
 | Factory sensor test (`*#*#3377#*#*`) | Stock-only app. |
 | Stock Unihertz extras | Agui apps, LED belt widget, power management tweaks: replaced by this tree's own Lights app or dropped. |

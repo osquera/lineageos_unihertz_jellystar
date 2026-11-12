@@ -1,0 +1,1 @@
+allow thermal_core sysfs_dvfsrc_dbg:dir search;

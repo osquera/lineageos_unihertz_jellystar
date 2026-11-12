@@ -21,7 +21,6 @@ from extract_utils.main import (
 namespace_imports = [
     'device/unihertz/jellystar',
     'hardware/mediatek',
-    'hardware/mediatek/libmtkperf_client',
 ]
 
 
@@ -31,64 +30,62 @@ def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs):
 
 lib_fixups: lib_fixups_user_type = {
     **lib_fixups,
-    ('vendor.mediatek.hardware.videotelephony@1.0'): lib_fixup_vendor_suffix,
+    (
+        'vendor.mediatek.hardware.videotelephony@1.0',
+        'vendor.mediatek.hardware.videotelephony-V1-ndk',
+    ): lib_fixup_vendor_suffix,
 }
 
 blob_fixups: blob_fixups_user_type = {
+    # libsink.so clashes with a framework library, so it is installed as libsink-mtk.so.
     'system_ext/lib64/libimsma.so': blob_fixup()
         .replace_needed('libsink.so', 'libsink-mtk.so'),
-    'system_ext/lib64/libsink-mtk.so': blob_fixup()
-        .fix_soname(),
-    'system_ext/lib64/libsource.so': blob_fixup()
-        .add_needed('libui_shim.so'),
     (
-        'vendor/bin/hw/android.hardware.gnss-service.mediatek',
-        'vendor/lib64/hw/android.hardware.gnss-impl-mediatek.so',
-    ): blob_fixup()
-        .replace_needed('android.hardware.gnss-V1-ndk_platform.so', 'android.hardware.gnss-V1-ndk.so'),
-    (
-        'vendor/lib/libcodec2_mtk_venc.so',
-        'vendor/lib/libcodec2_mtk_vdec.so',
-        'vendor/lib64/libcodec2_mtk_venc.so',
-        'vendor/lib64/libcodec2_mtk_vdec.so',
-    ): blob_fixup()
-        .replace_needed('libformatter.so', 'libformatter_mtk.so'),
-    (
-        'vendor/lib/libformatter_mtk.so',
-        'vendor/lib64/libformatter_mtk.so',
+        'system_ext/lib64/libsink-mtk.so',
+        'vendor/lib/libaudioutils-mtk.so',
+        'vendor/lib64/libaudioutils-mtk.so',
+        'vendor/lib/libtinyxml2-mtk.so',
+        'vendor/lib64/libtinyxml2-mtk.so',
+        'vendor/lib/libexpat-mtk.so',
+        'vendor/lib64/libexpat-mtk.so',
+        # Loaded by hardware/mediatek's libwifi-hal-wrapper under this name.
+        'vendor/lib64/libwifi-hal-mtk.so',
+        # SONAME libspeech_enh.so, not the file name.
+        'vendor/lib/libspeech_enh_lib.so',
+        'vendor/lib64/libspeech_enh_lib.so',
     ): blob_fixup()
         .fix_soname(),
+    # The stock audio stack needs stock's libaudioutils (newer than the one built here, e.g. for
+    # audio_utils::mutex_get_enable_flag), installed as libaudioutils-mtk.so.
     (
-        'vendor/lib64/android.hardware.power-service-mediatek.so'
+        'vendor/bin/factory',
+        'vendor/bin/hw/android.hardware.audio.service-aidl.mediatek',
+        'vendor/lib/android.hardware.audio.core-impl-mediatek.so',
+        'vendor/lib/libmtkspparser.so',
+        'vendor/lib/libmtkspparser_swb.so',
+        'vendor/lib/libspeechparser_vendor.so',
+        'vendor/lib/soundfx/libaecsw_mtk.so',
+        'vendor/lib/soundfx/libagc1sw_mtk.so',
+        'vendor/lib/soundfx/libagc2sw_mtk.so',
+        'vendor/lib/soundfx/libnssw_mtk.so',
+        'vendor/lib/soundfx/libpreprocessingaidl_mtk.so',
+        'vendor/lib/soundfx/libspatializer.so',
+        'vendor/lib/soundfx/libspatializeraidl.so',
+        'vendor/lib64/android.hardware.audio.core-impl-mediatek.so',
+        'vendor/lib64/hw/android.hardware.audio.effect.aidl-impl-mediatek.so',
+        'vendor/lib64/libmtkspparser.so',
+        'vendor/lib64/libmtkspparser_swb.so',
+        'vendor/lib64/libspeechparser_vendor.so',
+        'vendor/lib64/soundfx/libaecsw_mtk.so',
+        'vendor/lib64/soundfx/libagc1sw_mtk.so',
+        'vendor/lib64/soundfx/libagc2sw_mtk.so',
+        'vendor/lib64/soundfx/libnssw_mtk.so',
+        'vendor/lib64/soundfx/libpreprocessingaidl_mtk.so',
+        'vendor/lib64/soundfx/libspatializer.so',
+        'vendor/lib64/soundfx/libspatializeraidl.so',
     ): blob_fixup()
-        .replace_needed('android.hardware.power-V2-ndk_platform.so', 'android.hardware.power-V2-ndk.so'),
+        .replace_needed('libaudioutils.so', 'libaudioutils-mtk.so'),
     (
-        'vendor/lib64/hw/hwcomposer.mtk_common.so'
-    ): blob_fixup()
-        .add_needed('libprocessgroup_shim.so'),
-    (
-        'vendor/lib64/lib3a.flash.so',
-        'vendor/lib64/lib3a.ae.stat.so',
-        'vendor/lib64/lib3a.sensors.color.so',
-        'vendor/lib64/lib3a.sensors.flicker.so',
-    ): blob_fixup()
-        .add_needed('liblog.so'),
-    (
-        'vendor/lib/libGsFace_ca.so',
-        'vendor/lib64/libGsFace_ca.so',
-    ): blob_fixup()
-        .add_needed('libteec.so'),
-    (
-        'vendor/lib64/libcam.utils.sensorprovider.so',
-    ): blob_fixup()
-        .replace_needed('libsensorndkbridge.so', 'android.hardware.sensors@1.0-convert-shared.so'),
-    (
-        'vendor/lib64/libmnl_mtk.so'
-    ): blob_fixup()
-        .fix_soname()
-        .add_needed('libcutils.so'),
-    (
-        'vendor/lib/libneuralnetworks_sl_driver_mtk_prebuilt.so',
         'vendor/lib64/libneuralnetworks_sl_driver_mtk_prebuilt.so',
     ): blob_fixup()
         .clear_symbol_version('AHardwareBuffer_allocate')
@@ -98,139 +95,117 @@ blob_fixups: blob_fixups_user_type = {
         .clear_symbol_version('AHardwareBuffer_unlock')
         .clear_symbol_version('AHardwareBuffer_createFromHandle')
         .clear_symbol_version('AHardwareBuffer_getNativeHandle'),
+    # camera.common V2 is not frozen in this tree. The library only uses types that V1 has.
+    'vendor/lib64/mt6789/libmtkcam_hal_aidl_common.so': blob_fixup()
+        .replace_needed('android.hardware.camera.common-V2-ndk.so', 'android.hardware.camera.common-V1-ndk.so'),
+    # Soong does not allow two versions of one AIDL interface in a dependency graph. These also
+    # reach sensors V3 (sensorservice, libsensorndkbridge).
     (
-        'vendor/bin/nfcstackp-vendor',
-        'vendor/bin/STFlashTool',
-        'vendor/lib/libnvram.so',
-        'vendor/lib64/libnvram.so',
-        'vendor/lib/libsysenv.so',
-        'vendor/lib64/libsysenv.so',
+        'vendor/bin/mnld',
+        'vendor/lib64/mt6789/libcam.utils.sensorprovider.so',
     ): blob_fixup()
-        .add_needed('libbase_shim.so'),
+        .replace_needed('android.hardware.sensors-V2-ndk.so', 'android.hardware.sensors-V3-ndk.so'),
+    # The graphics interfaces in this tree (allocator V2, composer3) import graphics.common V7,
+    # which only adds a PixelFormat value.
+    'vendor/lib64/mt6789/libmtkcam_grallocutils.so': blob_fixup()
+        .replace_needed('android.hardware.graphics.common-V5-ndk.so', 'android.hardware.graphics.common-V7-ndk.so'),
     (
-        # 'vendor/lib64/hw/audio.primary.mt6789.so' — CONFIRMED present byte-for-byte on
-        # Jelly Star too, via live device inspection 2026-09-29.
-        'system_ext/lib64/libsink-mtk.so',
-        'vendor/lib/libspeech_enh_lib.so',
-        'vendor/lib64/libspeech_enh_lib.so',
-        'vendor/lib64/libwifi-hal-mtk.so',
-        'vendor/lib64/hw/sensors.mt6789.so',
-        'vendor/lib/hw/audio.primary.mt6789.so',
-        'vendor/lib64/hw/audio.primary.mt6789.so',
-        'vendor/lib/hw/audio.r_submix.mt6789.so',
-        'vendor/lib64/hw/audio.r_submix.mt6789.so',
+        'vendor/bin/hw/mt6789/android.hardware.graphics.allocator-V2-service-mediatek.mt6789',
+        'vendor/lib/hw/mt6789/android.hardware.graphics.allocator-V2-mediatek.so',
+        'vendor/lib/hw/mt6789/mapper.mediatek.so',
+        'vendor/lib/libcodec2_fsr.so',
+        'vendor/lib/libgpud.so',
+        'vendor/lib/vendor.mediatek.hardware.pq_aidl-V7-ndk.so',
+        'vendor/lib64/hw/mt6789/android.hardware.graphics.allocator-V2-mediatek.so',
+        'vendor/lib64/hw/mt6789/mapper.mediatek.so',
+        'vendor/lib64/libaimemc.so',
+        'vendor/lib64/libcodec2_fsr.so',
+        'vendor/lib64/libcodec2_vpp_AIMEMC_plugin.so',
+        'vendor/lib64/libcodec2_vpp_AISR_plugin.so',
+        'vendor/lib64/libgpud.so',
+        'vendor/lib64/vendor.mediatek.hardware.camera.isphal-V1-ndk.so',
+        'vendor/lib64/vendor.mediatek.hardware.pq_aidl-V7-ndk.so',
     ): blob_fixup()
-        .fix_soname(),
-    # 🔴 The TEE keymint service block below (trustkernel V1-ndk renaming) is carried over
-    # from iKKO on the theory that it's a generic MTK-BSP-era KeyMint mismatch, NOT yet
-    # confirmed that Jelly Star's keymint blob is the same "trustkernel" TEE vendor — check
-    # `adb shell su -c "find /vendor -iname '*keymint*'"` during extraction before assuming
-    # this whole block applies.
+        .replace_needed('android.hardware.graphics.common-V6-ndk.so', 'android.hardware.graphics.common-V7-ndk.so'),
+    # The rest of the audio stack uses audio.effect V3 and bluetooth.audio V5.
     (
-        'vendor/bin/hw/android.hardware.security.keymint-service.trustkernel'
-    ): blob_fixup()
-        .replace_needed('android.hardware.security.keymint-V1-ndk_platform.so', 'android.hardware.security.keymint-V1-ndk.so')
-        .replace_needed('android.hardware.security.secureclock-V1-ndk_platform.so', 'android.hardware.security.secureclock-V1-ndk.so')
-        .replace_needed('android.hardware.security.sharedsecret-V1-ndk_platform.so', 'android.hardware.security.sharedsecret-V1-ndk.so')
-        .replace_needed('libkeymint.so', 'libkeymint_mtk.so')
-        .replace_needed('libcppbor_external.so', 'libcppbor_external_mtk.so')
-        .add_needed('android.hardware.security.rkp-V1-ndk.so'),
-    (
-        'vendor/lib64/libkeymint_mtk.so'
-    ): blob_fixup()
-        .fix_soname()
-        .replace_needed('android.hardware.security.keymint-V1-ndk_platform.so', 'android.hardware.security.keymint-V1-ndk.so')
-        .replace_needed('android.hardware.security.secureclock-V1-ndk_platform.so', 'android.hardware.security.secureclock-V1-ndk.so')
-        .replace_needed('android.hardware.security.sharedsecret-V1-ndk_platform.so', 'android.hardware.security.sharedsecret-V1-ndk.so')
-        .replace_needed('lib_android_keymaster_keymint_utils.so', 'lib_android_keymaster_keymint_utils_mtk.so')
-        .replace_needed('libcppbor_external.so', 'libcppbor_external_mtk.so')
-        .replace_needed('libkeymaster_messages.so', 'libkeymaster_messages_mtk.so')
-        .replace_needed('libkeymaster_portable.so', 'libkeymaster_portable_mtk.so')
-        .replace_needed('libpuresoftkeymasterdevice.so', 'libpuresoftkeymasterdevice_mtk.so'),
-    (
-        'vendor/lib64/lib_android_keymaster_keymint_utils_mtk.so'
-    ): blob_fixup()
-        .fix_soname()
-        .replace_needed('android.hardware.security.keymint-V1-ndk_platform.so', 'android.hardware.security.keymint-V1-ndk.so'),
-    (
-        'vendor/lib64/libkeymaster_messages_mtk.so'
-    ): blob_fixup()
-        .fix_soname(),
-    (
-        'vendor/lib64/libkeymaster_portable_mtk.so'
-    ): blob_fixup()
-        .fix_soname()
-        .replace_needed('libcppbor_external.so', 'libcppbor_external_mtk.so')
-        .replace_needed('libcppcose_rkp.so', 'libcppcose_rkp_mtk.so'),
-    (
-        'vendor/lib64/libcppbor_external_mtk.so'
-    ): blob_fixup()
-        .fix_soname(),
-    (
-        'vendor/lib64/libcppcose_rkp_mtk.so'
-    ): blob_fixup()
-        .fix_soname()
-        .replace_needed('libcppbor_external.so', 'libcppbor_external_mtk.so'),
-    (
-        'vendor/lib64/libpuresoftkeymasterdevice_mtk.so'
-    ): blob_fixup()
-        .fix_soname()
-        .replace_needed('libkeymaster_messages.so', 'libkeymaster_messages_mtk.so')
-        .replace_needed('libkeymaster_portable.so', 'libkeymaster_portable_mtk.so')
-        .replace_needed('libsoft_attestation_cert.so', 'libsoft_attestation_cert_mtk.so')
-        .replace_needed('libcppbor_external.so', 'libcppbor_external_mtk.so')
-        .replace_needed('libcppcose_rkp.so', 'libcppcose_rkp_mtk.so'),
-    (
-        'vendor/lib64/libsoft_attestation_cert_mtk.so'
-    ): blob_fixup()
-        .fix_soname()
-        .replace_needed('libkeymaster_portable.so', 'libkeymaster_portable_mtk.so'),
-    (
-        'vendor/bin/hw/android.hardware.media.c2@1.2-mediatek',
-    ): blob_fixup()
-        .replace_needed('libavservices_minijail_vendor.so', 'libavservices_minijail.so')
-        .add_needed('libstagefright_foundation-v33.so'),
-    (
-        'vendor/bin/hw/mtkfusionrild',
-        'vendor/lib/libmtkcam_stdutils.so',
-        'vendor/lib64/libmtkcam_stdutils.so',
-        'vendor/lib64/hw/android.hardware.camera.provider@2.6-impl-mediatek.so',
-    ): blob_fixup()
-        .add_needed('libutils-v32.so'),
-    (
-        'system_ext/lib64/libimsma.so',
-    ): blob_fixup()
-        .replace_needed('libsink.so', 'libsink-mtk.so'),
-    (
-        'system_ext/lib64/libsource.so',
-    ): blob_fixup()
-        .add_needed('libui_shim.so'),
-    (
-        'vendor/etc/sensors/hals.conf'
-    ): blob_fixup()
-        .regex_replace('android.hardware.sensors@2.X-subhal-mediatek.so', 'android.hardware.sensors@2.0-subhal-impl-1.0.so'),
-    (
-        # audio.primary.{mt6789,mediatek}.so were linked against older AIDL interface
-        # versions (audio.effect V2, bluetooth.audio V4) than the rest of the vendor audio
-        # stack (libpreprocessingaidl_mtk.so, libspatializeraidl.so, the AOSP
-        # audio.effect.aidl-impl-mediatek.so, and libbluetooth_audio_session_aidl_mtk's own
-        # bluetooth.audio-V5 dependency all use effect V3 / bluetooth.audio V5, which is also
-        # what this AOSP branch's audio.effect version "3" declares as importing
-        # (android.hardware.audio.common-V4 + android.media.audio.common.types-V4, matching
-        # bluetooth.audio version "5"'s own imports) — confirmed 2026-09-29 by reading
-        # hardware/interfaces/audio/aidl/Android.bp and hardware/interfaces/bluetooth/audio/
-        # aidl/Android.bp directly. Soong refuses a single module's dependency graph mixing
-        # two versions of the same aidl_interface, so bump these two blobs' DT_NEEDED
-        # entries to match — AIDL NDK-backend binaries are designed to be backward
-        # compatible, so a binary built against V2 loading a V3 implementation (etc.) is
-        # expected to work correctly at runtime, this is purely a build-time version-pin fix.
         'vendor/lib/hw/audio.primary.mediatek.so',
         'vendor/lib64/hw/audio.primary.mediatek.so',
-        'vendor/lib/hw/audio.primary.mt6789.so',
-        'vendor/lib64/hw/audio.primary.mt6789.so',
     ): blob_fixup()
         .replace_needed('android.hardware.audio.effect-V2-ndk.so', 'android.hardware.audio.effect-V3-ndk.so')
-        .replace_needed('android.hardware.bluetooth.audio-V4-ndk.so', 'android.hardware.bluetooth.audio-V5-ndk.so'),
+        .replace_needed('android.hardware.bluetooth.audio-V4-ndk.so', 'android.hardware.bluetooth.audio-V5-ndk.so')
+        .replace_needed('libaudioutils.so', 'libaudioutils-mtk.so')
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-mtk.so'),
+    # Stock's libtinyxml2 has a different object layout from the one built here (same symbols):
+    # stock blobs that keep tinyxml2 objects on their stack crash with ours. Installed as
+    # libtinyxml2-mtk.so.
+    (
+        'vendor/lib/hw/sunwave.fingerprint.default.so',
+        'vendor/lib/libfrsm_extamp_intf.so',
+        'vendor/lib/libmtkgpuserv.so',
+        'vendor/lib/libpqxmlflagparser.so',
+        'vendor/lib/libpqxmlparser.so',
+        'vendor/lib/librt_extamp_intf.so',
+        'vendor/lib/libsilkybrightnesscore.so',
+        'vendor/lib64/hw/android.hardware.audio.effect.aidl-impl-mediatek.so',
+        'vendor/lib64/hw/sunwave.fingerprint.default.so',
+        'vendor/lib64/libfrsm_extamp_intf.so',
+        'vendor/lib64/libmtkgpuserv.so',
+        'vendor/lib64/libpqxmlflagparser.so',
+        'vendor/lib64/libpqxmlparser.so',
+        'vendor/lib64/librt_extamp_intf.so',
+        'vendor/lib64/libsilkybrightnesscore.so',
+    ): blob_fixup()
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-mtk.so'),
+    # Same for libexpat (the stock power stack and fpsgo looped with ours): installed as
+    # libexpat-mtk.so.
+    (
+        'vendor/bin/fpsgo',
+        'vendor/bin/mtk_agpsd',
+        'vendor/bin/touch_boost',
+        'vendor/lib/libcodec2_mtk_c2store.so',
+        'vendor/lib/libcodec2_mtk_vdec.so',
+        'vendor/lib/libcodec2_mtk_venc.so',
+        'vendor/lib/libperfctl_vendor.so',
+        'vendor/lib64/libcodec2_mtk_c2store.so',
+        'vendor/lib64/libcodec2_mtk_vdec.so',
+        'vendor/lib64/libcodec2_mtk_venc.so',
+        'vendor/lib64/libperfctl_vendor.so',
+        'vendor/lib64/mt6789/libstereoinfoaccessor_vsdof.so',
+    ): blob_fixup()
+        .replace_needed('libexpat.so', 'libexpat-mtk.so'),
+    (
+        'vendor/lib/lib_power_applist.so',
+        'vendor/lib/libpowerhal.so',
+        'vendor/lib64/lib_power_applist.so',
+        'vendor/lib64/libpowerhal.so',
+    ): blob_fixup()
+        .replace_needed('libexpat.so', 'libexpat-mtk.so')
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-mtk.so'),
+    (
+        'vendor/lib/hw/hwcomposer.mtk_common.so',
+        'vendor/lib64/hw/hwcomposer.mtk_common.so',
+    ): blob_fixup()
+        .replace_needed('android.hardware.graphics.common-V6-ndk.so', 'android.hardware.graphics.common-V7-ndk.so')
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-mtk.so'),
+    (
+        'vendor/lib/hw/mt6789/vendor.mediatek.hardware.pq_aidl-impl.so',
+        'vendor/lib64/hw/mt6789/vendor.mediatek.hardware.pq_aidl-impl.so',
+    ): blob_fixup()
+        .replace_needed('android.hardware.sensors-V2-ndk.so', 'android.hardware.sensors-V3-ndk.so')
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-mtk.so'),
+    # hardware/mediatek builds different HALs at these paths, so the stock ones are installed
+    # with a -stock suffix.
+    (
+        'vendor/etc/init/memtrack-mediatek-stock.rc',
+        'vendor/etc/init/thermal-mediatek.rc',
+        'vendor/etc/init/vibrator-mtk-default.rc',
+    ): blob_fixup()
+        .regex_replace(r'(?m)(/vendor/bin/hw/android\.hardware\.\w+-service\.mediatek)$', r'\1-stock'),
+    # The stock fingerprint service loads the sunwave/chipsailing modules; AOSP's default one,
+    # which owns the original path, only looks for "fingerprint".
+    'vendor/etc/init/android.hardware.biometrics.fingerprint@2.1-service-stock.rc': blob_fixup()
+        .regex_replace(r'(/vendor/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service)\b', r'\1-stock'),
 }  # fmt: skip
 
 module = ExtractUtilsModule(

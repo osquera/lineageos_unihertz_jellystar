@@ -66,6 +66,13 @@ BOARD_BOOTCONFIG := kernel.rcu_nocbs=all
 BOARD_BOOTCONFIG += kernel.rcutree.enable_rcu_lazy=1
 BOARD_BOOTCONFIG += kernel.rcupdate.rcu_cpu_stall_cputime=1
 
+# Development only: SELinux permissive when building with JELLYSTAR_SELINUX_PERMISSIVE=true, to
+# collect denials while the vendor policy is written. Never in builds for other people. init
+# only honours it on userdebug/eng builds.
+ifeq ($(JELLYSTAR_SELINUX_PERMISSIVE),true)
+BOARD_BOOTCONFIG += androidboot.selinux=permissive
+endif
+
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
@@ -139,13 +146,11 @@ BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 
-# Stock vendor-side images, used unmodified (EROFS, each with its own AVB hashtree footer).
-# Building our own vendor booted only to the splash screen; the stock one boots and gives
-# working audio, NFC HAL, camera, sensors and modem. Taken from the V01.00.04 firmware's super
-# via lpunpack (vendor_a, vendor_dlkm_a, odm_dlkm_a, system_dlkm_a). system_dlkm is mandatory:
-# the stock first-stage fstab mounts it without nofail, and its absence caused the 20 s loop.
-# Our device-specific changes therefore go into system/system_ext/product only.
-BOARD_PREBUILT_VENDORIMAGE := vendor/unihertz/jellystar/images/vendor.img
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
+
+# Stock kernel module images (EROFS, each with its own AVB hashtree footer), from the V01.00.04
+# firmware's super. system_dlkm is mandatory: the stock first-stage fstab mounts it without
+# nofail.
 BOARD_PREBUILT_VENDOR_DLKMIMAGE := vendor/unihertz/jellystar/images/vendor_dlkm.img
 BOARD_PREBUILT_ODM_DLKMIMAGE := vendor/unihertz/jellystar/images/odm_dlkm.img
 BOARD_PREBUILT_SYSTEM_DLKMIMAGE := vendor/unihertz/jellystar/images/system_dlkm.img
@@ -172,28 +177,15 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.mt6789
 TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
 TARGET_USERIMAGES_USE_F2FS := true
 
-# SEPolicy — the stock vendor partition ships its own complete vendor policy, so never include
-# device/mediatek/sepolicy_vndr/SEPolicy.mk wholesale: its system_ext property_contexts
-# re-declares persist.vendor.pco5.radio.ctrl and init aborts with "Duplicate prefix match
-# detected" against the stock vendor_property_contexts.
-# Our own additions only define new types, so they can't collide with the stock vendor policy.
+# SEPolicy
+include device/mediatek/sepolicy_vndr/SEPolicy.mk
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
-
-# MediaTek's system_ext policy (types such as sysfs_headset that the stock vendor policy expects
-# from system_ext, plus their labels), minus the one vendor property it re-declares: see
-# sepolicy/mtk_private/property_contexts. Its vendor part is left out on purpose.
-SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/mediatek/sepolicy_vndr/base/public
-SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/mtk_private
-ifneq ($(TARGET_BUILD_VARIANT),user)
-SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/mediatek/sepolicy_vndr/debug/public
-SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/mediatek/sepolicy_vndr/debug/private
-endif
-# Vendor policy only ends up in recovery (see sepolicy/vendor/file_contexts).
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
 
-# SPL
+# SPL. KeyMint refuses keys after a patch level goes down, so these never decrease. The vendor
+# level is the blobs' (stock vbmeta_vendor, V01.00.04).
 BOOT_SECURITY_PATCH := 2026-05-01
-VENDOR_SECURITY_PATCH := $(BOOT_SECURITY_PATCH)
+VENDOR_SECURITY_PATCH := 2026-07-05
 
 BOARD_AVB_ENABLE := true
 

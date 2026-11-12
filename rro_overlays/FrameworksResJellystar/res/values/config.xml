@@ -30,4 +30,48 @@
     <!-- IMS: the device supports VoLTE; video calling and Wi-Fi calling are off on stock. -->
     <bool name="config_device_volte_available">true</bool>
     <bool name="config_allow_ussd_over_ims">true</bool>
+
+    <!-- From the stock vendor framework overlays (com.mediatek.frameworkresoverlay and
+         FrameworkResOverlayExt), which the stock vendor image no longer brings along. -->
+
+    <!-- Fingerprint sensor 0: fingerprint (2), strong (15). -->
+    <string-array name="config_biometric_sensors" translatable="false">
+        <item>0:2:15</item>
+    </string-array>
+
+    <!-- Two physical SIM slots. -->
+    <integer name="config_num_physical_slots">2</integer>
+
+    <!-- Doze and the ambient display. -->
+    <string name="config_dozeComponent" translatable="false">com.android.systemui/.doze.DozeService</string>
+    <integer name="config_screenBrightnessDoze">5</integer>
+    <string name="config_displayLightSensorType" translatable="false">android.sensor.light</string>
+
+    <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">true</bool>
+    <bool name="config_powerDecoupleInteractiveModeFromDisplay">true</bool>
+    <bool name="config_suspendWhenScreenOffDueToProximity">true</bool>
+
+    <!-- Brightness: stock range and automatic brightness curve. -->
+    <item name="config_screenBrightnessSettingMinimumFloat" format="float" type="dimen">0.0</item>
+    <item name="config_screenBrightnessSettingMaximumFloat" format="float" type="dimen">1.0</item>
+    <item name="config_screenBrightnessSettingDefaultFloat" format="float" type="dimen">0.4</item>
+    <bool name="config_automatic_brightness_available">true</bool>
+    <integer-array name="config_autoBrightnessLevels">
+        <item>128</item><item>256</item><item>384</item><item>512</item>
+        <item>640</item><item>768</item><item>896</item><item>1024</item>
+        <item>2048</item><item>4096</item><item>6144</item><item>8192</item>
+        <item>10240</item><item>12288</item><item>14336</item><item>16384</item>
+        <item>18432</item>
+    </integer-array>
+    <integer-array name="config_autoBrightnessLcdBacklightValues">
+        <item>8</item><item>64</item><item>98</item><item>104</item>
+        <item>110</item><item>116</item><item>122</item><item>128</item>
+        <item>134</item><item>182</item><item>255</item><item>255</item>
+        <item>255</item><item>255</item><item>255</item><item>255</item>
+        <item>255</item><item>255</item>
+    </integer-array>
+
+    <bool name="config_supportsCamToggle">false</bool>
+    <bool name="config_supportsMicToggle">true</bool>
+    <bool name="config_enableWifiDisplay">true</bool>
 </resources>

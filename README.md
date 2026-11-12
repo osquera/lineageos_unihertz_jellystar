@@ -282,23 +282,14 @@ flashed because of anti-rollback.
 | **Screen** | 480x854, 3.0", density 220 |
 | **Shipped** | Android 13, updated by Unihertz to Android 16 (`ro.product.first_api_level=33`) |
 
-### Layout: stock vendor, our system
+### Layout: vendor built from stock blobs
 
-`super` holds our `system`, `system_ext` and `product`, plus the **stock, unmodified**
-`vendor`, `vendor_dlkm`, `odm_dlkm` and `system_dlkm` images (`BOARD_PREBUILT_*IMAGE`, taken
-from Unihertz firmware V01.00.04). Building a vendor image from extracted blobs booted only to
-the splash screen; the stock vendor gives working audio, camera, sensors, NFC HAL and modem.
+`vendor` is built from blobs extracted from Unihertz firmware V01.00.04
+(`proprietary-files.txt`). The kernel module images `vendor_dlkm`, `odm_dlkm` and
+`system_dlkm` are the stock ones, unmodified (`BOARD_PREBUILT_*IMAGE`).
 
-Consequences:
-
-- Device-specific changes go into system / system_ext / product only. Anything installed to
-  `$(TARGET_COPY_OUT_VENDOR)` never reaches the device.
-- Only the system_ext parts of `device/mediatek/sepolicy_vndr` are used (`base/public`, and
-  `base/private` through `sepolicy/mtk_private`, a filtered copy). Including its vendor
-  policy re-declares vendor properties, and init aborts on the duplicate
-  (`persist.vendor.pco5.radio.ctrl`).
-- `sepolicy/vendor/` only takes effect in recovery, which is built with this tree's vendor
-  policy.
+- SELinux: `device/mediatek/sepolicy_vndr` plus `sepolicy/vendor/` for the services and
+  devices it doesn't cover.
 - `system_dlkm` is mandatory: the stock first-stage fstab mounts it without `nofail`.
 - The OTA zip ships the stock firmware images (`lk`, `tee`, `md1img`, ...) as well.
 

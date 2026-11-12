@@ -1,0 +1,4 @@
+set_prop(vendor_init, vendor_mtk_frs_prop)
+set_prop(vendor_init, vendor_mtk_meta_connecttype_prop)
+set_prop(vendor_init, vendor_mtk_vonr_prop)
+allow vendor_init nfc_device:chr_file { getattr setattr };

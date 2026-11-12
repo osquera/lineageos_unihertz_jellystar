@@ -1,0 +1,9 @@
+# Development only (permissive test builds), see boot-watchdog.sh.
+on early-init
+    start jellystar_boot_watchdog
+
+service jellystar_boot_watchdog /vendor/bin/sh /vendor/etc/jellystar-boot-watchdog.sh
+    user root
+    group root
+    disabled
+    oneshot

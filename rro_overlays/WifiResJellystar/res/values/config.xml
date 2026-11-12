@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!-- Values taken from the stock vendor Wi-Fi overlay (WifiResOverlay). -->
+<resources>
+    <bool name="config_wifi5ghzSupport">true</bool>
+    <bool name="config_wifi_background_scan_support">true</bool>
+    <bool name="config_wifi_fast_bss_transition_enabled">true</bool>
+    <bool name="config_wifiSaeH2eSupported">true</bool>
+    <bool name="config_wifiDppAkmSupported">true</bool>
+    <bool name="config_wifiUpdateCountryCodeFromScanResultGeneric">true</bool>
+    <bool name="config_wifiNetworkCentricQosPolicyFeatureEnabled">true</bool>
+    <integer-array name="config_wifiRssiLevelThresholds">
+        <item>-87</item><item>-82</item><item>-75</item><item>-65</item>
+    </integer-array>
+    <string name="config_wifi_tcp_buffers" translatable="false">1730560,3461120,6922240,524288,1048576,4525824</string>
+
+    <!-- MAC randomization. -->
+    <bool name="config_wifi_connected_mac_randomization_supported">true</bool>
+    <bool name="config_wifi_p2p_mac_randomization_supported">true</bool>
+
+    <!-- Wi-Fi Direct and Wi-Fi Aware. -->
+    <bool name="config_wifiP2pGoIpAddressAllocationInEapolFrames">true</bool>
+    <bool name="config_wifiAllowMultipleNetworksOnSameAwareNdi">true</bool>
+
+    <!-- Hotspot. -->
+    <bool name="config_wifi_softap_acs_supported">true</bool>
+    <bool name="config_wifi_softap_ieee80211ac_supported">true</bool>
+    <bool name="config_wifi_softap_sae_supported">true</bool>
+    <bool name="config_wifiSoftapOweSupported">true</bool>
+    <bool name="config_wifiSoftapOweTransitionSupported">true</bool>
+    <string name="config_wifiSoftap2gChannelList" translatable="false">1-13</string>
+    <string name="config_wifiSoftap5gChannelList" translatable="false">36,38,40,42,44,46,48,149,153,157,161,165</string>
+
+    <!-- Leave Wi-Fi up for a second after IMS is lost on it, for Wi-Fi calling handover. -->
+    <integer name="config_wifiDelayDisconnectOnImsLostMs">1000</integer>
+</resources>

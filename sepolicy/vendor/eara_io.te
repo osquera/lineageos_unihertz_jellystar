@@ -1,0 +1,1 @@
+allowxperm eara_io proc_earaio:file ioctl 0x6704;

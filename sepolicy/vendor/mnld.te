@@ -1,0 +1,3 @@
+# The GNSS daemon's motion sensor helper (mpe) uses binder and the sensor hub.
+binder_use(mnld)
+allow mnld hf_manager_device:chr_file rw_file_perms;

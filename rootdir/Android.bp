@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 // Stock init scripts (vendor/etc/init/hw), fstab and recovery init script (stock recovery
-// ramdisk), unmodified. ro.hardware=mt6789 makes init pick init.mt6789.rc, which imports the
+// ramdisk), unmodified apart from init.mt6789.rc importing stock's USB script as
+// init.mt6789.usb-stock.rc. ro.hardware=mt6789 makes init pick init.mt6789.rc, which imports the
 // rest.
 
 prebuilt_etc {

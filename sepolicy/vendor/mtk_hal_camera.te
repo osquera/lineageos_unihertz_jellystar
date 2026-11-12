@@ -1,0 +1,4 @@
+# The stock camera HAL uses the Agold daemon.
+allow mtk_hal_camera hal_aidl_agolddaemon_service:service_manager find;
+binder_call(mtk_hal_camera, hal_aidl_agolddaemon_default)
+allow mtk_hal_camera fwk_sensor_service:service_manager find;

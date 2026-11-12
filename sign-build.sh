@@ -67,14 +67,12 @@ for apex in "${APEXES[@]}"; do
     args+=(--extra_apex_payload_key "$apex.apex=$KEYS/$apex.pem")
 done
 
-# The stock vendor-side images are prebuilts (BOARD_PREBUILT_*IMAGE) and only exist under IMAGES/.
+# The stock dlkm images are prebuilts (BOARD_PREBUILT_*IMAGE) and only exist under IMAGES/.
 # sign_target_files_apks drops all of IMAGES/ and regenerates images from their source
 # directories, which prebuilts don't have ("AssertionError: Failed to find odm_dlkm.img"). So:
 # park copies under RADIO/ (copied verbatim, and accepted by the A/B image check), sign, then
 # move them back and rebuild the vbmeta images, which were built without their descriptors.
-# vbmeta_vendor is parked too: the signer only builds it when it sees vendor.img, and the A/B
-# image check needs one. That stale copy is deleted again before the vbmeta rebuild.
-PREBUILT_PARTITIONS="vendor vendor_dlkm odm_dlkm system_dlkm"
+PREBUILT_PARTITIONS="vendor_dlkm odm_dlkm system_dlkm"
 unsigned=$(ls "$OUT"/obj/PACKAGING/target_files_intermediates/*-target_files*.zip)
 
 #
@@ -86,7 +84,7 @@ unsigned=$(ls "$OUT"/obj/PACKAGING/target_files_intermediates/*-target_files*.zi
 # everything in its first fragment). So BOOT/RAMDISK is copied into VENDOR_BOOT/RAMDISK with its
 # fs_config lines, and the recovery fragment loses the paths it would overwrite them with (its /init
 # symlink and toolbox links). Where boot's ramdisk is used, it is still loaded last, as before.
-python3 - "$unsigned" unsigned-target_files.zip $PREBUILT_PARTITIONS vbmeta_vendor <<'EOF'
+python3 - "$unsigned" unsigned-target_files.zip $PREBUILT_PARTITIONS <<'EOF'
 import copy, shutil, sys, zipfile
 src, dst, parts = sys.argv[1], sys.argv[2], sys.argv[3:]
 generic, vendor = "BOOT/RAMDISK/", "VENDOR_BOOT/RAMDISK/"
@@ -153,6 +151,10 @@ EOF
 add_img_to_target_files --is_signing --add_missing signed-target_files.zip
 
 version=$(unzip -p signed-target_files.zip PRODUCT/etc/build.prop | sed -n 's/^ro.lineage.version=//p')
+# A permissive test build gets its own name, so it can't be taken for a release.
+if unzip -p signed-target_files.zip VENDOR_BOOT/vendor_bootconfig | grep -q '^androidboot.selinux=permissive'; then
+    version="$version-PERMISSIVE-TEST"
+fi
 ota_from_target_files -k "$KEYS/releasekey" --block --backup=true \
     signed-target_files.zip "lineage-$version-signed.zip"
 
