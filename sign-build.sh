@@ -72,7 +72,7 @@ done
 # directories, which prebuilts don't have ("AssertionError: Failed to find odm_dlkm.img"). So:
 # park copies under RADIO/ (copied verbatim, and accepted by the A/B image check), sign, then
 # move them back and rebuild the vbmeta images, which were built without their descriptors.
-PREBUILT_PARTITIONS="vendor_dlkm odm_dlkm system_dlkm"
+PREBUILT_PARTITIONS="odm_dlkm system_dlkm"
 unsigned=$(ls "$OUT"/obj/PACKAGING/target_files_intermediates/*-target_files*.zip)
 python3 - "$unsigned" unsigned-target_files.zip $PREBUILT_PARTITIONS <<'EOF'
 import copy, shutil, sys, zipfile

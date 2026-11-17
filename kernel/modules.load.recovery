@@ -56,7 +56,6 @@ mtk-mmdvfs-ftrace.ko
 mtk-mmdebug-vcp-stub.ko
 mtk-mmdvfs.ko
 mtk-mmdvfs-debug.ko
-mtk-mmdvfs-debug-v3.ko
 mtk-mm-monitor-controller.ko
 mm-monitor-platform-mt6789.ko
 mmqos-common.ko
@@ -76,7 +75,7 @@ drm_display_helper.ko
 rt4831a_drv.ko
 mtk_panel_ext.ko
 ext_bias.ko
-panel-ST7701S_Z30043.ko
+panel-unihertz-jellystar-st7701s.ko
 panel-alpha-jdi-nt36672e-vdo-120hz-hfp.ko
 panel-alpha-jdi-nt36672e-cphy-vdo.ko
 panel-truly-td4330-cmd.ko
@@ -127,6 +126,7 @@ mt6577_auxadc.ko
 adapter_class.ko
 charger_class.ko
 mtk_charger_algorithm_class.ko
+agold_compat.ko
 rt9471.ko
 pd_dbg_info.ko
 tcpc_class.ko

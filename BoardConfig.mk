@@ -94,7 +94,8 @@ DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := hardware/mediatek/vintf/mediatek_framework_compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += $(DEVICE_PATH)/compatibility_matrix.xml
 
-# Prebuilt GKI kernel (LZ4) from stock boot.img; first-stage modules from stock vendor_boot.
+# Prebuilt GKI kernel (LZ4) from stock boot.img. Kernel modules: built from MediaTek's GPL source
+# where available (see kernel/README.md), stock binaries for the ODM drivers without source.
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/kernel/Image.lz4
 TARGET_KERNEL_ARCH := arm64
 
@@ -103,8 +104,9 @@ BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVIC
 BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD) $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD)
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(foreach m,$(sort $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD) $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)),$(DEVICE_PATH)/kernel/modules/$(m))
 BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES := $(foreach m,$(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD),$(DEVICE_PATH)/kernel/modules/$(m))
-# No BOARD_VENDOR_KERNEL_MODULES: the second-stage modules ship in the stock vendor_dlkm image
-# (see "Stock vendor-side images" below).
+# Second-stage modules go into vendor_dlkm, loaded by MediaTek's init.insmod.sh from modules.load.
+BOARD_VENDOR_KERNEL_MODULES := $(wildcard $(DEVICE_PATH)/kernel/vendor_dlkm/*.ko)
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/kernel/modules.load.vendor_dlkm 2>/dev/null))
 # Stock has no modules.options, so no BOARD_VENDOR_KERNEL_MODULES_OPTIONS_FILE.
 BOARD_DO_NOT_STRIP_VENDOR_RAMDISK_MODULES := true
 BOARD_DO_NOT_STRIP_VENDOR_MODULES := true
@@ -148,10 +150,11 @@ BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
 
-# Stock kernel module images (EROFS, each with its own AVB hashtree footer), from the V01.00.04
-# firmware's super. system_dlkm is mandatory: the stock first-stage fstab mounts it without
-# nofail.
-BOARD_PREBUILT_VENDOR_DLKMIMAGE := vendor/unihertz/jellystar/images/vendor_dlkm.img
+# vendor_dlkm is built from the modules above (EROFS, like stock). odm_dlkm and system_dlkm stay
+# the stock images from the V01.00.04 firmware's super: system_dlkm holds Google's GKI modules,
+# which match the prebuilt kernel, and is mandatory (the first-stage fstab mounts it without nofail).
+BOARD_USES_VENDOR_DLKMIMAGE := true
+BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
 BOARD_PREBUILT_ODM_DLKMIMAGE := vendor/unihertz/jellystar/images/odm_dlkm.img
 BOARD_PREBUILT_SYSTEM_DLKMIMAGE := vendor/unihertz/jellystar/images/system_dlkm.img
 
