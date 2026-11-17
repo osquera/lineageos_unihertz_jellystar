@@ -35,6 +35,8 @@ echo "JSDBG-START uptime $(cat /proc/uptime)" > $out
 save
 sleep 180
 [ "$(getprop sys.boot_completed)" = 1 ] && exit 0
+# Power-off charging never completes the boot.
+[ "$(getprop ro.bootmode)" = charger ] && exit 0
 
 {
     echo "=== boot not completed, uptime $(cat /proc/uptime)"
