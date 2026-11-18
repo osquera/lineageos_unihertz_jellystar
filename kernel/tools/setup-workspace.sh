@@ -48,8 +48,13 @@ if [ ! -d oneplus/.git ]; then
 fi
 
 if [ ! -d modules/.git ]; then
-    git clone -b "$MODULES_BRANCH" "$MODULES_URL" modules
+    # Shallow clone: the tree carries the full Linux history, which the build doesn't need
+    # (`git fetch --unshallow` gets it later if wanted).
+    git clone --depth 1 -b "$MODULES_BRANCH" "$MODULES_URL" modules
 fi
+
+# MediaTek's mgk_internal repository rule looks for vendor/mediatek next to the workspace.
+ln -sfn oneplus/vendor vendor
 
 mkdir -p ws
 cd ws
