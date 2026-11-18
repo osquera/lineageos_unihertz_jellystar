@@ -165,5 +165,3 @@ agold_hw_compatible.ko
 agold_pm_info.ko
 agold_gms_board.ko
 leds-aw2033.ko
-agold_cam_version.ko
-board_modem_version.ko
