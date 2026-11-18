@@ -120,27 +120,25 @@ for line in open(GKI_SYMVERS):
 
 
 def exports(path):
-    """Exported symbols with their CRCs. In a .ko, __crc_<sym> is the offset of the CRC in __kcrctab."""
+    """Exported symbols with their CRCs. In a .ko, __crc_<sym> is the offset of the CRC in
+    __kcrctab, or in __kcrctab_gpl for EXPORT_SYMBOL_GPL."""
     sec = subprocess.run(["readelf", "-SW", path], capture_output=True, text=True).stdout
-    idx = None
+    tabs = {}
     for l in sec.splitlines():
         f = l.replace("[ ", "[").split()
-        if len(f) > 2 and f[1] == "__kcrctab":
-            idx = f[0].strip("[]")
-    tab = b""
-    if idx is not None:
-        tmp = os.path.join(tempfile.gettempdir(), "kcrctab.bin")
-        subprocess.run([OBJCOPY, "-O", "binary", "--only-section=__kcrctab", path, tmp], check=True)
-        tab = open(tmp, "rb").read()
-        os.remove(tmp)
+        if len(f) > 2 and f[1] in ("__kcrctab", "__kcrctab_gpl"):
+            tmp = os.path.join(tempfile.gettempdir(), "kcrctab.bin")
+            subprocess.run([OBJCOPY, "-O", "binary", f"--only-section={f[1]}", path, tmp], check=True)
+            tabs[f[0].strip("[]")] = open(tmp, "rb").read()
+            os.remove(tmp)
     out = subprocess.run(["readelf", "-sW", path], capture_output=True, text=True).stdout
     crcs, syms = {}, set()
     for l in out.splitlines():
         f = l.split()
         if len(f) >= 8:
-            if f[7].startswith("__crc_") and f[6] == idx:
+            if f[7].startswith("__crc_") and f[6] in tabs:
                 off = int(f[1], 16)
-                crcs[f[7][6:]] = int.from_bytes(tab[off:off + 4], "little")
+                crcs[f[7][6:]] = int.from_bytes(tabs[f[6]][off:off + 4], "little")
             elif f[7].startswith("__ksymtab_"):
                 syms.add(f[7][10:])
     return {s: crcs.get(s) for s in syms}

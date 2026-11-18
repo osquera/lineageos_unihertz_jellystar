@@ -6,12 +6,16 @@
 # Builds MediaTek's MT6789 kernel modules for the Jelly Star (the module set is in the module
 # tree's kernel/kleaf/jellystar_modules.bzl). Log: <ws>/../build-modules.log.
 #
-# Usage: [JOBS=6] kernel/tools/build-modules.sh <ws>    (<ws> from setup-workspace.sh)
-# Then stage the modules with stage-modules.py.
+# Usage: [JOBS=6] kernel/tools/build-modules.sh <ws> [target...]    (<ws> from setup-workspace.sh)
+# Without targets it builds the whole module set; then stage the modules with stage-modules.py.
+# A single module, e.g.:
+#   kernel/tools/build-modules.sh <ws> //kernel_device_modules-6.12/drivers/leds:leds-aw2033.mgk_64_k612.6.12.user
 
 set -euo pipefail
 
-WS=$(realpath "${1:?usage: $0 <workspace>/ws}")
+WS=$(realpath "${1:?usage: $0 <workspace>/ws [target...]}")
+shift
+TARGETS=("${@:-//kernel_device_modules-6.12:mgk_64_k612_customer_modules_install.user}")
 cd "$WS"
 
 export KERNEL_VERSION=kernel-6.12 SUPPORT_PLATFORM=mt6789
@@ -24,6 +28,4 @@ ARGS=(--experimental_writable_outputs --allow_ddk_unsafe_headers=1 --workaround_
       --user_ddk_unsafe_headers=//kernel_device_modules-6.12:mtk_use_gki_unsafe_headers
       --keep_going ${JOBS:+--jobs=$JOBS})
 
-tools/bazel "${OUT[@]}" build "${ARGS[@]}" \
-    //kernel_device_modules-6.12:mgk_64_k612_customer_modules_install.user \
-    2>&1 | tee "$WS/../build-modules.log"
+tools/bazel "${OUT[@]}" build "${ARGS[@]}" "${TARGETS[@]}" 2>&1 | tee "$WS/../build-modules.log"
