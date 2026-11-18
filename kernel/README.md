@@ -33,10 +33,19 @@ verified every one has a matching `.ko`), `modules.load.recovery` (166 entries),
 **How it was extracted, since no `lz4` tool was installed and there's no passwordless
 sudo:** `vendor_ramdisk00` uses Android's **legacy** LZ4 frame format (magic `0x184C2102`,
 not the modern LZ4 frame format `lz4.frame` in Python expects) — a sequence of 4-byte
-length-prefixed raw LZ4 blocks, each decompressing to at most 8 MiB. Decompressed with `uv
-run --with lz4 python3` and `lz4.block.decompress(block, uncompressed_size=8*1024*1024)`
-per block (no system package needed), producing a `newc`-format CPIO archive, then `cpio
--idm` to unpack it. `lib/modules/` inside that ramdisk had everything needed.
+length-prefixed raw LZ4 blocks, each decompressing to at most 8 MiB.
+To decompress:
+
+```sh
+# run from android-kernel/tools/mkbootimg
+./unpack_bootimg.py --boot_img ~/Downloads/2026082709_g58v89c2k_dfl_eea/images/vendor_boot.img --out out_vendor_boot
+cd out_vendor_boot
+mkdir ramdisk00
+cd ramdisk00
+unlz4 < ../vendor_ramdisk00 | cpio -idm
+```
+
+`lib/modules/` inside that ramdisk had everything needed.
 The archive also contains several *other* device panels' drivers (`panel-nt37801-*`,
 `panel-samsung-s68fc01-*`, `panel-tianma-*`, `panel-truly-*`, etc.) — this vendor_boot ram
 disk is evidently shared across a family of MT6789 Unihertz-adjacent devices; only one
