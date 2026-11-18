@@ -46,11 +46,13 @@ BUILT = glob.glob(f"{WS}/out/bazel/output_user_root/output_base/execroot/_main/b
 
 # Left out: MET profiler, debug/placeholder modules, the stock panel driver, and two Agold info
 # modules nothing uses (agold_cam_version: /proc/agold_lcmcam_info; board_modem_version: board
-# revision sysfs; no module imports from them and no vendor blob reads their files).
+# revision sysfs; no module imports from them and no vendor blob reads their files), and
+# ext_bias (LCD bias chip): nothing calls its exports, not even the stock panel driver, and its
+# probe does no I2C traffic, so it never touches the chip.
 DROP = {"met", "met_backlight_api", "met_emi_api", "met_gpu_adv_api", "met_gpu_api", "met_ipi_api",
         "met_mcupm_api", "met_scmi_api", "met_sspm_api", "met_vcore_api", "mt63xx_oc_debug",
         "mtk_mmdvfs_debug_v3", "mtk_vcodec_sys_api", "pkvm_p1_dummy",
-        "agold_cam_version", "board_modem_version"}
+        "agold_cam_version", "board_modem_version", "ext_bias"}
 REPLACE = {"panel_ST7701S_Z30043": "panel-unihertz-jellystar-st7701s"}
 # Built from MediaTek source, but the phone needs stock's binary: Agold's sensor drivers
 # (HI847, S5KGM2, OV64B40, ...) are only in stock's imgsensor; MediaTek's has a reference set.

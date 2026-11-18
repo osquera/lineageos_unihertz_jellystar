@@ -74,7 +74,6 @@ drm_dma_helper.ko
 drm_display_helper.ko
 rt4831a_drv.ko
 mtk_panel_ext.ko
-ext_bias.ko
 panel-unihertz-jellystar-st7701s.ko
 panel-alpha-jdi-nt36672e-vdo-120hz-hfp.ko
 panel-alpha-jdi-nt36672e-cphy-vdo.ko
