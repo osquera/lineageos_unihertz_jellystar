@@ -10,10 +10,26 @@
 
 ## Modules
 
-The modules are built from MediaTek's GPL source for MT6789 (`kernel_device_modules-6.12`, with
-the Jelly Star changes: battery and charger stack, RT9471 charger, ST7701S panel, gpufreq/clock
-fixes) and staged here by a script outside this repo. The `.ko` files are not in git
-(`.gitignore`); the load lists are.
+The modules are built from MediaTek's GPL source for MT6789, `kernel_device_modules-6.12` with
+the Jelly Star changes (battery and charger stack, RT9471 charger, ST7701S panel, gpufreq/clock
+fixes): <https://github.com/osquera/android_kernel_unihertz_jellystar-modules>, branch
+`jellystar`. The `.ko` files are not in git (`.gitignore`); the load lists are.
+
+### Building
+
+```sh
+kernel/tools/setup-workspace.sh ~/jellystar-kernel        # once; needs repo, git, ~60 GB
+JOBS=6 kernel/tools/build-modules.sh ~/jellystar-kernel/ws
+kernel/tools/stage-modules.py ~/jellystar-kernel/ws \
+    --stock-vendor-boot <dir> --stock-vendor-dlkm <dir> --gki-symvers <file>
+```
+
+`setup-workspace.sh` uses public sources only: Google's common kernel pinned to the GKI build
+the phone runs (`tools/ack-manifest.xml`), OnePlus' MT6993 GPL release for MediaTek's Kleaf rules
+and `vendor/mediatek/kernel_modules` (with `tools/oneplus-vendor.patch`, which drops OnePlus-only
+dependencies), and the module tree above. `stage-modules.py` needs the stock modules (from
+stock `vendor_boot` and `vendor_dlkm`, V01.00.04) and the GKI build's `Module.symvers`; its
+docstring says what each input is.
 
 | Path | Image | Load list |
 |---|---|---|
