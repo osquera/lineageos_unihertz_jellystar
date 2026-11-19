@@ -125,7 +125,6 @@ mt6577_auxadc.ko
 adapter_class.ko
 charger_class.ko
 mtk_charger_algorithm_class.ko
-agold_compat.ko
 rt9471.ko
 pd_dbg_info.ko
 tcpc_class.ko
@@ -162,4 +161,5 @@ mtk-mbox.ko
 mtk_tinysys_ipi.ko
 arm_dsu_pmu.ko
 sec.ko
+agold_compat.ko
 fauge.ko
