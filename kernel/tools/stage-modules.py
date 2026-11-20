@@ -51,10 +51,13 @@ BUILT = glob.glob(f"{WS}/out/bazel/output_user_root/output_base/execroot/_main/b
 # probe does no I2C traffic, so it never touches the chip. agold_pm_info (/proc/driver/agold_*
 # hardware info): only the stock touch driver imported from it, and only Agold's stock apps read
 # its files (agolddaemon reads agold_battery_info on stock, but our policy doesn't allow it).
+# fpsgo: MediaTek's proprietary plug-in for mtk_fpsgo_v3 (built from source), which adds frame
+# pacing algorithms through hooks that mtk_fpsgo_v3 only calls when they are set.
 DROP = {"met", "met_backlight_api", "met_emi_api", "met_gpu_adv_api", "met_gpu_api", "met_ipi_api",
         "met_mcupm_api", "met_scmi_api", "met_sspm_api", "met_vcore_api", "mt63xx_oc_debug",
         "mtk_mmdvfs_debug_v3", "mtk_vcodec_sys_api", "pkvm_p1_dummy",
-        "agold_cam_version", "board_modem_version", "ext_bias", "agold_pm_info"}
+        "agold_cam_version", "board_modem_version", "ext_bias", "agold_pm_info",
+        "fpsgo"}
 REPLACE = {"panel_ST7701S_Z30043": "panel-unihertz-jellystar-st7701s"}
 # Built from MediaTek source, but the phone needs stock's binary: Agold's sensor drivers
 # (HI847, S5KGM2, OV64B40, ...) are only in stock's imgsensor; MediaTek's has a reference set.

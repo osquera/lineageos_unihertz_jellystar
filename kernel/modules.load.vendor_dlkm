@@ -155,7 +155,6 @@ mac80211.ko
 libarc4.ko
 fmradio_drv_mt6631_6635.ko
 mtk_fpsgo_v3.ko
-fpsgo.ko
 sec.ko
 mtk_disp_sec.ko
 vdec-fmt.ko
