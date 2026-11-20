@@ -61,9 +61,7 @@ DROP = {"met", "met_backlight_api", "met_emi_api", "met_gpu_adv_api", "met_gpu_a
 REPLACE = {"panel_ST7701S_Z30043": "panel-unihertz-jellystar-st7701s"}
 # Built from MediaTek source, but the phone needs stock's binary: Agold's sensor drivers
 # (HI847, S5KGM2, OV64B40, ...) are only in stock's imgsensor; MediaTek's has a reference set.
-# Stock's camera_mem has a larger ioctl struct (104 bytes, public sources 88) that the stock
-# camera HAL uses; with MediaTek's, every buffer mapping fails and the preview stays black.
-KEEP_STOCK = {"imgsensor_isp6s", "camera_mem"}
+KEEP_STOCK = {"imgsensor_isp6s"}
 # Our compat module goes right before the first module that imports its symbols.
 COMPAT, COMPAT_USERS = "agold_compat", {"fauge", "agold_gms_board"}
 
