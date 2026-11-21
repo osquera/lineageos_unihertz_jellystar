@@ -60,6 +60,7 @@ mkdir -p ws
 cd ws
 if [ ! -d build ]; then
     cp -a ../oneplus/kernel/build ../oneplus/kernel/common ../oneplus/kernel/tools .
+    (cd build/bazel_mgk_rules && git apply "$TOOLS/mgk-rules-dtb.patch")
     git clone -q "$BAZEL_COMMON_RULES_URL" build/bazel_common_rules
     git -C build/bazel_common_rules checkout -q "$BAZEL_COMMON_RULES_REV"
 fi
