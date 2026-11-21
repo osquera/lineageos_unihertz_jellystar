@@ -53,16 +53,18 @@ BUILT = glob.glob(f"{WS}/out/bazel/output_user_root/output_base/execroot/_main/b
 # its files (agolddaemon reads agold_battery_info on stock, but our policy doesn't allow it).
 # fpsgo: MediaTek's proprietary plug-in for mtk_fpsgo_v3 (built from source), which adds frame
 # pacing algorithms through hooks that mtk_fpsgo_v3 only calls when they are set.
+# agold_hw_compatible (camera/LCM name registry) and agold_gms_board (/proc/driver/
+# agold_gms_board_info, a copy of androidboot.agold_gms_board_info): only stock modules we no
+# longer ship imported from them (imgsensor, hf_manager, sensorhub, agold_cam_version,
+# agold_pm_info), and only Agold's stock system image reads the /proc file.
 DROP = {"met", "met_backlight_api", "met_emi_api", "met_gpu_adv_api", "met_gpu_api", "met_ipi_api",
         "met_mcupm_api", "met_scmi_api", "met_sspm_api", "met_vcore_api", "mt63xx_oc_debug",
         "mtk_mmdvfs_debug_v3", "mtk_vcodec_sys_api", "pkvm_p1_dummy",
         "agold_cam_version", "board_modem_version", "ext_bias", "agold_pm_info",
-        "fpsgo"}
+        "fpsgo", "agold_hw_compatible", "agold_gms_board"}
 REPLACE = {"panel_ST7701S_Z30043": "panel-unihertz-jellystar-st7701s"}
 # Built from source, but the phone needs stock's binary.
 KEEP_STOCK = set()
-# Our compat module goes right before the first module that imports its symbols.
-COMPAT, COMPAT_USERS = "agold_compat", {"fauge", "agold_gms_board"}
 
 
 def norm(n):
@@ -80,8 +82,6 @@ def transform(names):
         if norm(n) in DROP:
             continue
         n = REPLACE.get(norm(n), n)
-        if norm(n) in COMPAT_USERS and COMPAT + ".ko" not in out:
-            out.append(COMPAT + ".ko")
         out.append(n + ".ko")
     return out
 
