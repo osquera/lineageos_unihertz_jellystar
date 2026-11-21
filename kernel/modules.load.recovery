@@ -161,5 +161,4 @@ mtk-mbox.ko
 mtk_tinysys_ipi.ko
 arm_dsu_pmu.ko
 sec.ko
-agold_compat.ko
 fauge.ko

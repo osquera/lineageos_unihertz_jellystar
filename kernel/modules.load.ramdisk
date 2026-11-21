@@ -158,8 +158,5 @@ mediatek-cpufreq-hw.ko
 mtk-swpm-perf-arm-pmu-legacy.ko
 cache-parity.ko
 sunwave_fp.ko
-agold_compat.ko
 fauge.ko
-agold_hw_compatible.ko
-agold_gms_board.ko
 leds-aw2033.ko
