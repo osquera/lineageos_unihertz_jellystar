@@ -5,7 +5,7 @@
 | File | Source | Notes |
 |---|---|---|
 | `Image.lz4` | stock `boot.img` (V01.00.04) | Google's GKI build, unmodified: `6.12.69-android16-6-g86dc53cfe87f-ab15464463-4k`. LZ4 (legacy format), not gzip. |
-| `dtb/jellystar.dtb` | built from source: `mt6789.dtb` from the module tree's `out/mgk_64_k612/dist`, in a DT table (`mkdtboimg.py create --page_size=2048`, one entry, as stock) | Keep **exactly one** `.dtb` here: a second one gets concatenated into `vendor_boot` and the phone stops booting without any log (see `../BoardConfig.mk`). |
+| `dtb/jellystar.dtb` | built from source: `mt6789.dtb` from the module tree's `out/mgk_64_k612/dist`, in a DT table (`mkdtboimg.py create --page_size=2048`, one entry, as stock); then cut the file to the table's `total_size` (header bytes 4-7): `mkdtboimg.py` pads it to the page size, and LK's overlay step (`ufdt_apply_overlay(): Bad fdt size!`) rejects a DTB whose file size isn't exactly the table size, so the phone boot-loops | Keep **exactly one** `.dtb` here: a second one gets concatenated into `vendor_boot` and the phone stops booting without any log (see `../BoardConfig.mk`). |
 | `dtbo.img` | built from source: `dtbo.img` from `out/mgk_64_k612/dist` (board overlay `arch/arm64/boot/dts/mediatek/mt6789-jellystar-overlay.dtso`) | Padded to the partition size by the build (`BOARD_DTBOIMG_PARTITION_SIZE`). |
 
 ## Modules
