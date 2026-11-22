@@ -1,0 +1,80 @@
+Build the device tree (DTB and DTBO image) with MediaTek's Kleaf rules.
+
+Port of LineageOS's android_kernel_build_bazel_mgk_rules commits
+f4f4c2c "Add support for building DTB" (rio004), 7bc6c54 "mgk: Support
+building dtbo image" (Matsvei Niaverau) and 3bea1a9 "kleaf: Make dtbo
+building optional" (Mashopy) to the 6.12 rules from OnePlus' MT6993
+release. The DTBs come from the device module tree's kernel_build only.
+
+--- a/mgk.bzl
++++ b/mgk.bzl
+@@ -9,6 +9,7 @@
+     "kernel_abi",
+     "kernel_abi_dist",
+     "kernel_build",
++    "kernel_images",
+     "kernel_module",
+     "kernel_modules_install",
+ )
+@@ -127,7 +128,9 @@
+         platform_device_user_modules,
+         symbol_list,
+         additional_symbol_lists,
+-        KMI_white_list):
++        KMI_white_list,
++        dtb_files = [],
++        build_dtbo_image = False):
+     mgk_defconfig_overlays = []
+     for o in DEFCONFIG_OVERLAYS.split(" "):
+         if o != "":
+@@ -276,14 +279,15 @@
+                 ] + kleaf_device_modules_kconfigs,
+                 outs = [
+                     ".config",
+-                ],
++                ] + dtb_files,
+                 module_outs = common_eng_modules if build == "eng" else common_userdebug_modules if build == "userdebug" else [],
+                 module_implicit_outs = common_user_modules if build == "user" else [],
+                 build_config = ":{}_build_config.{}".format(name, build),
+                 kconfig_ext = ":Kconfig.ext",
+                 make_goals = [
+                     "modules",
+-                ],
++                ] + (["dtbs"] if dtb_files else []),
++                dtstree = "//kernel_device_modules-{}/arch/arm64/boot/dts:mtk_dt".format(kernel_version) if dtb_files else None,
+                 ddk_module_headers = select({
+                     "//build/bazel_mgk_rules:kernel_version_6.12"     : ["//{}-{}:all_headers_aarch64".format(ack_dir, "6.12")],
+                     "//build/bazel_mgk_rules:kernel_version_mainline": ["//{}-{}:all_headers_aarch64".format(ack_dir, "mainline")],
+@@ -309,6 +313,14 @@
+                     name = "compile_commands_{}.{}".format(name, build),
+                     deps = ["{}.{}".format(name, build)],
+                 )
++            if build_dtbo_image:
++                kernel_images(
++                    name = "{}_kernel_images.{}".format(name, build),
++                    kernel_build = ":{}.{}".format(name, build),
++                    build_dtbo = True,
++                    dtbo_srcs = ["//kernel_device_modules-{}/arch/arm64/boot/dts:mtk_dtbo".format(kernel_version)],
++                    kernel_modules_install = ":{}_customer_modules_install.{}".format(name, build),
++                )
+         # internal
+         kernel_abi(
+             name = "{}.{}_internal_abi".format(name, build),
+@@ -423,7 +435,7 @@
+                 + [
+                     ":{}.{}".format(name, build),
+                     ":{}_internal_modules_install.{}".format(name, build),
+-                ] + ([":{}.{}/{}".format(name, build, m) for m in common_user_modules] if build == "user" else []),
++                ] + ([":{}.{}/{}".format(name, build, m) for m in common_user_modules] if build == "user" else []) + ([":{}_kernel_images.{}".format(name, build)] if build_dtbo_image else []),
+                 flat = False,
+             )
+         # customer
+@@ -484,7 +496,7 @@
+                 + [
+                     ":{}.{}".format(name, build),
+                     ":{}_customer_modules_install.{}".format(name, build),
+-                ] + ([":{}.{}/{}".format(name, build, m) for m in common_user_modules] if build == "user" else []),
++                ] + ([":{}.{}/{}".format(name, build, m) for m in common_user_modules] if build == "user" else []) + ([":{}_kernel_images.{}".format(name, build)] if build_dtbo_image else []),
+                 flat = False,
+             )
+ 

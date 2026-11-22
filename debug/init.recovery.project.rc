@@ -1,0 +1,11 @@
+# Development only (permissive test builds): imported by init.recovery.mt6789.rc. Writes a
+# diagnostics report into expdb 60 s after recovery starts.
+
+on boot
+    start jellystar_recovery_diag
+
+service jellystar_recovery_diag /system/bin/sh /jellystar-recovery-diag.sh
+    user root
+    oneshot
+    disabled
+    seclabel u:r:recovery:s0

@@ -20,7 +20,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
 
 PRODUCT_PACKAGES += \
-    com.android.hardware.boot \
     android.hardware.boot-service.default_recovery
 
 PRODUCT_PACKAGES += \
@@ -50,8 +49,30 @@ PRODUCT_AAPT_PREF_CONFIG := hdpi
 # Audio: the HAL (android.hardware.audio.service-aidl.mediatek, audio.primary.mt6789.so) is
 # a vendor blob.
 PRODUCT_PACKAGES += \
+    audio.bluetooth.default \
     audio.r_submix.default \
-    audio.usb.default
+    audio.usb.default \
+    android.hardware.bluetooth.audio@2.0-impl \
+    android.hardware.bluetooth.audio@2.1-impl \
+    libaecsw \
+    libagc1sw \
+    libagc2sw \
+    libbassboostsw \
+    libbundleaidl \
+    libdownmixaidl \
+    libdynamicsprocessingaidl \
+    libenvreverbsw \
+    libequalizersw \
+    libextensioneffect \
+    libhapticgeneratoraidl \
+    libloudnessenhanceraidl \
+    libnssw \
+    libpreprocessingaidl \
+    libpresetreverbsw \
+    libreverbaidl \
+    libvirtualizersw \
+    libvisualizeraidl \
+    libvolumesw
 
 # The stock bluetooth_audio_policy_configuration.xml leaves the A2DP output mixPort without
 # profiles, so AudioPolicyManager finds no device descriptor for APTX and the A2DP connection
@@ -69,6 +90,18 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth-service-mediatek.xml
 
+# Camera
+PRODUCT_PACKAGES += \
+    firmware_sensor_symlink
+
+# Context hub
+PRODUCT_PACKAGES += \
+    android.hardware.contexthub-service.tinysys
+
+# DRM
+PRODUCT_PACKAGES += \
+    android.hardware.drm-service.clearkey
+
 # Dynamic Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_BUILD_SUPER_PARTITION := true
@@ -82,13 +115,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     FMRadio
 
-# Graphics
-PRODUCT_PACKAGES += \
-    android.hardware.graphics.composer@2.3-service
-
 # Health
 PRODUCT_PACKAGES += \
-    android.hardware.health-service.mediatek \
+    android.hardware.health-service.example \
     android.hardware.health-service.mediatek-recovery
 
 $(call inherit-product, hardware/lineage/compat/frameworks/compat.mk)
@@ -109,10 +138,9 @@ PRODUCT_PACKAGES += \
     TeleServiceJellystar
 
 # ImsService loads the video telephony libraries (libmtk_vt_wrapper etc.) at startup; they need
-# libhidltransport (not in the default system image) and libui_shim (libsource, see extract-files.py).
+# libhidltransport, which is not in the default system image.
 PRODUCT_PACKAGES += \
-    libhidltransport \
-    libui_shim
+    libhidltransport
 
 # ImsService registers receivers without RECEIVER_EXPORTED and would crash on Android 14+.
 PRODUCT_COPY_FILES += \
@@ -127,11 +155,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     CarrierConfigJellystar
 
-# Lights
+# IR
 PRODUCT_PACKAGES += \
-    android.hardware.light-service.lineage
-
-$(call soong_config_set_bool,lineagelight,snap_rgb_to_pure,true)
+    android.hardware.ir-service.example
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -142,10 +168,6 @@ PRODUCT_PACKAGES += \
     mediacodec.policy \
     mediaextractor.policy \
     mediaswcodec.policy
-
-# Memtrack
-PRODUCT_PACKAGES += \
-    android.hardware.memtrack-service.mediatek
 
 # NFC (TMS THN31)
 PRODUCT_PACKAGES += \
@@ -168,14 +190,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/nfc/libnfc-nci.conf:$(TARGET_COPY_OUT_PRODUCT)/etc/libnfc-nci.conf
 
-# Face unlock: the stock vendor's face HAL needs Unihertz's framework, so hide the feature.
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/permissions/jellystar-unavailable-features.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/jellystar-unavailable-features.xml
-
-# Power-off charging: start the stock health HAL in charger mode (see the rc for why).
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/init.jellystar.charger.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.jellystar.charger.rc
-
 # Key layouts: haptic feedback for the capacitive navigation keys, and the red shortcut key.
 # In /system because the stock vendor partition has none for these devices.
 PRODUCT_COPY_FILES += \
@@ -191,54 +205,54 @@ $(call inherit-product, hardware/mediatek/overlay/mssi.mk)
 
 PRODUCT_ENFORCE_RRO_TARGETS := *
 
-# Permissions — standard AOSP feature-declaration XML, platform-generic
+# Permissions: the stock vendor set (the rest are stock files, see proprietary-files.txt)
+PRODUCT_PACKAGES += \
+    android.hardware.audio.low_latency.prebuilt.xml \
+    android.hardware.bluetooth_le.prebuilt.xml \
+    android.hardware.consumerir.prebuilt.xml \
+    android.hardware.faketouch.prebuilt.xml \
+    android.hardware.hardware_keystore.xml \
+    android.hardware.location.gps.prebuilt.xml \
+    android.hardware.sensor.accelerometer.prebuilt.xml \
+    android.hardware.sensor.compass.prebuilt.xml \
+    android.hardware.sensor.gyroscope.prebuilt.xml \
+    android.hardware.sensor.light.prebuilt.xml \
+    android.hardware.sensor.proximity.prebuilt.xml \
+    android.hardware.sensor.stepcounter.prebuilt.xml \
+    android.hardware.sensor.stepdetector.prebuilt.xml \
+    android.hardware.telephony.ims.prebuilt.xml \
+    android.hardware.usb.accessory.prebuilt.xml \
+    android.hardware.usb.host.prebuilt.xml \
+    android.hardware.vulkan.compute-0.prebuilt.xml \
+    android.hardware.vulkan.level-1.prebuilt.xml \
+    android.hardware.vulkan.version-1_3.prebuilt.xml \
+    android.hardware.wifi.passpoint.prebuilt.xml \
+    android.software.ipsec_tunnels.prebuilt.xml \
+    android.software.verified_boot.prebuilt.xml \
+    features_com.android.virt.xml \
+    handheld_core_hardware.prebuilt.xml
+
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
-    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
-    frameworks/native/data/etc/android.hardware.faketouch.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.faketouch.xml \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml \
+    frameworks/native/data/etc/android.hardware.keystore.app_attest_key.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.keystore.app_attest_key.prebuilt.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
-    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
-    frameworks/native/data/etc/android.hardware.sensor.compass.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.compass.xml \
-    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.gyroscope.xml \
-    frameworks/native/data/etc/android.hardware.sensor.light.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.light.xml \
-    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml \
-    frameworks/native/data/etc/android.hardware.sensor.stepcounter.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepcounter.xml \
-    frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepdetector.xml \
-    frameworks/native/data/etc/android.hardware.se.omapi.uicc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.se.omapi.uicc.xml \
-    frameworks/native/data/etc/android.hardware.telephony.cdma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.cdma.xml \
-    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/native/data/etc/android.hardware.telephony.ims.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.ims.xml \
-    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
-    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.xml \
+    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.prebuilt.xml \
+    frameworks/native/data/etc/android.hardware.telephony.cdma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.cdma.prebuilt.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.distinct.prebuilt.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.prebuilt.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.prebuilt.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.prebuilt.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.level-1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.version-1_1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version.xml \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
-    frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
-    frameworks/native/data/etc/android.software.opengles.deqp.level-2021-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml \
-    frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml \
-    frameworks/native/data/etc/android.software.vulkan.deqp.level-2021-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
-    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
+    frameworks/native/data/etc/android.software.opengles.deqp.level-2025-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level-2025-03-01.prebuilt.xml \
+    frameworks/native/data/etc/android.software.vulkan.deqp.level-2025-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level-2025-03-01.prebuilt.xml
 
 # Platform
 TARGET_BOARD_PLATFORM := mt6789
-
-PRODUCT_PACKAGES += \
-    android.hardware.power-service.lineage-libperfmgr \
-    libmtkperf_client_vendor \
-    libmtkperf_client \
-    vendor.mediatek.hardware.mtkpower@1.2-service.stub
 
 ENABLE_VENDOR_RIL_SERVICE := true
 
@@ -268,9 +282,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/init.recovery.mt6789.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.mt6789.rc
 
-PRODUCT_PACKAGES += \
-    android.hardware.thermal-service.mediatek
-
 # Shipping API level (launched with Android 13)
 PRODUCT_SHIPPING_API_LEVEL := 33
 
@@ -283,6 +294,16 @@ ifeq ($(JELLYSTAR_DEV_ADB_KEY),true)
 ifneq ($(wildcard $(LOCAL_PATH)/debug/adbkey.pub),)
 PRODUCT_ADB_KEYS := $(LOCAL_PATH)/debug/adbkey.pub
 endif
+endif
+
+# Development only, with the permissive test builds: if the boot hangs, write a report into
+# expdb and reboot (debug/boot-watchdog.sh).
+ifeq ($(JELLYSTAR_SELINUX_PERMISSIVE),true)
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/debug/boot-watchdog.sh:$(TARGET_COPY_OUT_VENDOR)/etc/jellystar-boot-watchdog.sh \
+    $(LOCAL_PATH)/debug/init.jellystar.bootwatchdog.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.jellystar.bootwatchdog.rc \
+    $(LOCAL_PATH)/debug/init.recovery.project.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.project.rc \
+    $(LOCAL_PATH)/debug/recovery-diag.sh:$(TARGET_COPY_OUT_RECOVERY)/root/jellystar-recovery-diag.sh
 endif
 PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
 
@@ -331,30 +352,23 @@ PRODUCT_PACKAGES += \
     android.hidl.allocator@1.0-service \
     android.hidl.memory@1.0-impl
 
+# Sensors
+PRODUCT_PACKAGES += \
+    android.hardware.sensors-service.multihal
+
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
     hardware/google/interfaces \
     hardware/google/pixel \
-    hardware/lineage/interfaces/power-libperfmgr \
-    hardware/mediatek \
-    hardware/mediatek/libmtkperf_client
+    hardware/mediatek
 
-# USB
-PRODUCT_PACKAGES += \
-    android.hardware.usb-service.mediatek \
-    android.hardware.usb.gadget-service.mediatek \
-    init.mt6789.usb.rc
-
-# Vibrator
-PRODUCT_PACKAGES += \
-    android.hardware.vibrator-service.legacy
 
 # Wi-Fi
-$(call soong_config_set_bool,mediatek_wifi_hal,use_pre_u_qpr2_struct,true)
-
+# The stock A16 libwifi-hal fills the current wifi_hal_fn layout, so the wrapper needs no
+# use_pre_* struct flag.
 PRODUCT_PACKAGES += \
-    android.hardware.wifi-service \
+    android.hardware.wifi-service-lazy \
     hostapd \
     libwifi-hal-wrapper \
     wlan_assistant \
@@ -374,7 +388,8 @@ PRODUCT_VENDOR_PROPERTIES += \
 PRODUCT_PACKAGES += \
     FrameworksResJellystar \
     LineageSdkJellystar \
-    SystemUIJellystar
+    SystemUIJellystar \
+    WifiResJellystar
 
 # Screen size, for the boot animation
 TARGET_SCREEN_WIDTH := 480

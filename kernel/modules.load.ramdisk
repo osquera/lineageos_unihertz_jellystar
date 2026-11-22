@@ -56,7 +56,6 @@ mtk-mmdvfs-ftrace.ko
 mtk-mmdebug-vcp-stub.ko
 mtk-mmdvfs.ko
 mtk-mmdvfs-debug.ko
-mtk-mmdvfs-debug-v3.ko
 mtk-mm-monitor-controller.ko
 mm-monitor-platform-mt6789.ko
 mmqos-common.ko
@@ -75,8 +74,7 @@ drm_dma_helper.ko
 drm_display_helper.ko
 rt4831a_drv.ko
 mtk_panel_ext.ko
-ext_bias.ko
-panel-ST7701S_Z30043.ko
+panel-unihertz-jellystar-st7701s.ko
 panel-alpha-jdi-nt36672e-vdo-120hz-hfp.ko
 panel-alpha-jdi-nt36672e-cphy-vdo.ko
 panel-truly-td4330-cmd.ko
@@ -161,9 +159,4 @@ mtk-swpm-perf-arm-pmu-legacy.ko
 cache-parity.ko
 sunwave_fp.ko
 fauge.ko
-agold_hw_compatible.ko
-agold_pm_info.ko
-agold_gms_board.ko
 leds-aw2033.ko
-agold_cam_version.ko
-board_modem_version.ko

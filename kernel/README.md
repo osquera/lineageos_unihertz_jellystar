@@ -1,66 +1,66 @@
-# Prebuilt kernel — no vendor kernel source exists for this device
+# Kernel and kernel modules
 
-Unihertz does not release kernel source for any of their devices (documented pattern, not
-specific to Jelly Star — see the project memory / handoff brief for the research behind
-this). This directory holds the stock kernel/dtb/dtbo **extracted directly from Jelly
-Star's own stock firmware**, used as prebuilt binaries rather than built from source —
-the same approach `iasnezhkov/android_device_ikko_mindone` uses for the same reason on the
-same MT6789/Helio G99 platform (that project went further and hand-forward-ported a kernel
-from Google's ACK; we have not attempted that here).
-
-## What's here and where it came from
+## Kernel (prebuilt), DTB, DTBO
 
 | File | Source | Notes |
 |---|---|---|
-| `Image.lz4` | `boot.img` (`~/Downloads/boot.img`, stock V01.00.04, unpacked with `unpack_bootimg`) | **LZ4-compressed**, not gzip — confirmed via `file`. Unmodified bytes, known-good: this is literally the kernel that boots the device today. |
-| `dtb/jellystar.dtb` | `vendor_boot.img` (EEA firmware, `2026082709_g58v89c2k_dfl_eea/images/vendor_boot.img`) | Exactly one `.dtb` file — **must stay that way**. See the warning in `../BoardConfig.mk`: a second stray `.dtb` here gets silently concatenated into `vendor_boot`, and the device just stops booting with no adb and no crash log (a preloader window every ~33s is the only symptom) — this is a real failure mode iKKO's project hit and documented, not a hypothetical. |
-| `dtbo.img` | Same EEA firmware folder, copied as-is | Standard Android DTBO image (magic `0xD00DFEED`/`0xd7b7ab1e` — confirmed). |
+| `Image.lz4` | stock `boot.img` (V01.00.04) | Google's GKI build, unmodified: `6.12.69-android16-6-g86dc53cfe87f-ab15464463-4k`. LZ4 (legacy format), not gzip. |
+| `dtb/jellystar.dtb` | built from source: `mt6789.dtb` from the module tree's `out/mgk_64_k612/dist`, in a DT table (`mkdtboimg.py create --page_size=2048`, one entry, as stock); then cut the file to the table's `total_size` (header bytes 4-7): `mkdtboimg.py` pads it to the page size, and LK's overlay step (`ufdt_apply_overlay(): Bad fdt size!`) rejects a DTB whose file size isn't exactly the table size, so the phone boot-loops | Keep **exactly one** `.dtb` here: a second one gets concatenated into `vendor_boot` and the phone stops booting without any log (see `../BoardConfig.mk`). |
+| `dtbo.img` | built from source: `dtbo.img` from `out/mgk_64_k612/dist` (board overlay `arch/arm64/boot/dts/mediatek/mt6789-jellystar-overlay.dtso`) | Padded to the partition size by the build (`BOARD_DTBOIMG_PARTITION_SIZE`). |
 
-Kernel command line and vendor_boot header fields (`bootopt=64S3,32N2,64N2`, kernel load
-`0x40000000`, ramdisk load `0x66f00000`, dtb/tags load `0x47c80000`) were cross-checked
-against iKKO's own `BoardConfig.mk` for the same SoC and matched exactly — see the header
-comment there.
+## Modules
 
-## Kernel modules — DONE (2026-09-29)
+The modules are built from MediaTek's GPL source for MT6789, `kernel_device_modules-6.12` with
+the Jelly Star changes (battery and charger stack, RT9471 charger, ST7701S panel, gpufreq/clock
+fixes): <https://github.com/osquera/android_kernel_unihertz_jellystar-modules>, branch
+`jellystar`. The `.ko` files are not in git (`.gitignore`); the load lists are.
 
-`modules/` holds all 176 `.ko` files plus `modules.dep`/`modules.alias`/`modules.softdep`,
-extracted from `vendor_ramdisk00` inside `vendor_boot.img`. `modules.load` (169 entries,
-verified every one has a matching `.ko`), `modules.load.recovery` (166 entries), and
-`modules.load.ramdisk` (a copy of `modules.load` — the extracted ramdisk only shipped one
-"load" list, not a separate ramdisk-specific one, so the same list is used for both
-`BoardConfig.mk` variables) all live one level up in `kernel/`.
-
-**How it was extracted, since no `lz4` tool was installed and there's no passwordless
-sudo:** `vendor_ramdisk00` uses Android's **legacy** LZ4 frame format (magic `0x184C2102`,
-not the modern LZ4 frame format `lz4.frame` in Python expects) — a sequence of 4-byte
-length-prefixed raw LZ4 blocks, each decompressing to at most 8 MiB.
-To decompress:
+### Building
 
 ```sh
-# run from android-kernel/tools/mkbootimg
-./unpack_bootimg.py --boot_img ~/Downloads/2026082709_g58v89c2k_dfl_eea/images/vendor_boot.img --out out_vendor_boot
-cd out_vendor_boot
-mkdir ramdisk00
-cd ramdisk00
+kernel/tools/setup-workspace.sh ~/jellystar-kernel        # once; needs repo, git, ~60 GB
+JOBS=6 kernel/tools/build-modules.sh ~/jellystar-kernel/ws
+kernel/tools/stage-modules.py ~/jellystar-kernel/ws \
+    --stock-vendor-boot <dir> --stock-vendor-dlkm <dir> --gki-symvers <file>
+```
+
+`setup-workspace.sh` uses public sources only: Google's common kernel pinned to the GKI build
+the phone runs (`tools/ack-manifest.xml`), OnePlus' MT6993 GPL release for MediaTek's Kleaf rules
+and `vendor/mediatek/kernel_modules` (with `tools/oneplus-vendor.patch`, which drops OnePlus-only
+dependencies), and the module tree above. `stage-modules.py` needs the stock modules (from
+stock `vendor_boot` and `vendor_dlkm`, V01.00.04) and the GKI build's `Module.symvers`; its
+docstring says what each input is.
+
+The stock `vendor_boot` modules are inside its first vendor ramdisk, which uses Android's legacy
+LZ4 format (`unlz4` reads it):
+
+```sh
+# from the kernel workspace: tools/mkbootimg
+./unpack_bootimg.py --boot_img <stock firmware>/images/vendor_boot.img --out out_vendor_boot
+mkdir out_vendor_boot/ramdisk00 && cd out_vendor_boot/ramdisk00
 unlz4 < ../vendor_ramdisk00 | cpio -idm
 ```
 
-`lib/modules/` inside that ramdisk had everything needed.
-The archive also contains several *other* device panels' drivers (`panel-nt37801-*`,
-`panel-samsung-s68fc01-*`, `panel-tianma-*`, `panel-truly-*`, etc.) — this vendor_boot ram
-disk is evidently shared across a family of MT6789 Unihertz-adjacent devices; only one
-panel driver is actually relevant to Jelly Star specifically, not yet identified which.
+`--stock-vendor-boot` wants a directory with `modules/*.ko`, `modules.load.ramdisk` and
+`modules.load.recovery`: the `.ko` files and `modules.load` / `modules.load.recovery` from the
+ramdisk's `lib/modules/`.
 
-## Reference: how iKKO handles the equivalent step
+| Path | Image | Load list |
+|---|---|---|
+| `modules/` | `vendor_boot` (first stage) | `modules.load.ramdisk`, `modules.load.recovery` |
+| `vendor_dlkm/` | `vendor_dlkm` (second stage, built by the build system) | `modules.load.vendor_dlkm` |
 
-Their `README.md` build steps 4 does this:
-```sh
-mkdir -p device/ikko/mindone/kernel/dtb device/ikko/mindone/kernel/modules
-rm -f device/ikko/mindone/kernel/dtb/*.dtb
-cp <kernel-out>/Image.gz                                 device/ikko/mindone/kernel/
-cp <kernel-out>/arch/arm64/boot/dts/mediatek/mindone.dtb  device/ikko/mindone/kernel/dtb/
-cp <k6set>/*.ko                                           device/ikko/mindone/kernel/modules/
-```
-Theirs comes from actually building a kernel (their hand-forward-ported ACK). Ours instead
-needs to come from extracting `vendor_ramdisk00`'s `.ko` files directly out of the stock
-`vendor_boot.img`, since we have no kernel source to build from at all.
+`odm_dlkm` and `system_dlkm` stay stock images: `system_dlkm` holds Google's GKI modules, which
+are signed by the GKI build and match `Image.lz4`.
+
+### Stock modules
+
+None are shipped any more: every module in `modules/` and `vendor_dlkm/` is built from source.
+`stage-modules.py` still reads the stock modules and their load lists, because they define which
+modules the phone loads at which stage and in which order, and because the CRC check below
+compares against them. The amplifier driver `snd-soc-fsm` (FS16xx) is built but untested: the
+test phone has the FS19xx amplifier.
+
+Load order comes from `modules.dep`, which the build generates from the symbols. When staging,
+`stage-modules.py` checks, like depmod, that every symbol a module imports is provided at its
+load stage with a matching CRC (GKI exports from the GKI build's `Module.symvers`).

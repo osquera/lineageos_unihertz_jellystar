@@ -1,0 +1,9 @@
+# Agold LED belt HAL (vendor.mediatek.hardware.aguiledbelt).
+type hal_aidl_ledbelt_default, domain;
+type hal_aidl_ledbelt_default_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(hal_aidl_ledbelt_default)
+
+binder_use(hal_aidl_ledbelt_default)
+add_service(hal_aidl_ledbelt_default, hal_aidl_ledbelt_service)
+
+allow hal_aidl_ledbelt_default agui_device:chr_file { ioctl open read write };

@@ -6,6 +6,13 @@
 soong_namespace {
     imports: [
         "hardware/mediatek",
-        "hardware/mediatek/libmtkperf_client",
     ],
+}
+
+// Camera sensor firmware: stock links /vendor/firmware/sensor to the imgsensor directory.
+install_symlink {
+    name: "firmware_sensor_symlink",
+    vendor: true,
+    installed_location: "firmware/sensor",
+    symlink_target: "/vendor/etc/imgsensor/mt6789",
 }

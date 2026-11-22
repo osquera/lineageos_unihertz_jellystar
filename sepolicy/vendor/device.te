@@ -1,0 +1,2 @@
+# Agold LED belt (/dev/lampbelt_leds)
+type agui_device, dev_type;

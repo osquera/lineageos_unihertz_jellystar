@@ -1,0 +1,7 @@
+# MediaTek GNSS batching HAL (vendor.mediatek.hardware.gnss-service), started on demand.
+type mtk_hal_batching, domain;
+type mtk_hal_batching_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(mtk_hal_batching)
+
+binder_use(mtk_hal_batching)
+add_service(mtk_hal_batching, mtk_hal_batching_service)

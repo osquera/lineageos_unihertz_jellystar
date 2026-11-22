@@ -1,0 +1,3 @@
+# LineageOS's NFC app with the TMS NFC HAL
+allow nfc tmsnfc_aidl_service:service_manager find;
+allow nfc nfc_data_vendor_file:dir search;

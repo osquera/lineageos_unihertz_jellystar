@@ -1,0 +1,4 @@
+set_prop(tee, vendor_mtk_ufs_prop)
+allow tee gsi_metadata_file:dir search;
+allow tee nvcfg_file:dir create_dir_perms;
+allow tee nvcfg_file:file create_file_perms;

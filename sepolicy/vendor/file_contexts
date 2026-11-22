@@ -1,11 +1,52 @@
-# Only reaches the recovery ramdisk: Android itself runs the stock vendor policy (prebuilt vendor
-# image), but recovery is built with this tree's vendor policy. Without these labels misc is a
-# plain block_device there, the boot control HAL can't open it and crash-loops, and
-# update_engine_sideload hangs mid-install waiting for IBootControl. Same paths and AOSP types as
-# the stock vendor_file_contexts.
-/dev/block/by-name/misc                 u:object_r:misc_block_device:s0
-/dev/block/by-name/super                u:object_r:super_block_device:s0
-/dev/block/by-name/metadata             u:object_r:metadata_block_device:s0
-/dev/block/by-name/userdata             u:object_r:userdata_block_device:s0
-/dev/block/by-name/boot(_[ab])?         u:object_r:boot_block_device:s0
-/dev/block/by-name/vendor_boot(_[ab])?  u:object_r:boot_block_device:s0
+# Stock HALs installed with a -stock suffix (see extract-files.py), labelled like the original
+# paths in device/mediatek/sepolicy_vndr.
+/vendor/bin/hw/android\.hardware\.memtrack-service\.mediatek-stock   u:object_r:mtk_hal_memtrack_exec:s0
+/vendor/bin/hw/android\.hardware\.thermal-service\.mediatek-stock    u:object_r:hal_thermal_default_exec:s0
+/vendor/bin/hw/android\.hardware\.vibrator-service\.mediatek-stock   u:object_r:hal_vibrator_default_exec:s0
+/vendor/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service-stock u:object_r:hal_fingerprint_default_exec:s0
+
+# Labels from the stock vendor_file_contexts that device/mediatek/sepolicy_vndr lacks. Without
+# them these services run in the init domain.
+/vendor/bin/hw/android\.hardware\.bluetooth-service-mediatek          u:object_r:mtk_hal_bluetooth_exec:s0
+/vendor/bin/hw/android\.hardware\.boot-service\.mtk                   u:object_r:hal_bootctl_default_exec:s0
+/vendor/bin/hw/android\.hardware\.media\.c2-mediatek                  u:object_r:mtk_hal_c2_exec:s0
+/vendor/bin/hw/android\.hardware\.neuralnetworks-shim-service-mtk-lazy u:object_r:mtk_hal_neuralnetworks_exec:s0
+/vendor/bin/hw/android\.hardware\.nfc-service-tms                     u:object_r:hal_nfc_default_exec:s0
+/vendor/bin/hw/android\.hardware\.usb-aidl-service\.mediatek          u:object_r:mtk_hal_usb_exec:s0
+/vendor/bin/hw/android\.hardware\.usb\.gadget-aidl-service\.mediatek  u:object_r:mtk_hal_usb_exec:s0
+/vendor/bin/hw/vendor\.mediatek\.hardware\.aee@V1-service             u:object_r:aee_hal_exec:s0
+/vendor/bin/hw/vendor\.mediatek\.hardware\.agolddaemon@V1-service     u:object_r:hal_aidl_agolddaemon_default_exec:s0
+/vendor/bin/hw/vendor\.mediatek\.hardware\.aguiledbelt@V1-service     u:object_r:hal_aidl_ledbelt_default_exec:s0
+/vendor/bin/hw/vendor\.mediatek\.hardware\.gnss-service               u:object_r:mtk_hal_batching_exec:s0
+/vendor/bin/(mt6789/)?v3avpud-64b(\.mt6789)?                          u:object_r:vpud_native_exec:s0
+/vendor/bin/AguiFrsmClibra                                            u:object_r:nvram_daemon_exec:s0
+/vendor/bin/AguiGenAddrToNvram                                        u:object_r:nvram_daemon_exec:s0
+/vendor/bin/SaveSmartpaCalib                                          u:object_r:nvram_daemon_exec:s0
+/vendor/bin/jxnosfastswitch                                           u:object_r:mtk_hal_jxnosfastswitch_exec:s0
+/vendor/bin/migrate_tee_data                                          u:object_r:tee_exec:s0
+/vendor/bin/tee_check_keybox                                          u:object_r:tee_exec:s0
+/vendor/etc/t6(/.*)?                                                  u:object_r:tkcore_systa_file:s0
+
+# Same-process HALs: the graphics stack loads these into apps, surfaceflinger and bootanim.
+/vendor/etc/gralloc(/.*)?                                                       u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/hw/android\.hardware\.graphics\.allocator-V[0-9]+-mediatek\.so u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/(mt6789/)?libarm_egl_properties_sysprop\.so                    u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/(mt6789/)?libarm_gralloc_properties_sysprop\.so                u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/(mt6789/)?libarm_mali_config_sysprops\.so                      u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/(mt6789/)?libmtk_mali_user\.so                                 u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/libaal_sec\.so                                                 u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/libpq_sec\.so                                                  u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/libpqxmlflagparser\.so                                         u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/mt6789/libhdrvideo\.so                                         u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/mt6789/libscltm\.so                                            u:object_r:same_process_hal_file:s0
+/vendor/lib(64)?/vendor\.mediatek\.hardware\.graphics-V[0-9]+-ndk\.so           u:object_r:same_process_hal_file:s0
+
+# Device nodes
+/dev/lampbelt_leds      u:object_r:agui_device:s0
+/dev/sunwave_fp         u:object_r:fingerprint_device:s0
+/dev/tkcore_fp          u:object_r:tkcore_client_device:s0
+/dev/tms_nfc            u:object_r:nfc_device:s0
+/dev/ttyCMIPC10         u:object_r:gsm0710muxd_device:s0
+
+# Sockets
+/dev/socket/bip_socket  u:object_r:bip_socket:s0

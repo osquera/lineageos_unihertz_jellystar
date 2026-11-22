@@ -1,0 +1,9 @@
+allow mtk_hal_power gpu_device:dir search;
+allow mtk_hal_power dri_device:chr_file rw_file_perms;
+set_prop(mtk_hal_power, vendor_mtk_boostfwk_checkpoint_prop)
+set_prop(mtk_hal_power, vendor_mtk_boostfwk_scroll_duration_h_prop)
+allowxperm mtk_hal_power proc_easmgr:file ioctl { 0x673d 0x673e };
+set_prop(mtk_hal_power, vendor_mtk_boostfwk_scroll_duration_v_prop)
+set_prop(mtk_hal_power, vendor_mtk_boostfwk_sbb_touch_duration_prop)
+set_prop(mtk_hal_power, vendor_mtk_boostfwk_scroll_floor_prop)
+set_prop(mtk_hal_power, vendor_mtk_boostfwk_frame_decision_prop)

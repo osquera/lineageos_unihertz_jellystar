@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-ZYGOTE_FORCE_64 := true
 TARGET_SUPPORTS_OMX_SERVICE := false
 TARGET_REQUIRES_HIDL_CAS_HAL := false
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)

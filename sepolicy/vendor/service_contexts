@@ -1,0 +1,7 @@
+vendor.mediatek.hardware.agolddaemon.IAgoldDaemon/default            u:object_r:hal_aidl_agolddaemon_service:s0
+vendor.mediatek.hardware.aguiledbelt.IAguiLedBeltLight/default       u:object_r:hal_aidl_ledbelt_service:s0
+vendor.mediatek.hardware.gnss.batching.IMtkGnssBatching/default      u:object_r:mtk_hal_batching_service:s0
+vendor.mediatek.hardware.mtkradioex.ntn.IMtkRadioExNtn/slot1         u:object_r:hal_radio_service:s0
+vendor.mediatek.hardware.mtkradioex.ntn.IMtkRadioExNtn/slot2         u:object_r:hal_radio_service:s0
+vendor.mediatek.hardware.nps.nos.fastswitch.INativeFastSwitch/default u:object_r:mtk_hal_jxnosfastswitch_service:s0
+vendor.tms.tmsnfc_aidl.ITmsNfc/default                               u:object_r:tmsnfc_aidl_service:s0
