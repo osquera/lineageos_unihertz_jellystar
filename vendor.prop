@@ -103,7 +103,6 @@ persist.vendor.vilte_support=1
 persist.vendor.viwifi_support=1
 persist.vendor.volte_support=1
 persist.vendor.xfrm_support=1
-ro.board.first_api_level=31
 ro.boot.hypervisor.version=GenieZone
 ro.boot.hypervisor.vm.supported=1
 ro.boot.perf_state=1

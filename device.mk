@@ -282,7 +282,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/init.recovery.mt6789.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.mt6789.rc
 
-# Shipping API level (launched with Android 13)
+# Shipping API levels: the vendor platform is Android 12's (stock ro.board.first_api_level),
+# the phone launched with Android 13
+BOARD_SHIPPING_API_LEVEL := 31
 PRODUCT_SHIPPING_API_LEVEL := 33
 
 # Development only: pre-authorize a local adb key (debug/adbkey.pub, a copy of
