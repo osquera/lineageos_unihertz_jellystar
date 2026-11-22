@@ -39,20 +39,14 @@ docstring says what each input is.
 `odm_dlkm` and `system_dlkm` stay stock images: `system_dlkm` holds Google's GKI modules, which
 are signed by the GKI build and match `Image.lz4`.
 
-### Stock binaries still used
+### Stock modules
 
-These have no public source, or the public source doesn't match the stock userspace:
+None are shipped any more: every module in `modules/` and `vendor_dlkm/` is built from source.
+`stage-modules.py` still reads the stock modules and their load lists, because they define which
+modules the phone loads at which stage and in which order, and because the CRC check below
+compares against them. The amplifier driver `snd-soc-fsm` (FS16xx) is built but untested: the
+test phone has the FS19xx amplifier.
 
-- Agold (the ODM): `fauge` (OZ8806 fuel gauge), `agold_cam_version`, `agold_gms_board`,
-  `agold_hw_compatible`, `agold_pm_info`, `board_modem_version`, `lampbelt-leds`
-- Touch, fingerprint, NFC: `chsc5xxx_touch`, `sunwave_fp`, `tms_thn31`
-- `leds-aw2033`, `ext_bias`, the amplifiers `snd-soc-fs19xx`, `snd-soc-fsm`
-- TrustKernel TEE: `tkcore`, `tkcore_drv`; MediaTek `fpsgo` (license "Proprietary")
-- `imgsensor_isp6s`: Agold's camera sensor drivers are only in stock's build (MediaTek's source
-  has a reference sensor set, and Android then finds no camera)
-- `camera_mem`: stock's ioctl struct is 104 bytes, every public source has 88; the stock camera
-  HAL needs stock's (otherwise the preview stays black)
-
-Load order comes from `modules.dep`, which the build generates from the symbols; source-built
-modules that use symbols from stock ones (e.g. the charger framework and `fauge`) are checked
-against the stock symbol CRCs when they are staged.
+Load order comes from `modules.dep`, which the build generates from the symbols. When staging,
+`stage-modules.py` checks, like depmod, that every symbol a module imports is provided at its
+load stage with a matching CRC (GKI exports from the GKI build's `Module.symvers`).
