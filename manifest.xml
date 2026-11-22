@@ -20,7 +20,7 @@
         device/mediatek/vendor/common/manifest.xml
         device/mediatek/vendor/common/manifest_target_level_s.xml
 -->
-<manifest version="9.0" type="device" target-level="6">
+<manifest version="9.0" type="device" target-level="7">
     <hal format="aidl">
         <name>android.hardware.radio.config</name>
         <version>4</version>
@@ -224,5 +224,4 @@
     <sepolicy>
         <version>202504</version>
     </sepolicy>
-    <kernel target-level="6"/>
 </manifest>
