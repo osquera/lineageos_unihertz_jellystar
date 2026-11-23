@@ -1782,7 +1782,7 @@ vendor/lib/libDefaultFpsActor.so
 vendor/lib/libdynamiclog.so
 vendor/lib/libfgauge_gm30.so
 vendor/lib/libfile_op.so
-vendor/lib/libformatter.so
+vendor/lib/libformatter.so;MODULE_SUFFIX=_mtk
 vendor/lib/libFrameRecord.so
 vendor/lib/libhydra.so
 vendor/lib/libicd_decoder.so
@@ -1918,7 +1918,7 @@ vendor/lib64/libfft_vendor.so
 vendor/lib64/libfgauge_gm30.so
 vendor/lib64/libfile_op.so
 vendor/lib64/libforkexecwrap.so
-vendor/lib64/libformatter.so
+vendor/lib64/libformatter.so;MODULE_SUFFIX=_mtk
 vendor/lib64/libFrameRecord.so
 vendor/lib64/libheichal.so
 vendor/lib64/libhfmanager.so

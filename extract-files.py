@@ -41,8 +41,11 @@ lib_fixups: lib_fixups_user_type = {
         'vendor.mediatek.hardware.videotelephony@1.0',
         'vendor.mediatek.hardware.videotelephony-V1-ndk',
     ): lib_fixup_vendor_suffix,
-    # MediaTek's GNSS library shares its name with external/libmnl (netlink).
-    'libmnl': lambda lib, partition, *args, **kwargs: 'libmnl_mtk' if partition == 'vendor' else None,
+    # MediaTek's GNSS and codec helper libraries share their names with external/libmnl
+    # (netlink) and a host Rust library.
+    ('libformatter', 'libmnl'): lambda lib, partition, *args, **kwargs: (
+        f'{lib}_mtk' if partition == 'vendor' else None
+    ),
 }
 
 blob_fixups: blob_fixups_user_type = {
