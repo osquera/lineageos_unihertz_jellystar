@@ -221,7 +221,4 @@
         <name>vendor.mediatek.hardware.videotelephony</name>
         <fqname>IVideoTelephony/default</fqname>
     </hal>
-    <sepolicy>
-        <version>202504</version>
-    </sepolicy>
 </manifest>
