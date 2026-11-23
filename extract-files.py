@@ -56,6 +56,8 @@ blob_fixups: blob_fixups_user_type = {
         'system_ext/lib64/libsink-mtk.so',
         'vendor/lib/libaudioutils-mtk.so',
         'vendor/lib64/libaudioutils-mtk.so',
+        'vendor/lib/libaudio_aidl_conversion_common_ndk-mtk.so',
+        'vendor/lib64/libaudio_aidl_conversion_common_ndk-mtk.so',
         'vendor/lib/libtinyxml2-mtk.so',
         'vendor/lib64/libtinyxml2-mtk.so',
         'vendor/lib/libexpat-mtk.so',
@@ -70,33 +72,43 @@ blob_fixups: blob_fixups_user_type = {
     # The stock audio stack needs stock's libaudioutils (newer than the one built here, e.g. for
     # audio_utils::mutex_get_enable_flag), installed as libaudioutils-mtk.so.
     (
-        'vendor/bin/factory',
-        'vendor/bin/hw/android.hardware.audio.service-aidl.mediatek',
-        'vendor/lib/android.hardware.audio.core-impl-mediatek.so',
         'vendor/lib/libmtkspparser.so',
         'vendor/lib/libmtkspparser_swb.so',
         'vendor/lib/libspeechparser_vendor.so',
+        'vendor/lib/soundfx/libspatializer.so',
+        'vendor/lib64/libmtkspparser.so',
+        'vendor/lib64/libmtkspparser_swb.so',
+        'vendor/lib64/libspeechparser_vendor.so',
+        'vendor/lib64/soundfx/libspatializer.so',
+    ): blob_fixup()
+        .replace_needed('libaudioutils.so', 'libaudioutils-mtk.so'),
+    # The stock AIDL audio HAL and effects also need stock's libaudio_aidl_conversion_common_ndk,
+    # built against audio.common.types V4 (the one built here uses V5), installed with -mtk.
+    (
+        'vendor/bin/hw/android.hardware.audio.service-aidl.mediatek',
+        'vendor/lib/android.hardware.audio.core-impl-mediatek.so',
         'vendor/lib/soundfx/libaecsw_mtk.so',
         'vendor/lib/soundfx/libagc1sw_mtk.so',
         'vendor/lib/soundfx/libagc2sw_mtk.so',
         'vendor/lib/soundfx/libnssw_mtk.so',
         'vendor/lib/soundfx/libpreprocessingaidl_mtk.so',
-        'vendor/lib/soundfx/libspatializer.so',
         'vendor/lib/soundfx/libspatializeraidl.so',
         'vendor/lib64/android.hardware.audio.core-impl-mediatek.so',
         'vendor/lib64/hw/android.hardware.audio.effect.aidl-impl-mediatek.so',
-        'vendor/lib64/libmtkspparser.so',
-        'vendor/lib64/libmtkspparser_swb.so',
-        'vendor/lib64/libspeechparser_vendor.so',
         'vendor/lib64/soundfx/libaecsw_mtk.so',
         'vendor/lib64/soundfx/libagc1sw_mtk.so',
         'vendor/lib64/soundfx/libagc2sw_mtk.so',
         'vendor/lib64/soundfx/libnssw_mtk.so',
         'vendor/lib64/soundfx/libpreprocessingaidl_mtk.so',
-        'vendor/lib64/soundfx/libspatializer.so',
         'vendor/lib64/soundfx/libspatializeraidl.so',
     ): blob_fixup()
+        .replace_needed('libaudio_aidl_conversion_common_ndk.so', 'libaudio_aidl_conversion_common_ndk-mtk.so')
         .replace_needed('libaudioutils.so', 'libaudioutils-mtk.so'),
+    (
+        'vendor/lib/hw/android.hardware.soundtrigger3-impl.so',
+        'vendor/lib64/hw/android.hardware.soundtrigger3-impl.so',
+    ): blob_fixup()
+        .replace_needed('libaudio_aidl_conversion_common_ndk.so', 'libaudio_aidl_conversion_common_ndk-mtk.so'),
     (
         'vendor/lib64/libneuralnetworks_sl_driver_mtk_prebuilt.so',
     ): blob_fixup()
