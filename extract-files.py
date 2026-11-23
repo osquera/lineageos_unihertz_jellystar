@@ -31,19 +31,11 @@ def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs):
 lib_fixups: lib_fixups_user_type = {
     **lib_fixups,
     (
-        'vendor.mediatek.hardware.bluetooth.audio-V1-ndk',
-        'vendor.mediatek.hardware.bluetooth.audio@2.1',
-        'vendor.mediatek.hardware.bluetooth.audio@2.2',
-        'vendor.mediatek.hardware.lbs@1.0',
-        'vendor.mediatek.hardware.mtkpower-V1-ndk',
-        'vendor.mediatek.hardware.mtkpower-V2-ndk',
-        'vendor.mediatek.hardware.netdagent@1.0',
         'vendor.mediatek.hardware.videotelephony@1.0',
         'vendor.mediatek.hardware.videotelephony-V1-ndk',
     ): lib_fixup_vendor_suffix,
-    # MediaTek's GNSS and codec helper libraries share their names with external/libmnl
-    # (netlink) and a host Rust library.
-    ('libformatter', 'libmnl'): lambda lib, partition, *args, **kwargs: (
+    # MediaTek's codec helper library shares its name with a host Rust library.
+    'libformatter': lambda lib, partition, *args, **kwargs: (
         f'{lib}_mtk' if partition == 'vendor' else None
     ),
 }
@@ -231,6 +223,65 @@ blob_fixups: blob_fixups_user_type = {
     'vendor/etc/init/android.hardware.biometrics.fingerprint@2.1-service-stock.rc': blob_fixup()
         .regex_replace(r'(/vendor/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service)\b', r'\1-stock'),
 }  # fmt: skip
+
+# The source tree builds libraries with these file names too (external/libmnl, and MediaTek
+# interfaces in hardware/mediatek whose AIDL hashes differ from the stock ones), so the stock
+# copies are installed with -mtk and their users point at them.
+stock_mtk_lib_users = {
+    'vendor/bin/meta_tst': ['vendor.mediatek.hardware.lbs@1.0'],
+    'vendor/bin/mnld': ['libmnl'],
+    'vendor/lib/android.hardware.bluetooth.audio-impl-mediatek.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk', 'vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2'],
+    'vendor/lib/hw/audio.primary.mediatek.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib/hw/vendor.mediatek.hardware.bluetooth.audio@2.1-impl.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk', 'vendor.mediatek.hardware.bluetooth.audio@2.1'],
+    'vendor/lib/hw/vendor.mediatek.hardware.bluetooth.audio@2.2-impl.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk', 'vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2'],
+    'vendor/lib/libbluetooth_audio_session_aidl_displayone.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib/libbluetooth_audio_session_aidl_displaytwo.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib/libbluetooth_audio_session_aidl_mtk.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib/libbluetooth_audio_session_mediatek.so': ['vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2'],
+    'vendor/lib/libmtkperf_client_vendor.so': ['vendor.mediatek.hardware.mtkpower-V2-ndk'],
+    'vendor/lib/libpowerhal.so': ['vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2', 'vendor.mediatek.hardware.netdagent@1.0'],
+    'vendor/lib/vendor.mediatek.hardware.bluetooth.audio@2.2-mtk.so': ['vendor.mediatek.hardware.bluetooth.audio@2.1'],
+    'vendor/lib64/android.hardware.bluetooth.audio-impl-mediatek.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk', 'vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2'],
+    'vendor/lib64/android.hardware.power-service-mediatek.so': ['vendor.mediatek.hardware.mtkpower-V2-ndk'],
+    'vendor/lib64/hw/audio.primary.mediatek.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib64/hw/vendor.mediatek.hardware.bluetooth.audio@2.1-impl.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk', 'vendor.mediatek.hardware.bluetooth.audio@2.1'],
+    'vendor/lib64/hw/vendor.mediatek.hardware.bluetooth.audio@2.2-impl.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk', 'vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2'],
+    'vendor/lib64/libaimemc.so': ['vendor.mediatek.hardware.mtkpower-V1-ndk'],
+    'vendor/lib64/libbluetooth_audio_session_aidl_displayone.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib64/libbluetooth_audio_session_aidl_displaytwo.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib64/libbluetooth_audio_session_aidl_mtk.so': ['vendor.mediatek.hardware.bluetooth.audio-V1-ndk'],
+    'vendor/lib64/libbluetooth_audio_session_mediatek.so': ['vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2'],
+    'vendor/lib64/libmtk-ril.so': ['vendor.mediatek.hardware.netdagent@1.0'],
+    'vendor/lib64/libmtkmipc-ril.so': ['vendor.mediatek.hardware.netdagent@1.0'],
+    'vendor/lib64/libmtkperf_client_vendor.so': ['vendor.mediatek.hardware.mtkpower-V2-ndk'],
+    'vendor/lib64/libpowerhal.so': ['vendor.mediatek.hardware.bluetooth.audio@2.1', 'vendor.mediatek.hardware.bluetooth.audio@2.2', 'vendor.mediatek.hardware.netdagent@1.0'],
+    'vendor/lib64/mt6789/libcam.hal3a.v3.platform.so': ['vendor.mediatek.hardware.mtkpower-V1-ndk'],
+    'vendor/lib64/vendor.mediatek.hardware.bluetooth.audio@2.2-mtk.so': ['vendor.mediatek.hardware.bluetooth.audio@2.1'],
+}
+
+blob_fixups.update({
+    (
+        'vendor/lib/libmnl-mtk.so',
+        'vendor/lib/vendor.mediatek.hardware.bluetooth.audio-V1-ndk-mtk.so',
+        'vendor/lib/vendor.mediatek.hardware.bluetooth.audio@2.1-mtk.so',
+        'vendor/lib/vendor.mediatek.hardware.bluetooth.audio@2.2-mtk.so',
+        'vendor/lib/vendor.mediatek.hardware.mtkpower-V2-ndk-mtk.so',
+        'vendor/lib/vendor.mediatek.hardware.netdagent@1.0-mtk.so',
+        'vendor/lib64/libmnl-mtk.so',
+        'vendor/lib64/vendor.mediatek.hardware.bluetooth.audio-V1-ndk-mtk.so',
+        'vendor/lib64/vendor.mediatek.hardware.bluetooth.audio@2.1-mtk.so',
+        'vendor/lib64/vendor.mediatek.hardware.bluetooth.audio@2.2-mtk.so',
+        'vendor/lib64/vendor.mediatek.hardware.lbs@1.0-mtk.so',
+        'vendor/lib64/vendor.mediatek.hardware.mtkpower-V1-ndk-mtk.so',
+        'vendor/lib64/vendor.mediatek.hardware.mtkpower-V2-ndk-mtk.so',
+        'vendor/lib64/vendor.mediatek.hardware.netdagent@1.0-mtk.so',
+    ): blob_fixup().fix_soname(),
+})
+for _user, _libs in stock_mtk_lib_users.items():
+    _fixup = blob_fixup()
+    for _lib in _libs:
+        _fixup.replace_needed(f'{_lib}.so', f'{_lib}-mtk.so')
+    blob_fixups[_user] = _fixup
 
 module = ExtractUtilsModule(
     'jellystar',
