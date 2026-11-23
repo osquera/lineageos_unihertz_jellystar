@@ -1582,7 +1582,6 @@ vendor/bin/dreport
 vendor/bin/dtc_vendor
 vendor/bin/eara_io_service
 vendor/bin/em_hidl
-vendor/bin/factory
 vendor/bin/frs
 vendor/bin/frs_intf
 vendor/bin/fuelgauged
@@ -1638,7 +1637,6 @@ vendor/etc/ecc_list_OP17.xml
 vendor/etc/ecc_list_OP18.xml
 vendor/etc/ecc_list_OP236.xml
 vendor/etc/ecc_list_preference.xml
-vendor/etc/factory.ini
 vendor/etc/fstab.emmc
 vendor/etc/fstab.enableswap
 vendor/etc/fstb.cfg
@@ -1654,10 +1652,6 @@ vendor/etc/init/eara-io-service.rc
 vendor/etc/init/FastSwitch.rc
 vendor/etc/init/fuelgauged_init.rc
 vendor/etc/init/genmacaddr.rc
-vendor/etc/init/hw/factory_init.connectivity.common.rc
-vendor/etc/init/hw/factory_init.connectivity.rc
-vendor/etc/init/hw/factory_init.project.rc
-vendor/etc/init/hw/factory_init.rc
 vendor/etc/init/hw/init.agui.rc
 vendor/etc/init/hw/multi_init.rc
 vendor/etc/init/init.bip.rc
