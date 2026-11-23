@@ -1186,13 +1186,13 @@ vendor/etc/vintf/manifest/mtk_lbs_service.xml
 vendor/etc/vintf/manifest/mtkgnss-batching.xml
 vendor/lib/hw/gps.default.so
 vendor/lib/mt6789/libDR.so;SYMLINK=vendor/lib/libDR.so
-vendor/lib/mt6789/libmnl.so;SYMLINK=vendor/lib/libmnl.so
+vendor/lib/mt6789/libmnl.so;SYMLINK=vendor/lib/libmnl.so;MODULE_SUFFIX=_mtk
 vendor/lib64/hw/android.hardware.gnss-impl-mediatek.so
 vendor/lib64/hw/gps.default.so
 vendor/lib64/hw/vendor.mediatek.hardware.gnss-impl.so
 vendor/lib64/hw/vendor.mediatek.hardware.gnss.batching-impl.so
 vendor/lib64/mt6789/libDR.so;SYMLINK=vendor/lib64/libDR.so
-vendor/lib64/mt6789/libmnl.so;SYMLINK=vendor/lib64/libmnl.so
+vendor/lib64/mt6789/libmnl.so;SYMLINK=vendor/lib64/libmnl.so;MODULE_SUFFIX=_mtk
 vendor/lib64/mtk_lbs_service-impl.so
 vendor/lib64/vendor.mediatek.hardware.gnss-V3-ndk.so
 vendor/lib64/vendor.mediatek.hardware.gnss.batching-V1-ndk.so
@@ -1384,7 +1384,6 @@ vendor/lib/libpower_timer.so
 vendor/lib/libpowerhal.so
 vendor/lib/libpowerhalwrap_vendor.so
 vendor/lib/libvolte_xdmc_shr.so
-vendor/lib/vendor.mediatek.hardware.mtkpower-V2-ndk.so
 vendor/lib/vendor.mediatek.hardware.mtkpower-V3-ndk.so
 vendor/lib/vendor.mediatek.hardware.mtkpower_applist-V3-ndk.so
 vendor/lib64/android.hardware.power-service-mediatek.so
@@ -1397,8 +1396,6 @@ vendor/lib64/libpower_timer.so
 vendor/lib64/libpowerhal.so
 vendor/lib64/libpowerhalwrap_vendor.so
 vendor/lib64/vendor.mediatek.hardware.dmc-V1-ndk.so
-vendor/lib64/vendor.mediatek.hardware.mtkpower-V1-ndk.so
-vendor/lib64/vendor.mediatek.hardware.mtkpower-V2-ndk.so
 vendor/lib64/vendor.mediatek.hardware.mtkpower-V3-ndk.so
 vendor/lib64/vendor.mediatek.hardware.mtkpower_applist-V3-ndk.so
 vendor/lib64/vendor.mediatek.hardware.power@1.1.so
