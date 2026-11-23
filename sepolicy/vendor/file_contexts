@@ -34,12 +34,10 @@
 /vendor/lib(64)?/(mt6789/)?libarm_gralloc_properties_sysprop\.so                u:object_r:same_process_hal_file:s0
 /vendor/lib(64)?/(mt6789/)?libarm_mali_config_sysprops\.so                      u:object_r:same_process_hal_file:s0
 /vendor/lib(64)?/(mt6789/)?libmtk_mali_user\.so                                 u:object_r:same_process_hal_file:s0
-/vendor/lib(64)?/libaal_sec\.so                                                 u:object_r:same_process_hal_file:s0
 /vendor/lib(64)?/libpq_sec\.so                                                  u:object_r:same_process_hal_file:s0
 /vendor/lib(64)?/libpqxmlflagparser\.so                                         u:object_r:same_process_hal_file:s0
 /vendor/lib(64)?/mt6789/libhdrvideo\.so                                         u:object_r:same_process_hal_file:s0
 /vendor/lib(64)?/mt6789/libscltm\.so                                            u:object_r:same_process_hal_file:s0
-/vendor/lib(64)?/vendor\.mediatek\.hardware\.graphics-V[0-9]+-ndk\.so           u:object_r:same_process_hal_file:s0
 
 # Device nodes
 /dev/lampbelt_leds      u:object_r:agui_device:s0

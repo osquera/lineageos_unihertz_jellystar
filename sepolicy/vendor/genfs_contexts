@@ -4,8 +4,6 @@ genfscon sysfs /devices/platform/soc/1101a000.i2c/i2c-6/6-002f/power_supply     
 genfscon sysfs /devices/platform/soc/11017000.i2c/i2c-5/5-0053/power_supply                          u:object_r:sysfs_batteryinfo:s0
 
 # Wakeup sources (read by system_suspend). genfscon matches by prefix, so .../wakeup covers wakeupN.
-genfscon sysfs /devices/platform/charger/power_supply/mtk-mst-hvdiv-chg/wakeup                      u:object_r:sysfs_wakeup:s0
-genfscon sysfs /devices/platform/charger/power_supply/mtk-slv-hvdiv-chg/wakeup                      u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/10026000.pwrap/10026000.pwrap:battery-manager/power_supply/battery/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/1101a000.i2c/i2c-6/6-002f/wakeup                                u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/1101a000.i2c/i2c-6/6-002f/power_supply/oz8806/wakeup            u:object_r:sysfs_wakeup:s0
