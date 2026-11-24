@@ -2,12 +2,12 @@
 
 # LineageOS for the Unihertz Jelly Star
 
-**Unofficial LineageOS 23.2 (Android 16) for the 3" Unihertz Jelly Star.**<br>
+**Unofficial LineageOS 24.0 (Android 17) for the 3" Unihertz Jelly Star.**<br>
 A daily-driver phone without Google's or Unihertz's preinstalled apps.
 
 [![Latest release](https://img.shields.io/github/v/release/osquera/lineageos_unihertz_jellystar?label=release&color=167c80)](https://github.com/osquera/lineageos_unihertz_jellystar/releases/latest)
-![LineageOS 23.2](https://img.shields.io/badge/LineageOS-23.2-167c80)
-![Android 16](https://img.shields.io/badge/Android-16-3ddc84)
+![LineageOS 24.0](https://img.shields.io/badge/LineageOS-24.0-167c80)
+![Android 17](https://img.shields.io/badge/Android-17-3ddc84)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/osquera/lineageos_unihertz_jellystar/total?color=orange&cacheSeconds=21600)](https://github.com/osquera/lineageos_unihertz_jellystar/releases)
 
@@ -68,7 +68,7 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
   (`adb` and `fastboot`) and a USB-C data cable.
 - From the [latest release](https://github.com/osquera/lineageos_unihertz_jellystar/releases/latest):
   `boot.img`, `vendor_boot.img`, `dtbo.img`, `vbmeta.img`, the
-  `lineage-23.2-*-UNOFFICIAL-jellystar-signed.zip` and `SHA256SUMS`. Check the downloads:
+  `lineage-24.0-*-UNOFFICIAL-jellystar-signed.zip` and `SHA256SUMS`. Check the downloads:
   ```sh
   sha256sum -c SHA256SUMS
   ```
@@ -102,7 +102,7 @@ The full list, including what's still untested, is in [STATUS.md](STATUS.md).
    **before** sideloading.
 5. **Install LineageOS:** *Apply update > Apply from ADB*, then on the computer:
    ```sh
-   adb sideload lineage-23.2-*-UNOFFICIAL-jellystar-signed.zip
+   adb sideload lineage-24.0-*-UNOFFICIAL-jellystar-signed.zip
    ```
    The progress on the computer stops at about 47% and then prints `Total xfer: 1.00x`;
    that means it's done.
@@ -246,6 +246,21 @@ wear. Charging resumes 5 % below the limit.
   `adb sideload <newer zip>`. Use a zip at least as new as the recovery you are running, or
   recovery stops at a "downgrade" prompt.
 
+### Upgrading from LineageOS 23.2
+
+The Updater doesn't install a new LineageOS version (it says "major LineageOS version upgrades
+must be installed manually"). Install the 24.0 zip from recovery instead; apps and data stay,
+**don't format data**:
+
+1. Back up anything important, just in case.
+2. Settings > System > Developer options > *Advanced restart* on, then hold the power key >
+   *Restart* > *Recovery* (or `adb reboot recovery`).
+3. *Apply update > Apply from ADB*, then `adb sideload lineage-24.0-*-UNOFFICIAL-jellystar-signed.zip`.
+4. Answer **No** to "reboot recovery", then *Reboot system now*.
+
+Magisk users: flash the release's `boot-magisk-v*.img` afterwards (or patch again), since the
+update replaces `boot`.
+
 ## Going back to stock / unbricking
 
 MediaTek's **SP Flash Tool v6** with Unihertz's stock firmware works even when the phone no
@@ -277,7 +292,7 @@ flashed because of anti-rollback.
 |---|---|
 | **SoC** | MediaTek Helio G99 (MT6789), `ro.board.platform=mt6789` |
 | **RAM / Storage** | 8 GB / 256 GB UFS 2.2 |
-| **Kernel** | 6.12.69-android16-6 GKI (stock prebuilt), boot header v4 |
+| **Kernel** | 6.12.69-android16-6 GKI (Google's prebuilt), modules built from source, boot header v4 |
 | **Partitions** | Virtual A/B, dynamic partitions, no recovery partition (recovery in `vendor_boot`) |
 | **Screen** | 480x854, 3.0", density 220 |
 | **Shipped** | Android 13, updated by Unihertz to Android 16 (`ro.product.first_api_level=33`) |
@@ -285,8 +300,8 @@ flashed because of anti-rollback.
 ### Layout: vendor built from stock blobs
 
 `vendor` is built from blobs extracted from Unihertz firmware V01.00.04
-(`proprietary-files.txt`). The kernel module images `vendor_dlkm`, `odm_dlkm` and
-`system_dlkm` are the stock ones, unmodified (`BOARD_PREBUILT_*IMAGE`).
+(`proprietary-files.txt`). The kernel, DTB, DTBO and modules are described in
+[`kernel/README.md`](kernel/README.md).
 
 - SELinux: `device/mediatek/sepolicy_vndr` plus `sepolicy/vendor/` for the services and
   devices it doesn't cover.
@@ -321,27 +336,30 @@ flashed because of anti-rollback.
 - The LK log of recent boots can be read from Android (root) with
   `dd if=/dev/block/by-name/expdb`.
 
-### No vendor kernel source
+### Kernel
 
-Unihertz does not publish kernel source for this device. `kernel/` holds the stock GKI
-kernel, dtb, dtbo and vendor ramdisk modules as prebuilts, the same approach
+Unihertz does not publish kernel source for this device. The kernel image is Google's GKI
+build, unmodified; the vendor modules and the device tree are built from MediaTek's GPL source
+plus Jelly Star drivers:
+[`android_kernel_unihertz_jellystar-modules`](https://github.com/osquera/android_kernel_unihertz_jellystar-modules).
+How to build and stage them is in [`kernel/README.md`](kernel/README.md). The tree's
+structure started from
 [`iasnezhkov/android_device_ikko_mindone`](https://github.com/iasnezhkov/android_device_ikko_mindone)
-uses on the same MT6789 platform. That tree is also the structural template for this one.
+on the same MT6789 platform.
 
 ### Building
 
 ```sh
-repo init -u https://github.com/LineageOS/android.git -b lineage-23.2
+repo init -u https://github.com/LineageOS/android.git -b lineage-24.0
 repo sync
 # device/unihertz/jellystar = this repo
-# vendor/unihertz/jellystar = extracted blobs plus images/{vendor,vendor_dlkm,odm_dlkm,system_dlkm}.img
-#   (lpunpack the stock super.img, take the _a images)
-# kernel/{Image.lz4,dtb/,dtbo.img,modules/} are not in git (Unihertz binaries, see
-#   .gitignore): extract them from stock boot.img / vendor_boot.img / dtbo.img, see
-#   kernel/README.md
+# vendor/unihertz/jellystar = github.com/osquera/proprietary_vendor_unihertz_jellystar
+#   (branch lineage-24.0), or run extract-files.py on the stock V01.00.04 firmware
+# kernel/{Image.lz4,dtb/,dtbo.img,modules/} are not in git: build and stage them,
+#   see kernel/README.md
 # apply the patches in patches/ (see patches/README.md)
 source build/envsetup.sh
-lunch lineage_jellystar-bp4a-userdebug
+lunch lineage_jellystar-cp2a-userdebug
 mka bacon
 # or, for a release-key signed build (keys in ~/.android-certs, see the script):
 JOBS=6 device/unihertz/jellystar/sign-build.sh

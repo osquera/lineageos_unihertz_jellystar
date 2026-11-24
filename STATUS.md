@@ -1,6 +1,6 @@
 # Jelly Star: hardware and feature status
 
-Tested on hardware with LineageOS 23.2 built from this tree. Keep this file up to date when
+Tested on hardware with LineageOS 23.2 and 24.0 built from this tree. Keep this file up to date when
 something is tested or fixed.
 
 ## Working
