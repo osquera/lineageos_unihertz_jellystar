@@ -1,17 +1,17 @@
 [
   {
-    "datetime": 1795510254,
+    "datetime": 1795546665,
     "type": "UNOFFICIAL",
     "version": "24.0",
     "files": [
       {
         "filename": "lineage-24.0-20261124-UNOFFICIAL-jellystar-signed.zip",
-        "url": "https://github.com/osquera/lineageos_unihertz_jellystar/releases/download/20261124/lineage-24.0-20261124-UNOFFICIAL-jellystar-signed.zip",
-        "sha256": "99bd560f6e39eeb0a8c41d2cf29b627770a1f1d04f1af630328186defe2c9de9",
-        "size": 1457464128,
+        "url": "https://github.com/osquera/lineageos_unihertz_jellystar/releases/download/20261124-2/lineage-24.0-20261124-UNOFFICIAL-jellystar-signed.zip",
+        "sha256": "fda1b025e16f7c499370312293edd505a75aeb2c9ad4591ba6ae064db5ee5157",
+        "size": 1457466176,
         "os_patch_level": "2026-11-01",
         "os_sdk_level": 37,
-        "ota_property_files": "payload_metadata.bin:4747:125513,payload.bin:4747:1457456214,payload_properties.txt:1457461019:156,apex_info.pb:2187:1480,care_map.pb:3714:986,metadata:69:690,metadata.pb:827:1312"
+        "ota_property_files": "payload_metadata.bin:4747:125513,payload.bin:4747:1457458262,payload_properties.txt:1457463067:156,apex_info.pb:2187:1480,care_map.pb:3714:986,metadata:69:690,metadata.pb:827:1312"
       }
     ]
   }
