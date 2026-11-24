@@ -7,6 +7,8 @@ ro.bluetooth.a2dp_offload.supported=true
 persist.bluetooth.a2dp_offload.cap=sbc-aac
 persist.bluetooth.a2dp_offload.disabled=true
 bluetooth.profile.sap.server.enabled=true
+# Board API level reported to the stock TrustKernel KeyMint service (see extract-files.py).
+ro.vendor.jstar.km=202504
 vendor.bluetooth.ldac.abr=true
 
 aaudio.mmap_policy=2

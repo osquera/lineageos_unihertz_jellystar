@@ -218,6 +218,10 @@ blob_fixups: blob_fixups_user_type = {
         'vendor/etc/init/vibrator-mtk-default.rc',
     ): blob_fixup()
         .regex_replace(r'(?m)(/vendor/bin/hw/android\.hardware\.\w+-service\.mediatek)$', r'\1-stock'),
+    # TrustKernel's KeyMint refuses to start for board API levels it doesn't know (202604 on
+    # lineage-24.0), so it reads ro.vendor.jstar.km (same length) instead; see vendor.prop.
+    'vendor/bin/hw/android.hardware.security.keymint@4.0-service.trustkernel': blob_fixup()
+        .binary_regex_replace(b'ro.board.api_level', b'ro.vendor.jstar.km'),
     # The stock fingerprint service loads the sunwave/chipsailing modules; AOSP's default one,
     # which owns the original path, only looks for "fingerprint".
     'vendor/etc/init/android.hardware.biometrics.fingerprint@2.1-service-stock.rc': blob_fixup()

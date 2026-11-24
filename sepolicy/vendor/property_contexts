@@ -6,3 +6,4 @@ vendor.boostfwk.scroll.duration.v     u:object_r:vendor_mtk_boostfwk_scroll_dura
 vendor.boostfwk.sbb.touch.duration    u:object_r:vendor_mtk_boostfwk_sbb_touch_duration_prop:s0
 vendor.boostfwk.scroll.floor          u:object_r:vendor_mtk_boostfwk_scroll_floor_prop:s0
 vendor.boostfwk.frame.decision        u:object_r:vendor_mtk_boostfwk_frame_decision_prop:s0
+ro.vendor.jstar.km                   u:object_r:vendor_jellystar_keymint_prop:s0 exact int

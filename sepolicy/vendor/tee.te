@@ -2,3 +2,6 @@ set_prop(tee, vendor_mtk_ufs_prop)
 allow tee gsi_metadata_file:dir search;
 allow tee nvcfg_file:dir create_dir_perms;
 allow tee nvcfg_file:file create_file_perms;
+
+# TrustKernel KeyMint reads its board API level from ro.vendor.jstar.km (see vendor.prop).
+get_prop(hal_keymint_default, vendor_jellystar_keymint_prop)
