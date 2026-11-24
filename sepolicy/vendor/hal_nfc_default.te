@@ -4,3 +4,5 @@ allow hal_nfc_default nfc_data_vendor_file:dir create_dir_perms;
 allow hal_nfc_default nfc_data_vendor_file:file create_file_perms;
 allow hal_nfc_default self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
 add_service(hal_nfc_default, tmsnfc_aidl_service)
+allow hal_nfc_default proc_tmsdev:dir search;
+allow hal_nfc_default proc_tmsdev:file r_file_perms;

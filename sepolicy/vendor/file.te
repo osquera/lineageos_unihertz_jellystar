@@ -5,3 +5,6 @@ type sysfs_frsm_amp, sysfs_type, fs_type;
 # device/mediatek/sepolicy_vndr, so the rule lives in the vendor policy.
 allow init proc_battery_cmd:dir search;
 allow init proc_battery_cmd:file w_file_perms;
+
+# /proc/tmsdev: debug files of the TMS THN31 NFC driver, read by its HAL
+type proc_tmsdev, fs_type, proc_type;

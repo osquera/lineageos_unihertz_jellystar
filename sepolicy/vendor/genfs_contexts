@@ -18,3 +18,4 @@ genfscon proc /blocktag/earaio u:object_r:proc_earaio:s0
 
 # FourSemi smart amplifier, read by the audio HAL
 genfscon sysfs /class/frsm_amp u:object_r:sysfs_frsm_amp:s0
+genfscon proc /tmsdev u:object_r:proc_tmsdev:s0
