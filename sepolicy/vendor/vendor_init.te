@@ -3,3 +3,6 @@ set_prop(vendor_init, vendor_mtk_meta_connecttype_prop)
 set_prop(vendor_init, vendor_mtk_vonr_prop)
 allow vendor_init nfc_device:chr_file { getattr setattr };
 set_prop(vendor_init, vendor_mtk_boostfwk_scroll_floor_prop)
+
+# ro.vendor.jstar.km comes from vendor.prop (TrustKernel KeyMint, see extract-files.py).
+set_prop(vendor_init, vendor_jellystar_keymint_prop)
