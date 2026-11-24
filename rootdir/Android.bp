@@ -24,6 +24,19 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
+    name: "init.kedump.rc",
+    src: "etc/init.kedump.rc",
+    sub_dir: "init",
+    vendor: true,
+}
+
+sh_binary {
+    name: "kedump-collect.sh",
+    src: "bin/kedump-collect.sh",
+    vendor: true,
+}
+
+prebuilt_etc {
     name: "init.cgroup.rc",
     src: "etc/init.cgroup.rc",
     sub_dir: "init/hw",

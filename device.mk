@@ -270,11 +270,13 @@ PRODUCT_PACKAGES += \
     init.connectivity.rc \
     init.connectivity.common.rc \
     init_connectivity.rc \
+    init.kedump.rc \
     init.modem.rc \
     init.mt6789.rc \
     init.mtkgki.rc \
     init.project.rc \
-    init.sensor_2_0.rc
+    init.sensor_2_0.rc \
+    kedump-collect.sh
 
 # Recovery init only reads /init.recovery.${ro.hardware}.rc from the ramdisk root; the
 # prebuilt_etc module put it in /system/etc where it was ignored, so recovery never set

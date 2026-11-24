@@ -48,3 +48,5 @@
 
 # Sockets
 /dev/socket/bip_socket  u:object_r:bip_socket:s0
+
+/vendor/bin/kedump-collect\.sh                u:object_r:kedump_collect_exec:s0

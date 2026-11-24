@@ -1,0 +1,9 @@
+# Collect and clear the bootloader's crash dump, see kedump-collect.sh.
+service vendor.kedump-collect /vendor/bin/kedump-collect.sh
+    user root
+    group root
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start vendor.kedump-collect
