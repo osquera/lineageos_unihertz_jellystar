@@ -53,10 +53,10 @@
         android:text="@string/front_light_title"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <LinearLayout
-        android:id="@+id/front_container"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_marginTop="8dp"
+        android:text="@string/front_light_help" />
 </LinearLayout>
 </ScrollView>

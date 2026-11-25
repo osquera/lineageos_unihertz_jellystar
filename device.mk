@@ -165,6 +165,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     CarrierConfigJellystar
 
+# Lights: screen backlight and the front RGB LED (notification and battery light)
+PRODUCT_PACKAGES += \
+    android.hardware.light-service.lineage
+
 # IR
 PRODUCT_PACKAGES += \
     android.hardware.ir-service.example

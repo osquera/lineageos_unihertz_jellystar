@@ -197,18 +197,19 @@ Play Store's data and try again.
 
 ## Jelly Star settings
 
-The phone's extra hardware is set up in three places in Settings.
+The phone's extra hardware is set up in a few places in Settings.
 
 ### Lights: back LED and front notification LED
 
 *Settings > Display > Lights*: back light brightness and effects (pulse for notifications,
-breathe while charging, flash for incoming calls), the front LED's notification colour and
-blink speed, a colour per app (*Notification colour per app*), and battery colours.
+breathe while charging, flash for incoming calls).
+
+The front RGB LED is LineageOS's notification and battery light: colours (also per app) and
+blinking under *Settings > Notifications > Notification light*, battery colours under
+*Settings > Battery > Battery light*.
 
 <p>
 <img src="docs/screenshots/display_lights.png" width="200" alt="Settings > Display, with the Lights entry at the bottom">
-<img src="docs/screenshots/lights_1.png" width="200" alt="Lights screen: back light brightness and effects, front notification light">
-<img src="docs/screenshots/lights_2.png" width="200" alt="Lights screen, scrolled: per-app colours and battery light colours">
 </p>
 
 To switch the back light on and off quickly, add the **Back light** tile to Quick Settings:
@@ -322,12 +323,13 @@ flashed because of anti-rollback.
   classpath, the video telephony libraries it loads, a compat override for its receivers, and
   a CarrierConfig overlay that offers VoLTE for every SIM (AOSP enables it for few carriers).
 - **Lights and keys** (`ledbelt/`, one app replacing Unihertz's, which need their patched
-  framework): back LED tile and effects (notifications, charging, incoming calls), front RGB
-  LED colours per app and battery state (Settings > Display > Lights), red key actions
+  framework): back LED tile and effects (notifications, charging, incoming calls), red key actions
   (Settings > System > Red button), power on for alarms and on a schedule (Settings > System >
   Power on and off, through MediaTek's RTC power-on alarm). Writes go through init property
   triggers, since apps may not write LED sysfs nodes or open the RTC.
 - **Charging control**: LineageOS's health HAL on MediaTek's charger command node.
+- **Lights**: LineageOS's lights HAL for the screen backlight and the front RGB LED (MediaTek's
+  lights HAL only ever lit one of its colours).
 - **Small screen**: capacitive keys declared as hardware keys (no on-screen navigation bar by
   default), stock power profile for battery statistics.
 

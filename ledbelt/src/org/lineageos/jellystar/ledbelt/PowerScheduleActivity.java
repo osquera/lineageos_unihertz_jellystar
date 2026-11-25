@@ -36,7 +36,7 @@ public class PowerScheduleActivity extends Activity {
         alarms.setMinHeight(mPad * 3);
         alarms.setChecked(PowerSchedule.forAlarms(this));
         alarms.setOnCheckedChangeListener((v, checked) ->
-                FrontLed.prefs(this).edit().putBoolean(PowerSchedule.KEY_ALARMS, checked).apply());
+                LedBelt.prefs(this).edit().putBoolean(PowerSchedule.KEY_ALARMS, checked).apply());
         content.addView(alarms);
         content.addView(text(R.string.power_on_alarms_help));
 
@@ -57,7 +57,7 @@ public class PowerScheduleActivity extends Activity {
         content.addView(details);
         setEnabled(details, schedule.isChecked());
         schedule.setOnCheckedChangeListener((v, checked) -> {
-            FrontLed.prefs(this).edit().putBoolean(PowerSchedule.KEY_SCHEDULE, checked).apply();
+            LedBelt.prefs(this).edit().putBoolean(PowerSchedule.KEY_SCHEDULE, checked).apply();
             setEnabled(details, checked);
             PowerSchedule.update(this);
         });
@@ -82,11 +82,11 @@ public class PowerScheduleActivity extends Activity {
         b.setAllCaps(false);
         b.setText(getString(label, format(minutes)));
         b.setOnClickListener(v -> new TimePickerDialog(this, (picker, h, m) -> {
-            FrontLed.prefs(this).edit().putInt(key, h * 60 + m).apply();
+            LedBelt.prefs(this).edit().putInt(key, h * 60 + m).apply();
             b.setText(getString(label, format(h * 60 + m)));
             PowerSchedule.update(this);
-        }, FrontLed.prefs(this).getInt(key, minutes) / 60,
-                FrontLed.prefs(this).getInt(key, minutes) % 60,
+        }, LedBelt.prefs(this).getInt(key, minutes) / 60,
+                LedBelt.prefs(this).getInt(key, minutes) % 60,
                 DateFormat.is24HourFormat(this)).show());
         return b;
     }
@@ -112,7 +112,7 @@ public class PowerScheduleActivity extends Activity {
             t.setOnCheckedChangeListener((v, checked) -> {
                 int days = PowerSchedule.days(this);
                 days = checked ? days | bit : days & ~bit;
-                FrontLed.prefs(this).edit().putInt(PowerSchedule.KEY_DAYS, days).apply();
+                LedBelt.prefs(this).edit().putInt(PowerSchedule.KEY_DAYS, days).apply();
                 PowerSchedule.update(this);
             });
             row.addView(t, new LinearLayout.LayoutParams(0,

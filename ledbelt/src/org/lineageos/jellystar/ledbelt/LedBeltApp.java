@@ -23,11 +23,9 @@ public class LedBeltApp extends Application {
     public void onCreate() {
         super.onCreate();
         LedBeltEffects fx = LedBeltEffects.get(this);
-        FrontLed front = FrontLed.get(this);
 
         boolean screenOff = !getSystemService(PowerManager.class).isInteractive();
         fx.setScreenOff(screenOff);
-        front.setScreenOff(screenOff);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -37,10 +35,10 @@ public class LedBeltApp extends Application {
         Intent battery = registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                handle(fx, front, intent);
+                handle(fx, intent);
             }
         }, filter, RECEIVER_EXPORTED);
-        if (battery != null) handle(fx, front, battery);
+        if (battery != null) handle(fx, battery);
 
         PowerSchedule.update(this);
         registerReceiver(new BroadcastReceiver() {
@@ -51,24 +49,13 @@ public class LedBeltApp extends Application {
         }, new IntentFilter(Intent.ACTION_SHUTDOWN), RECEIVER_EXPORTED);
     }
 
-    private static void handle(LedBeltEffects fx, FrontLed front, Intent intent) {
+    private static void handle(LedBeltEffects fx, Intent intent) {
         switch (intent.getAction()) {
-            case Intent.ACTION_SCREEN_ON -> {
-                fx.setScreenOff(false);
-                front.setScreenOff(false);
-            }
-            case Intent.ACTION_SCREEN_OFF -> {
-                fx.setScreenOff(true);
-                front.setScreenOff(true);
-            }
+            case Intent.ACTION_SCREEN_ON -> fx.setScreenOff(false);
+            case Intent.ACTION_SCREEN_OFF -> fx.setScreenOff(true);
             case Intent.ACTION_BATTERY_CHANGED -> {
                 int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-                int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 100) * 100
-                        / Math.max(1, intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100));
-                boolean plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
                 fx.setCharging(status == BatteryManager.BATTERY_STATUS_CHARGING);
-                front.setBattery(level, status == BatteryManager.BATTERY_STATUS_CHARGING,
-                        plugged && status == BatteryManager.BATTERY_STATUS_FULL);
             }
             case TelephonyManager.ACTION_PHONE_STATE_CHANGED -> fx.setRinging(
                     TelephonyManager.EXTRA_STATE_RINGING.equals(

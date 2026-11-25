@@ -111,9 +111,5 @@
             android:name=".PowerScheduleReceiver"
             android:exported="false" />
 
-        <activity
-            android:name=".AppColorsActivity"
-            android:exported="false"
-            android:theme="@android:style/Theme.DeviceDefault.DayNight" />
     </application>
 </manifest>

@@ -32,7 +32,7 @@ something is tested or fixed.
 | Sensors | Accelerometer, gyroscope, magnetometer, light, proximity, step counter | |
 | Security | Fingerprint | Enroll and unlock |
 | Security | File-based encryption, SELinux enforcing | With a PIN, user storage stays locked after reboot until the PIN is entered |
-| Lights | Front RGB LED | Any colour, per-app notification colours, battery colours (charging / charged / low), hardware blinking (slow, fast, steady). Settings > Display > Lights |
+| Lights | Front RGB LED | LineageOS's notification and battery light through the lights HAL (since 2026-11-25; retest): any colour, per-app colours, blinking. Replaced the app's own front-LED settings |
 | Lights | Back LED | Quick Settings tile "Back light" with a brightness slider; pulses for notifications, breathes while charging (screen off), flashes for incoming calls. Toggle broadcast for key remappers |
 | Lights | IR blaster | |
 | Power | Charging, battery reporting | Battery usage estimates use stock's power profile (2000 mAh, measured component currents) |

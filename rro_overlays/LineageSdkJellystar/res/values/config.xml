@@ -16,4 +16,8 @@
          Home (1) + Back (2) + App switch (16) + Volume rocker (64). Enables Settings > System >
          Buttons (long-press / double-tap actions, on-screen navigation toggle). -->
     <integer name="config_deviceHardwareKeys">83</integer>
+
+    <!-- Front RGB LED: RGB notification light (1) + RGB battery light (2) + adjustable blinking
+         (8, the kernel's timer trigger) + battery light (64). -->
+    <integer name="config_deviceLightCapabilities">75</integer>
 </resources>

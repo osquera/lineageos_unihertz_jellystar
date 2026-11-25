@@ -24,11 +24,6 @@ public class LedBeltNotificationListener extends NotificationListenerService {
             return;
         }
         LedBeltEffects.get(this).pulse();
-        FrontLed.get(this).notificationPosted(sbn.getKey(), sbn.getPackageName());
     }
 
-    @Override
-    public void onNotificationRemoved(StatusBarNotification sbn) {
-        FrontLed.get(this).notificationRemoved(sbn.getKey());
-    }
 }

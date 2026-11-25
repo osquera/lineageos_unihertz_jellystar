@@ -1588,7 +1588,6 @@ vendor/bin/frs
 vendor/bin/frs_intf
 vendor/bin/fuelgauged
 vendor/bin/hw/android.hardware.boot-service.mtk
-vendor/bin/hw/android.hardware.lights-service.mediatek
 vendor/bin/hw/android.hardware.media.c2-mediatek
 vendor/bin/hw/android.hardware.media.c2-mediatek-64b
 vendor/bin/hw/android.hardware.memtrack-service.mediatek:vendor/bin/hw/android.hardware.memtrack-service.mediatek-stock
@@ -1665,7 +1664,6 @@ vendor/etc/init/init.md_apps.rc
 vendor/etc/init/init.touch.rc
 vendor/etc/init/init.vtservice_aidl.rc
 vendor/etc/init/init.xcap.rc
-vendor/etc/init/lights-mtk-default.rc
 vendor/etc/init/loghidlvendorservice.rc
 vendor/etc/init/memtrack-mediatek.rc:vendor/etc/init/memtrack-mediatek-stock.rc
 vendor/etc/init/mtk_agpsd_p.rc
@@ -1716,7 +1714,6 @@ vendor/etc/vintf/manifest/android.hardware.usb-aidl-service.mediatek.xml
 vendor/etc/vintf/manifest/android.hardware.usb.gadget-aidl-service.mediatek.xml
 vendor/etc/vintf/manifest/CommandService.xml
 vendor/etc/vintf/manifest/FastSwitch.xml
-vendor/etc/vintf/manifest/lights-mtk-default.xml
 vendor/etc/vintf/manifest/manifest_media_c2_default.xml
 vendor/etc/vintf/manifest/memtrack-mediatek.xml:vendor/etc/vintf/manifest/memtrack-mediatek-stock.xml
 vendor/etc/vintf/manifest/vendor.mediatek.hardware.aguiledbelt-service.xml
@@ -2064,7 +2061,6 @@ vendor/lib64/vendor.mediatek.hardware.mmagent-V1-ndk.so
 vendor/lib64/vendor.mediatek.hardware.mmagent@1.0.so
 vendor/lib64/vendor.mediatek.hardware.mmagent@1.1.so
 vendor/lib64/vendor.mediatek.hardware.mms-V1-ndk.so
-vendor/lib64/vendor.mediatek.hardware.mtklight-V1-ndk.so
 vendor/lib64/vendor.mediatek.hardware.mtkradioex.assist-V2-ndk.so
 vendor/lib64/vendor.mediatek.hardware.mtkradioex.assist-V4-ndk.so
 vendor/lib64/vendor.mediatek.hardware.mtkradioex.cap-V1-ndk.so

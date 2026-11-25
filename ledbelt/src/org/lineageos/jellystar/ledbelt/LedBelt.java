@@ -57,7 +57,8 @@ final class LedBelt {
         }
     }
 
-    private static SharedPreferences prefs(Context context) {
+    /** The app's settings, readable before the first unlock. */
+    static SharedPreferences prefs(Context context) {
         return context.createDeviceProtectedStorageContext()
                 .getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }

@@ -17,42 +17,6 @@ on property:sys.jellystar.ledbelt.fx=*
 on property:persist.sys.jellystar.ledbelt=*
     write /sys/bus/platform/drivers/lampbelt_leds/lampbelt_leds_duty ${persist.sys.jellystar.ledbelt}
 
-# Front RGB LED (AW2033). The vendor lights HAL only ever lights one channel, so the app drives
-# the LED itself; apps may not write LED nodes (coredomain neverallow), so init does it. The chip
-# blinks in hardware (no CPU wakeups). Order matters: writing brightness cancels blink, and
-# channels only blink in step if led_time is rewritten after blink is enabled.
-on boot
-    write /sys/class/leds/red/trigger none
-    write /sys/class/leds/green/trigger none
-    write /sys/class/leds/blue/trigger none
-
-on property:sys.jellystar.fled.r=*
-    write /sys/class/leds/red/brightness ${sys.jellystar.fled.r}
-
-on property:sys.jellystar.fled.g=*
-    write /sys/class/leds/green/brightness ${sys.jellystar.fled.g}
-
-on property:sys.jellystar.fled.b=*
-    write /sys/class/leds/blue/brightness ${sys.jellystar.fled.b}
-
-# Value is a counter, so every request triggers. The app sets sys.jellystar.fled.time
-# ("rise hold fall off") first.
-on property:sys.jellystar.fled.blink=*
-    write /sys/class/leds/red/blink 1
-    write /sys/class/leds/green/blink 1
-    write /sys/class/leds/blue/blink 1
-    write /sys/class/leds/red/led_time ${sys.jellystar.fled.time}
-    write /sys/class/leds/green/led_time ${sys.jellystar.fled.time}
-    write /sys/class/leds/blue/led_time ${sys.jellystar.fled.time}
-
-on property:sys.jellystar.fled.solid=*
-    write /sys/class/leds/red/blink 0
-    write /sys/class/leds/green/blink 0
-    write /sys/class/leds/blue/blink 0
-    write /sys/class/leds/red/brightness ${sys.jellystar.fled.r:-0}
-    write /sys/class/leds/green/brightness ${sys.jellystar.fled.g:-0}
-    write /sys/class/leds/blue/brightness ${sys.jellystar.fled.b:-0}
-
 # Power-on alarm (PowerSchedule.java): seconds since the epoch, 0 clears it.
 on property:sys.jellystar.poweron=*
     exec_background - system system -- /system_ext/bin/jellystar_poweron ${sys.jellystar.poweron}

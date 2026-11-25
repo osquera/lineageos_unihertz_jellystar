@@ -41,7 +41,7 @@ final class PowerSchedule {
     private PowerSchedule() {}
 
     private static SharedPreferences prefs(Context context) {
-        return FrontLed.prefs(context);
+        return LedBelt.prefs(context);
     }
 
     static boolean forAlarms(Context context) {

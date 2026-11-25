@@ -19,3 +19,6 @@ genfscon proc /blocktag/earaio u:object_r:proc_earaio:s0
 # FourSemi smart amplifier, read by the audio HAL
 genfscon sysfs /class/frsm_amp u:object_r:sysfs_frsm_amp:s0
 genfscon proc /tmsdev u:object_r:proc_tmsdev:s0
+
+# Front RGB LED (AW2033, i2c-7 0x45): the lights HAL, including the timer trigger's delay_on/off
+genfscon sysfs /devices/platform/soc/11f00000.i2c/i2c-7/7-0045/leds u:object_r:sysfs_leds:s0
