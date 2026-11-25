@@ -300,8 +300,7 @@ flashed because of anti-rollback.
 ### Layout: vendor built from stock blobs
 
 `vendor` is built from blobs extracted from Unihertz firmware V01.00.04
-(`proprietary-files.txt`). The kernel, DTB, DTBO and modules are described in
-[`kernel/README.md`](kernel/README.md).
+(`proprietary-files.txt`). The kernel side is described under *Kernel* below.
 
 - SELinux: `device/mediatek/sepolicy_vndr` plus `sepolicy/vendor/` for the services and
   devices it doesn't cover.
@@ -339,12 +338,22 @@ flashed because of anti-rollback.
 ### Kernel
 
 Unihertz does not publish kernel source for this device. The kernel image is Google's GKI
-build, unmodified; the vendor modules and the device tree are built from MediaTek's GPL source
-plus Jelly Star drivers:
-[`android_kernel_unihertz_jellystar-modules`](https://github.com/osquera/android_kernel_unihertz_jellystar-modules).
-How to build and stage them is in [`kernel/README.md`](kernel/README.md). The tree's
-structure started from
-[`iasnezhkov/android_device_ikko_mindone`](https://github.com/iasnezhkov/android_device_ikko_mindone)
+build `6.12.69-android16-6-g86dc53cfe87f-ab15464463-4k`, unmodified (from the stock boot image;
+in the vendor repo with the matching `system_dlkm.img`). Everything else is built from source
+by LineageOS's `build_kernel`, as on other MediaTek GKI devices:
+
+| Repository | Content |
+|---|---|
+| [`android_kernel_unihertz_jellystar_manifest`](https://github.com/osquera/android_kernel_unihertz_jellystar_manifest) | Kernel manifest: Google's kernel and Kleaf pinned to the GKI build above, plus the repos below |
+| [`android_kernel_unihertz_jellystar-modules`](https://github.com/osquera/android_kernel_unihertz_jellystar-modules) | MediaTek's `kernel_device_modules-6.12` with the Jelly Star drivers and the device tree (DTB/DTBO) |
+| [`android_kernel_unihertz_jellystar-mediatek_modules`](https://github.com/osquera/android_kernel_unihertz_jellystar-mediatek_modules) | MediaTek's vendor modules: Wi-Fi, Bluetooth, GPS, FM, Mali GPU |
+| [`android_kernel_build_bazel_mgk_rules`](https://github.com/osquera/android_kernel_build_bazel_mgk_rules) | MediaTek's Kleaf rules for 6.12 (Motorola's), with DTB/DTBO support |
+| [`android_device_unihertz_jellystar-kernels`](https://github.com/osquera/android_device_unihertz_jellystar-kernels) | Module load lists; `build_kernel` puts the build output next to them |
+
+The DTB goes into `vendor_boot` in a one-entry DT table whose file size must equal the table's
+`total_size`: Unihertz's LK rejects a padded one (`ufdt_apply_overlay(): Bad fdt size!`) and the
+phone boot-loops. The kernel build script packages it that way. The tree's structure started
+from [`iasnezhkov/android_device_ikko_mindone`](https://github.com/iasnezhkov/android_device_ikko_mindone)
 on the same MT6789 platform.
 
 ### Building
@@ -355,14 +364,25 @@ repo sync
 # device/unihertz/jellystar = this repo
 # vendor/unihertz/jellystar = github.com/osquera/proprietary_vendor_unihertz_jellystar
 #   (branch lineage-24.0), or run extract-files.py on the stock V01.00.04 firmware
-# kernel/{Image.lz4,dtb/,dtbo.img,modules/} are not in git: build and stage them,
-#   see kernel/README.md
+# device/unihertz/jellystar-kernels = github.com/osquera/android_device_unihertz_jellystar-kernels
 # apply the patches in patches/ (see patches/README.md)
 source build/envsetup.sh
 lunch lineage_jellystar-cp2a-userdebug
+build_kernel    # see below
 mka bacon
 # or, for a release-key signed build (keys in ~/.android-certs, see the script):
 JOBS=6 device/unihertz/jellystar/sign-build.sh
+```
+
+`build_kernel` syncs `LineageOS/android_kernel_unihertz_jellystar_manifest`, which doesn't exist
+until the device is official. Until then, set up the kernel source from this account once and
+skip that sync:
+
+```sh
+mkdir -p out-kernel/unihertz_jellystar && cd out-kernel/unihertz_jellystar
+repo init -u https://github.com/osquera/android_kernel_unihertz_jellystar_manifest -b lineage-24.0
+repo sync -c && touch .out-dir && cd ../..
+SKIP_KERNEL_SYNC=1 build_kernel
 ```
 
 ### Installing a build without the Updater
