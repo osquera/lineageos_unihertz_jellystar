@@ -94,36 +94,43 @@ DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := hardware/mediatek/vintf/mediatek_framework_compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += $(DEVICE_PATH)/compatibility_matrix.xml
 
-# Prebuilt GKI kernel (LZ4) from stock boot.img. Kernel modules: built from MediaTek's GPL source
-# where available (see kernel/README.md), stock binaries for the ODM drivers without source.
-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/kernel/Image.lz4
+# Kernel: Google's GKI image (prebuilt, as stock). Vendor modules, DTB and DTBO are built from
+# source by build_kernel (android_kernel_unihertz_jellystar_manifest) into $(TARGET_KERNEL_DIR).
+KERNEL_PATH := $(DEVICE_PATH)-kernels
 TARGET_KERNEL_ARCH := arm64
+TARGET_KERNEL_DEVICE := mgk_64_k612
+TARGET_KERNEL_DIR := $(KERNEL_PATH)/6.12
+TARGET_KERNEL_PLATFORM_SOURCE := unihertz_jellystar
+TARGET_PROVIDES_STATIC_MODULE_LISTS := true
+TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/kernel/Image.lz4
 
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/kernel/modules.load.ramdisk 2>/dev/null))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/kernel/modules.load.recovery 2>/dev/null))
+BOARD_KERNEL_MODULE_DIR := $(TARGET_KERNEL_DIR)
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(TARGET_KERNEL_DIR)/vendor_ramdisk.modules.load))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(TARGET_KERNEL_DIR)/vendor_ramdisk.modules.load.recovery))
 BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD) $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD)
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(foreach m,$(sort $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD) $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)),$(DEVICE_PATH)/kernel/modules/$(m))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES := $(foreach m,$(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD),$(DEVICE_PATH)/kernel/modules/$(m))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(addprefix $(BOARD_KERNEL_MODULE_DIR)/,$(sort $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD) $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES := $(addprefix $(BOARD_KERNEL_MODULE_DIR)/,$(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD))
 # Second-stage modules go into vendor_dlkm, loaded by MediaTek's init.insmod.sh from modules.load.
-BOARD_VENDOR_KERNEL_MODULES := $(wildcard $(DEVICE_PATH)/kernel/vendor_dlkm/*.ko)
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/kernel/modules.load.vendor_dlkm 2>/dev/null))
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(TARGET_KERNEL_DIR)/vendor_dlkm.modules.load))
+BOARD_VENDOR_KERNEL_MODULES := $(addprefix $(BOARD_KERNEL_MODULE_DIR)/,$(BOARD_VENDOR_KERNEL_MODULES_LOAD))
+# Loaded later (connectivity by init.insmod.sh, the rest on demand), as on stock.
+BOARD_VENDOR_KERNEL_MODULES += \
+    $(BOARD_KERNEL_MODULE_DIR)/bt_drv_connac1x.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/connfem.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/gps_drv_stp.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/gps_pwr.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/gt9886.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/gt9896s.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/iommu_test.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/ts_scp_common.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/tui-common.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/wlan_drv_gen4m_6789.ko \
+    $(BOARD_KERNEL_MODULE_DIR)/wmt_chrdev_wifi.ko
 # Stock has no modules.options, so no BOARD_VENDOR_KERNEL_MODULES_OPTIONS_FILE.
-BOARD_DO_NOT_STRIP_VENDOR_RAMDISK_MODULES := true
-BOARD_DO_NOT_STRIP_VENDOR_MODULES := true
-BOARD_DO_NOT_STRIP_RECOVERY_MODULES := true
 
-# DTB / DTBO: every .dtb in kernel/dtb/ is concatenated into vendor_boot, and with two the phone
-# no longer boots (no adb, no log). The directory is gitignored, so a stale file from an older
-# build can sit there unnoticed; fail the build instead.
-BOARD_PREBUILT_DTBIMAGE_DIR := $(DEVICE_PATH)/kernel/dtb
-jellystar_dtbs := $(wildcard $(BOARD_PREBUILT_DTBIMAGE_DIR)/*.dtb)
-ifneq ($(words $(jellystar_dtbs)),1)
-ifneq ($(words $(jellystar_dtbs)),0)
-$(error $(BOARD_PREBUILT_DTBIMAGE_DIR) holds $(words $(jellystar_dtbs)) .dtb files ($(notdir $(jellystar_dtbs))); \
-        every one of them is concatenated into vendor_boot. Keep exactly one and rebuild)
-endif
-endif
-BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/kernel/dtbo.img
+# DTB (in a DT table, sized as LK expects) and DTBO from the kernel build
+BOARD_PREBUILT_DTBIMAGE_DIR := $(TARGET_KERNEL_DIR)
+BOARD_PREBUILT_DTBOIMAGE := $(TARGET_KERNEL_DIR)/dtbo.img
 
 # Partitions (sizes from the stock scatter file)
 BOARD_FLASH_BLOCK_SIZE := 131072

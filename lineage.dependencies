@@ -4,6 +4,10 @@
     "target_path": "device/mediatek/sepolicy_vndr"
   },
   {
+    "repository": "android_device_unihertz_jellystar-kernels",
+    "target_path": "device/unihertz/jellystar-kernels"
+  },
+  {
     "repository": "android_hardware_mediatek",
     "target_path": "hardware/mediatek"
   }
