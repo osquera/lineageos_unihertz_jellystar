@@ -94,15 +94,16 @@ DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := hardware/mediatek/vintf/mediatek_framework_compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += $(DEVICE_PATH)/compatibility_matrix.xml
 
-# Kernel: Google's GKI image (prebuilt, as stock). Vendor modules, DTB and DTBO are built from
-# source by build_kernel (android_kernel_unihertz_jellystar_manifest) into $(TARGET_KERNEL_DIR).
+# Kernel: Google's GKI image, prebuilt as on stock (in the vendor repo, with system_dlkm). Vendor
+# modules, DTB and DTBO are built from source by build_kernel
+# (android_kernel_unihertz_jellystar_manifest) into $(TARGET_KERNEL_DIR).
 KERNEL_PATH := $(DEVICE_PATH)-kernels
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_DEVICE := mgk_64_k612
 TARGET_KERNEL_DIR := $(KERNEL_PATH)/6.12
 TARGET_KERNEL_PLATFORM_SOURCE := unihertz_jellystar
 TARGET_PROVIDES_STATIC_MODULE_LISTS := true
-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/kernel/Image.lz4
+TARGET_PREBUILT_KERNEL := vendor/unihertz/jellystar/images/Image.lz4
 
 BOARD_KERNEL_MODULE_DIR := $(TARGET_KERNEL_DIR)
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(TARGET_KERNEL_DIR)/vendor_ramdisk.modules.load))
