@@ -1,0 +1,3 @@
+# Charging control through MediaTek's charger command node (init.jellystar.health.rc)
+allow hal_lineage_health_default proc_battery_cmd:dir search;
+allow hal_lineage_health_default proc_battery_cmd:file rw_file_perms;

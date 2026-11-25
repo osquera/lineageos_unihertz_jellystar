@@ -36,7 +36,7 @@ something is tested or fixed.
 | Lights | Back LED | Quick Settings tile "Back light" with a brightness slider; pulses for notifications, breathes while charging (screen off), flashes for incoming calls. Toggle broadcast for key remappers |
 | Lights | IR blaster | |
 | Power | Charging, battery reporting | Battery usage estimates use stock's power profile (2000 mAh, measured component currents) |
-| Power | Charge limit | Settings > Battery > Charge limit: pauses charging at the chosen level (50–95 %), resumes 5 % below; the phone runs from the charger meanwhile |
+| Power | Charging control | Settings > Battery > Charging control (LineageOS's): stops charging at the chosen level and runs the phone from the charger. Replaced our own charge limit on 2026-11-25; retest with the HAL |
 | Power | Charging while powered off | Power key boots from the charging screen |
 | Power | Standby / deep sleep | About 0.6 %/hour overnight (100 % → 94 % in 10 hours) |
 | Modem | Firmware, IMEI, network search | Emergency-only camping without a SIM; Danish emergency number list loads |

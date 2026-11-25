@@ -90,21 +90,6 @@
                 android:resource="@string/redkey_summary" />
         </activity>
 
-        <activity
-            android:name=".ChargeLimitActivity"
-            android:exported="true"
-            android:label="@string/charge_limit_title"
-            android:theme="@android:style/Theme.DeviceDefault.DayNight">
-            <intent-filter>
-                <action android:name="com.android.settings.action.IA_SETTINGS" />
-            </intent-filter>
-            <meta-data
-                android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.battery" />
-            <meta-data
-                android:name="com.android.settings.summary"
-                android:resource="@string/charge_limit_summary" />
-        </activity>
 
         <activity
             android:name=".PowerScheduleActivity"

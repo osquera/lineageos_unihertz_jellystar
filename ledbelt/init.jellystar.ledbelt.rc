@@ -53,14 +53,6 @@ on property:sys.jellystar.fled.solid=*
     write /sys/class/leds/green/brightness ${sys.jellystar.fled.g:-0}
     write /sys/class/leds/blue/brightness ${sys.jellystar.fled.b:-0}
 
-# Charge limit (ChargeLimit in the app): "0 1" pauses charging, "0 0" resumes. While paused the
-# phone runs from the charger and the battery is left alone.
-on property:sys.jellystar.charge.pause=1
-    write /proc/mtk_battery_cmd/current_cmd "0 1"
-
-on property:sys.jellystar.charge.pause=0
-    write /proc/mtk_battery_cmd/current_cmd "0 0"
-
 # Power-on alarm (PowerSchedule.java): seconds since the epoch, 0 clears it.
 on property:sys.jellystar.poweron=*
     exec_background - system system -- /system_ext/bin/jellystar_poweron ${sys.jellystar.poweron}

@@ -120,6 +120,16 @@ PRODUCT_PACKAGES += \
     android.hardware.health-service.example \
     android.hardware.health-service.mediatek-recovery
 
+# Charging control (Settings > Battery): MediaTek's charger command node. "0 1" stops charging
+# and runs the phone from the charger, "0 0" resumes; reading it back gives the same values.
+PRODUCT_PACKAGES += \
+    init.jellystar.health.rc \
+    vendor.lineage.health-service.default
+
+$(call soong_config_set,lineage_health,charging_control_charging_path,/proc/mtk_battery_cmd/current_cmd)
+$(call soong_config_set,lineage_health,charging_control_charging_enabled,0 0)
+$(call soong_config_set,lineage_health,charging_control_charging_disabled,0 1)
+
 $(call inherit-product, hardware/lineage/compat/frameworks/compat.mk)
 $(call inherit-product, hardware/mediatek/frameworks/mediatek-frameworks.mk)
 

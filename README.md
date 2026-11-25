@@ -19,8 +19,7 @@ A daily-driver phone without Google's or Unihertz's preinstalled apps.
 [Unbrick / back to stock](#going-back-to-stock--unbricking)
 
 <img src="docs/screenshots/lights_1.png" width="180" alt="Lights settings: back LED effects and front notification light">&nbsp;
-<img src="docs/screenshots/redkey.png" width="180" alt="Red button settings">&nbsp;
-<img src="docs/screenshots/chargelimit.png" width="180" alt="Charge limit settings">
+<img src="docs/screenshots/redkey.png" width="180" alt="Red button settings">
 
 </div>
 
@@ -31,7 +30,7 @@ A daily-driver phone without Google's or Unihertz's preinstalled apps.
 | Calls, SMS, 4G data, **VoLTE** (if your carrier allows it), hotspot | Play Integrity: some banking and payment apps, Google Wallet tap-to-pay |
 | Wi-Fi, Bluetooth audio incl. aptX, NFC (reading and as a card), GPS | Wi-Fi calling and video calling (not yet) |
 | Fingerprint, both cameras, IR blaster, all sensors | Face unlock |
-| Front RGB LED and back LED effects, red button actions, charge limit | |
+| Front RGB LED and back LED effects, red button actions, charging control, power on for alarms | |
 | Encryption, SELinux enforcing, OTA updates via the Updater app | |
 
 The full list, including what's still untested, is in [STATUS.md](STATUS.md).
@@ -228,15 +227,20 @@ back light also work with the screen off; in a pocket the button is ignored.
 <img src="docs/screenshots/redkey.png" width="200" alt="Red button screen with the four actions">
 </p>
 
-### Charge limit
+### Charging control
 
-*Settings > Battery > Charge limit*: stop charging at a set level (50-95 %) to slow battery
-wear. Charging resumes 5 % below the limit.
+*Settings > Battery > Charging control* (LineageOS's own): stop charging at a set level to slow
+battery wear. While charging is stopped, the phone runs from the charger.
 
-<p>
-<img src="docs/screenshots/battery_chargelimit.png" width="200" alt="Settings > Battery, with the Charge limit entry">
-<img src="docs/screenshots/chargelimit.png" width="200" alt="Charge limit screen with the limit switch and slider">
-</p>
+### Power on and off
+
+*Settings > System > Power on and off*:
+- **Power on for alarms** (on by default): if the phone is off when an alarm is due, it turns
+  on 2 minutes before, so the alarm rings.
+- **Scheduled power off and on**: off and on times and days. A notification a minute before
+  powering off lets you cancel; it doesn't power off during a call.
+
+Turning on works with the phone off and while it charges switched off.
 
 ## Updating
 
@@ -320,8 +324,10 @@ flashed because of anti-rollback.
 - **Lights and keys** (`ledbelt/`, one app replacing Unihertz's, which need their patched
   framework): back LED tile and effects (notifications, charging, incoming calls), front RGB
   LED colours per app and battery state (Settings > Display > Lights), red key actions
-  (Settings > System > Red button), charge limit (Settings > Battery > Charge limit). Writes
-  go through init property triggers, since apps may not write LED sysfs nodes.
+  (Settings > System > Red button), power on for alarms and on a schedule (Settings > System >
+  Power on and off, through MediaTek's RTC power-on alarm). Writes go through init property
+  triggers, since apps may not write LED sysfs nodes or open the RTC.
+- **Charging control**: LineageOS's health HAL on MediaTek's charger command node.
 - **Small screen**: capacitive keys declared as hardware keys (no on-screen navigation bar by
   default), stock power profile for battery statistics.
 

@@ -1,0 +1,4 @@
+# Charging control: vendor.lineage.health-service.default runs as system.
+on boot
+    chown system system /proc/mtk_battery_cmd/current_cmd
+    chmod 0664 /proc/mtk_battery_cmd/current_cmd

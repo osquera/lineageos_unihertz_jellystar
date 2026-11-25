@@ -1,10 +1,7 @@
 type sysfs_frsm_amp, sysfs_type, fs_type;
 
-# Charge limit: init pauses/resumes charging through MediaTek's current_cmd (see
-# ledbelt/init.jellystar.ledbelt.rc). proc_battery_cmd is a vendor type from
-# device/mediatek/sepolicy_vndr, so the rule lives in the vendor policy.
-allow init proc_battery_cmd:dir search;
-allow init proc_battery_cmd:file w_file_perms;
+# Charging control: init hands MediaTek's current_cmd to the health HAL (init.jellystar.health.rc)
+allow init proc_battery_cmd:file setattr;
 
 # /proc/tmsdev: debug files of the TMS THN31 NFC driver, read by its HAL
 type proc_tmsdev, fs_type, proc_type;

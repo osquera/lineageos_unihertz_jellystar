@@ -36,11 +36,6 @@
     <string name="redkey_backlight">Toggle back light</string>
     <string name="redkey_camera">Open camera</string>
     <string name="redkey_help">Flashlight and back light also work with the screen off.</string>
-    <string name="charge_limit_title">Charge limit</string>
-    <string name="charge_limit_summary">Stop charging at a set level to slow battery wear</string>
-    <string name="charge_limit_enable">Limit charging</string>
-    <string name="charge_limit_value">Stop charging at <xliff:g id="percent" example="80">%1$d</xliff:g>%%</string>
-    <string name="charge_limit_help">Charging resumes when the battery drops 5% below the limit. While paused, the phone runs from the charger. The status bar may still show "Charging".</string>
     <string name="power_schedule_title">Power on and off</string>
     <string name="power_schedule_summary">Turn on for alarms, or on and off at set times</string>
     <string name="power_on_alarms">Power on for alarms</string>

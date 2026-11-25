@@ -69,7 +69,6 @@ public class LedBeltApp extends Application {
                 fx.setCharging(status == BatteryManager.BATTERY_STATUS_CHARGING);
                 front.setBattery(level, status == BatteryManager.BATTERY_STATUS_CHARGING,
                         plugged && status == BatteryManager.BATTERY_STATUS_FULL);
-                ChargeLimit.get(front.context()).setBattery(level, plugged);
             }
             case TelephonyManager.ACTION_PHONE_STATE_CHANGED -> fx.setRinging(
                     TelephonyManager.EXTRA_STATE_RINGING.equals(
