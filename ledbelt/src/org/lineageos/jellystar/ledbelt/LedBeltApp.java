@@ -14,7 +14,10 @@ import android.os.BatteryManager;
 import android.os.PowerManager;
 import android.telephony.TelephonyManager;
 
-/** Persistent: watches screen, charger and phone state for the back LED effects. */
+/**
+ * Persistent: watches screen, charger and phone state for the back LED effects, and arms the
+ * power-on alarm at shutdown.
+ */
 public class LedBeltApp extends Application {
     @Override
     public void onCreate() {
@@ -38,6 +41,14 @@ public class LedBeltApp extends Application {
             }
         }, filter, RECEIVER_EXPORTED);
         if (battery != null) handle(fx, front, battery);
+
+        PowerSchedule.update(this);
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                PowerSchedule.onShutdown(context);
+            }
+        }, new IntentFilter(Intent.ACTION_SHUTDOWN), RECEIVER_EXPORTED);
     }
 
     private static void handle(LedBeltEffects fx, FrontLed front, Intent intent) {

@@ -1,0 +1,6 @@
+type jellystar_poweron, domain, coredomain;
+type jellystar_poweron_exec, system_file_type, exec_type, file_type;
+
+init_daemon_domain(jellystar_poweron)
+
+allow jellystar_poweron rtc_device:chr_file r_file_perms;

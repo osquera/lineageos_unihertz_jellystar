@@ -9,6 +9,9 @@
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REBOOT" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Persistent so it can follow screen, charger and phone state for the effects. -->
     <application
@@ -102,6 +105,26 @@
                 android:name="com.android.settings.summary"
                 android:resource="@string/charge_limit_summary" />
         </activity>
+
+        <activity
+            android:name=".PowerScheduleActivity"
+            android:exported="true"
+            android:label="@string/power_schedule_title"
+            android:theme="@android:style/Theme.DeviceDefault.DayNight">
+            <intent-filter>
+                <action android:name="com.android.settings.action.IA_SETTINGS" />
+            </intent-filter>
+            <meta-data
+                android:name="com.android.settings.category"
+                android:value="com.android.settings.category.ia.system" />
+            <meta-data
+                android:name="com.android.settings.summary"
+                android:resource="@string/power_schedule_summary" />
+        </activity>
+
+        <receiver
+            android:name=".PowerScheduleReceiver"
+            android:exported="false" />
 
         <activity
             android:name=".AppColorsActivity"

@@ -60,3 +60,7 @@ on property:sys.jellystar.charge.pause=1
 
 on property:sys.jellystar.charge.pause=0
     write /proc/mtk_battery_cmd/current_cmd "0 0"
+
+# Power-on alarm (PowerSchedule.java): seconds since the epoch, 0 clears it.
+on property:sys.jellystar.poweron=*
+    exec_background - system system -- /system_ext/bin/jellystar_poweron ${sys.jellystar.poweron}

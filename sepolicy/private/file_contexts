@@ -1,1 +1,2 @@
 /sys/bus/platform/drivers/lampbelt_leds/lampbelt_leds_duty    u:object_r:sysfs_jellystar_ledbelt:s0
+/system_ext/bin/jellystar_poweron                            u:object_r:jellystar_poweron_exec:s0

@@ -41,4 +41,13 @@
     <string name="charge_limit_enable">Limit charging</string>
     <string name="charge_limit_value">Stop charging at <xliff:g id="percent" example="80">%1$d</xliff:g>%%</string>
     <string name="charge_limit_help">Charging resumes when the battery drops 5% below the limit. While paused, the phone runs from the charger. The status bar may still show "Charging".</string>
+    <string name="power_schedule_title">Power on and off</string>
+    <string name="power_schedule_summary">Turn on for alarms, or on and off at set times</string>
+    <string name="power_on_alarms">Power on for alarms</string>
+    <string name="power_on_alarms_help">If the phone is off when an alarm is due, it turns on 2 minutes before so the alarm rings.</string>
+    <string name="power_schedule_enable">Scheduled power off and on</string>
+    <string name="power_schedule_off">Power off at <xliff:g id="time" example="23:00">%1$s</xliff:g></string>
+    <string name="power_schedule_on">Power on at <xliff:g id="time" example="07:00">%1$s</xliff:g></string>
+    <string name="power_schedule_help">The phone shows a notification a minute before powering off, so you can cancel. It doesn\'t power off during a call. Turning on works with the phone off and while it charges switched off.</string>
+    <string name="power_off_warning">Powering off in 1 minute</string>
 </resources>

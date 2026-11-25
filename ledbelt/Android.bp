@@ -14,7 +14,10 @@ android_app {
     platform_apis: true,
     privileged: true,
     system_ext_specific: true,
-    required: ["init.jellystar.ledbelt.rc"],
+    required: [
+        "init.jellystar.ledbelt.rc",
+        "jellystar_poweron",
+    ],
     optimize: {
         proguard_flags_files: ["proguard.flags"],
     },
@@ -24,5 +27,12 @@ prebuilt_etc {
     name: "init.jellystar.ledbelt.rc",
     src: "init.jellystar.ledbelt.rc",
     sub_dir: "init",
+    system_ext_specific: true,
+}
+
+// Sets the RTC power-on alarm for PowerSchedule; apps may not open /dev/rtc0.
+cc_binary {
+    name: "jellystar_poweron",
+    srcs: ["poweron/jellystar_poweron.c"],
     system_ext_specific: true,
 }
