@@ -5,6 +5,16 @@
 #
 # Based on iasnezhkov/android_device_ikko_mindone (also MT6789).
 
+import os
+import shutil
+import tempfile
+
+from extract_utils.extract import (
+    ExtractCtx,
+    extract_super_img,
+    is_sparse_image,
+)
+from extract_utils.extract_recovery import unpack_bootimg
 from extract_utils.fixups_blob import (
     blob_fixup,
     blob_fixups_user_type,
@@ -287,6 +297,34 @@ for _user, _libs in stock_mtk_lib_users.items():
         _fixup.replace_needed(f'{_lib}.so', f'{_lib}-mtk.so')
     blob_fixups[_user] = _fixup
 
+
+# Prebuilt images (BoardConfig.mk): Google's GKI kernel and the system_dlkm image with its signed
+# modules, and the odm_dlkm image. They go to images/ as they are, not into the OTA's radio files.
+def images_dir() -> str:
+    path = os.path.join(module.vendor_path, 'images')
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+def extract_dlkm_images(ctx: ExtractCtx, file_path: str, work_dir: str):
+    # Runs before and after a sparse super.img is unsparsed; only the raw one can be read.
+    if is_sparse_image(file_path):
+        return None
+    for partition in ('odm_dlkm', 'system_dlkm'):
+        extract_super_img(partition, file_path, images_dir())
+
+
+def extract_kernel_image(ctx: ExtractCtx, file_path: str, work_dir: str):
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        unpack_bootimg(file_path, tmp_dir)
+        shutil.copy(os.path.join(tmp_dir, 'kernel'), os.path.join(images_dir(), 'Image.lz4'))
+
+
+extract_fns = {
+    r'^super\.img$': extract_dlkm_images,
+    r'^boot\.img$': extract_kernel_image,
+}
+
 module = ExtractUtilsModule(
     'jellystar',
     'unihertz',
@@ -294,6 +332,7 @@ module = ExtractUtilsModule(
     lib_fixups=lib_fixups,
     namespace_imports=namespace_imports,
     add_firmware_proprietary_file=True,
+    extract_fns=extract_fns,
 )
 
 if __name__ == '__main__':
