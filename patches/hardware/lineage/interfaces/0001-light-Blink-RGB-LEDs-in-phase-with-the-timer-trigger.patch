@@ -1,0 +1,193 @@
+From 0344e04193ff2bf408fd90e0abc9826ef580b9e6 Mon Sep 17 00:00:00 2001
+From: osquera <github@alias.osquera.com>
+Date: Thu, 26 Nov 2026 09:40:41 +0100
+Subject: [PATCH] light: Blink RGB LEDs in phase with the timer trigger
+
+With the timer trigger every color channel of an RGB LED blinks on its
+own timer, and the timer toggles from the LED's state when the delays
+are written. Arming the trigger blinks the LED with default delays, so
+whether a channel is on or off at that moment is random: channels end
+up in opposite phase and a mixed color shows as a sequence of colors.
+They also blink at max_brightness unless the brightness is set while
+blinking, which loses the mix even when in phase.
+
+Park each LED off with delay_on 0 after arming the trigger, set its
+brightness (the kernel keeps it as the blink brightness) and delay_off,
+and only then write delay_on, for all channels back to back. Tested on
+the Unihertz Jelly Star (aw2033 RGB LED): channels stay in phase and
+orange blinks as orange.
+
+Change-Id: Icbe698730bb584c9edaae52e00c185af4f59eb24
+---
+ light/devices/LedDevice.cpp    | 23 +++++++++---
+ light/devices/LedDevice.h      | 12 ++++++-
+ light/devices/RgbLedDevice.cpp | 65 ++++++++++++++++++++--------------
+ 3 files changed, 67 insertions(+), 33 deletions(-)
+
+diff --git a/light/devices/LedDevice.cpp b/light/devices/LedDevice.cpp
+index 79ef61a..6c7138d 100644
+--- a/light/devices/LedDevice.cpp
++++ b/light/devices/LedDevice.cpp
+@@ -158,7 +158,7 @@ static std::string getScaledDutyPercent(uint8_t brightness) {
+ }
+ 
+ bool LedDevice::setBrightness(uint8_t value, LightMode mode, uint32_t flashOnMs,
+-                              uint32_t flashOffMs) {
++                              uint32_t flashOffMs, bool deferBlinkStart) {
+     // Disable current blinking
+     if (mode != LightMode::TIMED_QCOM && supportsMode(LightMode::TIMED_QCOM)) {
+         writeToFile(mBasePath + kBlinkNode, 0);
+@@ -201,12 +201,20 @@ bool LedDevice::setBrightness(uint8_t value, LightMode mode, uint32_t flashOnMs,
+                 while (retries--) {
+                     std::this_thread::sleep_for(2ms);
+ 
+-                    ok = writeToFile(mBasePath + kDelayOffNode, flashOffMs);
+-                    if (!ok) continue;
+-
+-                    ok = writeToFile(mBasePath + kDelayOnNode, flashOnMs);
++                    // The timer toggles from the LED's current state, so park it off first:
++                    // delay_on 0 turns it off and stops the blinking.
++                    ok = writeToFile(mBasePath + kDelayOnNode, 0);
+                     if (ok) break;
+                 }
++                // The kernel takes the blink brightness from the current brightness, and keeps it
++                // when the delay_off write turns the LED off again.
++                ok = ok &&
++                     writeToFile(mBasePath + kBrightnessNode,
++                                 scaleBrightness(value, mMaxBrightness)) &&
++                     writeToFile(mBasePath + kDelayOffNode, flashOffMs);
++                if (ok && !deferBlinkStart) {
++                    ok = startBlink(value, flashOnMs);
++                }
+             }
+             return ok;
+             break;
+@@ -229,6 +237,11 @@ bool LedDevice::setBrightness(uint8_t value, LightMode mode, uint32_t flashOnMs,
+     }
+ }
+ 
++bool LedDevice::startBlink(uint8_t value, uint32_t flashOnMs) {
++    return writeToFile(mBasePath + kDelayOnNode, flashOnMs) &&
++           writeToFile(mBasePath + kBrightnessNode, scaleBrightness(value, mMaxBrightness));
++}
++
+ void LedDevice::setIdx(int idx) {
+     mIdx = idx;
+ }
+diff --git a/light/devices/LedDevice.h b/light/devices/LedDevice.h
+index 026f910..c49f2a7 100644
+--- a/light/devices/LedDevice.h
++++ b/light/devices/LedDevice.h
+@@ -82,7 +82,17 @@ class LedDevice : public IDevice {
+      * @return bool true if the brightness was set successfully, false otherwise
+      */
+     bool setBrightness(uint8_t value, LightMode mode = LightMode::STATIC, uint32_t flashOnMs = 0,
+-                       uint32_t flashOffMs = 0);
++                       uint32_t flashOffMs = 0, bool deferBlinkStart = false);
++
++    /**
++     * Start blinking prepared with setBrightness(..., LightMode::TIMED_UPSTREAM, ..., true).
++     * Starting several LEDs back to back keeps them in phase.
++     *
++     * @param value The brightness value to blink with
++     * @param flashOnMs The on time
++     * @return bool true if blinking was started successfully, false otherwise
++     */
++    bool startBlink(uint8_t value, uint32_t flashOnMs);
+ 
+     /**
+      * Set the index of the LED device.
+diff --git a/light/devices/RgbLedDevice.cpp b/light/devices/RgbLedDevice.cpp
+index b048e8d..9bef46c 100644
+--- a/light/devices/RgbLedDevice.cpp
++++ b/light/devices/RgbLedDevice.cpp
+@@ -12,6 +12,7 @@
+ #include <android-base/logging.h>
+ 
+ #include <algorithm>
++#include <utility>
+ 
+ namespace aidl {
+ namespace android {
+@@ -92,6 +93,7 @@ bool RgbLedDevice::setState(const State& state) {
+         rc &= writeToFile(mRgbSyncNode, 0);
+     }
+ 
++    uint8_t red = 0, green = 0, blue = 0;
+     if (mRoles == Role::ALL) {
+         Color color = state.color;
+ #ifdef SNAP_RGB_TO_PURE
+@@ -101,34 +103,43 @@ bool RgbLedDevice::setState(const State& state) {
+             color.blue = color.blue * 2 >= mx ? 0xFF : 0;
+         }
+ #endif
+-        rc &= mRed.setBrightness(color.red, mode, flashOnMs, flashOffMs);
+-        rc &= mGreen.setBrightness(color.green, mode, flashOnMs, flashOffMs);
+-        rc &= mBlue.setBrightness(color.blue, mode, flashOnMs, flashOffMs);
+-    } else {
++        red = color.red;
++        green = color.green;
++        blue = color.blue;
++    } else if (mRoles == Role::RED) {
+         // Check if we have only one LED
+-        if (mRoles == Role::RED) {
+-            rc &= mRed.setBrightness(state.color.toBrightness(), mode, flashOnMs, flashOffMs);
+-        } else if (mRoles == Role::GREEN) {
+-            rc &= mGreen.setBrightness(state.color.toBrightness(), mode, flashOnMs, flashOffMs);
+-        } else if (mRoles == Role::BLUE) {
+-            rc &= mBlue.setBrightness(state.color.toBrightness(), mode, flashOnMs, flashOffMs);
+-        } else {
+-            // We only have two LEDs, blend the missing color in the other two
+-            if ((mRoles & Role::RED) == Role::NONE) {
+-                rc &= mBlue.setBrightness((state.color.blue + state.color.red) / 2, mode, flashOnMs,
+-                                          flashOffMs);
+-                rc &= mGreen.setBrightness((state.color.green + state.color.red) / 2, mode,
+-                                           flashOnMs, flashOffMs);
+-            } else if ((mRoles & Role::GREEN) == Role::NONE) {
+-                rc &= mRed.setBrightness((state.color.red + state.color.green) / 2, mode, flashOnMs,
+-                                         flashOffMs);
+-                rc &= mBlue.setBrightness((state.color.blue + state.color.green) / 2, mode,
+-                                          flashOnMs, flashOffMs);
+-            } else if ((mRoles & Role::BLUE) == Role::NONE) {
+-                rc &= mRed.setBrightness((state.color.red + state.color.blue) / 2, mode, flashOnMs,
+-                                         flashOffMs);
+-                rc &= mGreen.setBrightness((state.color.green + state.color.blue) / 2, mode,
+-                                           flashOnMs, flashOffMs);
++        red = state.color.toBrightness();
++    } else if (mRoles == Role::GREEN) {
++        green = state.color.toBrightness();
++    } else if (mRoles == Role::BLUE) {
++        blue = state.color.toBrightness();
++    } else {
++        // We only have two LEDs, blend the missing color in the other two
++        if ((mRoles & Role::RED) == Role::NONE) {
++            blue = (state.color.blue + state.color.red) / 2;
++            green = (state.color.green + state.color.red) / 2;
++        } else if ((mRoles & Role::GREEN) == Role::NONE) {
++            red = (state.color.red + state.color.green) / 2;
++            blue = (state.color.blue + state.color.green) / 2;
++        } else if ((mRoles & Role::BLUE) == Role::NONE) {
++            red = (state.color.red + state.color.blue) / 2;
++            green = (state.color.green + state.color.blue) / 2;
++        }
++    }
++
++    // With the timer trigger every LED blinks on its own timer: prepare all of them first and
++    // start them back to back, so that they stay in phase and show the mixed color.
++    const bool deferStart = mode == LedDevice::LightMode::TIMED_UPSTREAM;
++    const std::pair<LedDevice*, uint8_t> leds[] = {{&mRed, red}, {&mGreen, green}, {&mBlue, blue}};
++    for (const auto& [led, value] : leds) {
++        if (led->isOk()) {
++            rc &= led->setBrightness(value, mode, flashOnMs, flashOffMs, deferStart);
++        }
++    }
++    if (deferStart) {
++        for (const auto& [led, value] : leds) {
++            if (led->isOk() && value > 0) {
++                rc &= led->startBlink(value, flashOnMs);
+             }
+         }
+     }
+-- 
+2.56.1
+
