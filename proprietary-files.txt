@@ -1706,7 +1706,6 @@ vendor/etc/sw_config.xml
 vendor/etc/t6/E62563B4905C52822EADA8E32E5180D6/6B6579626F785F6372797074
 vendor/etc/task_profiles.json
 vendor/etc/throttle.sh
-vendor/etc/ueventd.rc
 vendor/etc/vendor-apns-conf.xml
 vendor/etc/vibrator-config
 vendor/etc/vintf/manifest/android.hardware.boot-service.mtk.xml

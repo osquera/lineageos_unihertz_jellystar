@@ -2,10 +2,10 @@
 // SPDX-FileCopyrightText: The LineageOS Project
 // SPDX-License-Identifier: Apache-2.0
 //
-// Stock init scripts (vendor/etc/init/hw), fstab and recovery init script (stock recovery
-// ramdisk), unmodified apart from init.mt6789.rc importing stock's USB script as
-// init.mt6789.usb-stock.rc. ro.hardware=mt6789 makes init pick init.mt6789.rc, which imports the
-// rest.
+// Stock init scripts (vendor/etc/init/hw), ueventd.rc, fstab and recovery init script (stock
+// recovery ramdisk), unmodified apart from ueventd.rc's front LED lines and init.mt6789.rc
+// importing stock's USB script as init.mt6789.usb-stock.rc. ro.hardware=mt6789 makes init pick
+// init.mt6789.rc, which imports the rest.
 
 prebuilt_etc {
     name: "fstab.mt6789",
@@ -106,3 +106,9 @@ prebuilt_etc {
     vendor: true,
 }
 
+prebuilt_etc {
+    name: "ueventd.mt6789.rc",
+    src: "etc/ueventd.mt6789.rc",
+    filename: "ueventd.rc",
+    vendor: true,
+}
